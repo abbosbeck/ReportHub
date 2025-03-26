@@ -1,4 +1,4 @@
-namespace Api;
+namespace Application.WeatherForecast.GetWeatherForecast;
 
 public class WeatherForecast
 {
