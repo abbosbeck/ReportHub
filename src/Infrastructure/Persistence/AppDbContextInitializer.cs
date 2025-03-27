@@ -1,6 +1,4 @@
-﻿using Domain;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure.Persistence;
 
@@ -41,17 +39,17 @@ public class AppDbContextInitializer(AppDbContext context)
                 context.Set<User>().Add(new User
                 {
                     FirstName = "Alex",
-                    LastName = "Turner"
+                    LastName = "Turner",
                 });
                 context.Set<User>().Add(new User
                 {
                     FirstName = "Ivan",
-                    LastName = "Ivanov"
+                    LastName = "Ivanov",
                 });
                 context.Set<User>().Add(new User
                 {
                     FirstName = "Gulom",
-                    LastName = "Akilov"
+                    LastName = "Akilov",
                 });
 
                 await context.SaveChangesAsync();

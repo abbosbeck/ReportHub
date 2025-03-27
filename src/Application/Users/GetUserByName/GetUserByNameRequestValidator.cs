@@ -1,6 +1,4 @@
-﻿using FluentValidation;
-
-namespace Application.Users.GetUserByName;
+﻿namespace Application.Users.GetUserByName;
 
 public class GetUserByNameRequestValidator : AbstractValidator<GetUserByNameRequest>
 {

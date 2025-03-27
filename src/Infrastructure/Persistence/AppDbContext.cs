@@ -1,7 +1,4 @@
-﻿using Domain;
-using Microsoft.EntityFrameworkCore;
-
-namespace Infrastructure.Persistence;
+﻿namespace Infrastructure.Persistence;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
@@ -14,4 +11,3 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         base.OnModelCreating(modelBuilder);
     }
 }
-

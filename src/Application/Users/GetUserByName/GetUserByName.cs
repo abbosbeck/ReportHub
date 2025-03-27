@@ -1,7 +1,5 @@
-﻿using Application.Common.Interfaces;
-using AutoMapper;
-using FluentValidation;
-using MediatR;
+﻿using Application.Common.Exceptions;
+using Application.Common.Interfaces;
 
 namespace Application.Users.GetUserByName;
 
@@ -18,7 +16,7 @@ public class GetUserByNameRequestHandler(IUserRepository repository, IValidator<
         await validator.ValidateAndThrowAsync(request, cancellationToken);
 
         var user = await repository.GetUserByName(request.FirstName)
-            ?? throw new NullReferenceException("User not found with this name");
+            ?? throw new UserNotFoundException(request.FirstName);
 
         var result = mapper.Map<UserDto>(user);
 

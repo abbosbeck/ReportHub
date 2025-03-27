@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Domain;
+﻿using Domain;
 
 namespace Application.Users.GetUserByName;
 

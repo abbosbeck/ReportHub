@@ -1,14 +1,12 @@
-﻿using MediatR;
-
-namespace Application.WeatherForecast.GetWeatherForecast;
+﻿namespace Application.WeatherForecast.GetWeatherForecast;
 
 public class GetWeatherForecastRequest : IRequest<IEnumerable<WeatherForecast>>
-{ }
+{
+}
 
 public class GetWeatherForecastRequestHandler
     : IRequestHandler<GetWeatherForecastRequest, IEnumerable<WeatherForecast>>
 {
-
     private static readonly string[] Summaries =
         [
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
@@ -20,7 +18,7 @@ public class GetWeatherForecastRequestHandler
         {
             Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
             TemperatureC = Random.Shared.Next(-20, 55),
-            Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+            Summary = Summaries[Random.Shared.Next(Summaries.Length)],
         })
         .ToArray();
 
