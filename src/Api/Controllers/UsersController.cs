@@ -1,9 +1,10 @@
 ﻿using Application.Users.GetUserByName;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
 
-public class UsersController : ApiControllerBase
+public class UsersController(ISender mediator) : ApiControllerBase(mediator)
 {
     [HttpGet("{name}")]
     public async Task<IActionResult> GetUserByName(string name)

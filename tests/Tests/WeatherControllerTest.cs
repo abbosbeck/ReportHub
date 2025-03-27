@@ -1,6 +1,7 @@
 ﻿using Api.Controllers;
 using Application.WeatherForecast.GetWeatherForecast;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 
@@ -15,9 +16,8 @@ public class WeatherControllerTest
     public void SetUp()
     {
         _mediatorMock = new Mock<ISender>();
-        var loggerMock = new Mock<ILogger<WeatherForecastController>>();
 
-        _controller = new WeatherForecastController(loggerMock.Object);
+        _controller = new WeatherForecastController(_mediatorMock.Object);
     }
 
     [Test]
