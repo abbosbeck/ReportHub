@@ -3,7 +3,6 @@ using Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.Repositories;
-
 public class UserRepository(AppDbContext context) : IUserRepository
 {
     public async Task<User?> GetUserByName(string firstName)

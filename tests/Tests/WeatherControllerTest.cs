@@ -1,7 +1,6 @@
 ﻿using Api.Controllers;
 using Application.WeatherForecast.GetWeatherForecast;
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 

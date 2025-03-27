@@ -1,9 +1,9 @@
 ﻿using Application.Common.Interfaces;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Interceptors;
 using Infrastructure.Persistence.Repositories;
-using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
@@ -40,13 +40,13 @@ public static class DependencyInjection
         var keyVaultClientId = configuration.GetSection("KeyVault:ClientId");
         var keyVaultClientSecret = configuration.GetSection("KeyVault:ClientSecret");
         var keyVaultDirectoryID = configuration.GetSection("KeyVault:DirectoryID");
-        
+
         var credential = new ClientSecretCredential(
                     keyVaultDirectoryID.Value!.ToString(),
                     keyVaultClientId.Value!.ToString(),
                     keyVaultClientSecret.Value!.ToString());
         var client = new SecretClient(new Uri(keyVaultURL.Value!.ToString()), credential);
-        
+
         return client.GetSecret("DatabaseConnectionString").Value.Value.ToString();
     }
 }
