@@ -26,7 +26,8 @@ public class AppDbContextInitializer(AppDbContext context)
         }
         catch (Exception ex)
         {
-            throw ex;
+            Console.WriteLine($"Error seeding data: {ex.Message}");
+            throw;
         }
     }
 
@@ -34,7 +35,7 @@ public class AppDbContextInitializer(AppDbContext context)
     {
         try
         {
-            if (!context.Set<User>().Any())
+            if (!await context.Set<User>().AnyAsync())
             {
                 context.Set<User>().Add(new User
                 {
@@ -57,7 +58,8 @@ public class AppDbContextInitializer(AppDbContext context)
         }
         catch (Exception ex)
         {
-            throw ex;
+            Console.WriteLine($"Error seeding data: {ex.Message}");
+            throw;
         }
     }
 }
