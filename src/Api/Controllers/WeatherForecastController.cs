@@ -1,9 +1,10 @@
 using Application.WeatherForecast.GetWeatherForecast;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
 
-public class WeatherForecastController(ILogger<WeatherForecastController> logger) : ApiControllerBase
+public class WeatherForecastController(ISender mediator) : ApiControllerBase(mediator)
 {
     [HttpGet(Name = "WeatherForecast")]
     public async Task<IActionResult> GetWeatherForecastAsync()
