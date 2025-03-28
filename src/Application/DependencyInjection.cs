@@ -1,6 +1,6 @@
-﻿using Application.Common.Behaviors;
+﻿using System.Reflection;
+using Application.Common.Behaviors;
 using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
 
 namespace Application;
 

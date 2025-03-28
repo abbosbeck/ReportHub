@@ -1,4 +1,3 @@
-using Api.Middlewares;
 using Application;
 using Infrastructure;
 using Infrastructure.Persistence;
@@ -37,8 +36,6 @@ app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
-
-app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.MapControllers();
 
