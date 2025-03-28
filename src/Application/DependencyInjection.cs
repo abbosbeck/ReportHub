@@ -1,6 +1,6 @@
-﻿using System.Reflection;
-using FluentValidation;
+﻿using Application.Common.Behaviors;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
 namespace Application;
 
@@ -17,6 +17,8 @@ public static class DependencyInjection
         services.AddMediatR(config =>
         {
             config.RegisterServicesFromAssembly(assembly);
+
+            config.AddOpenBehavior(typeof(LoggingPipelineBehavior<,>));
         });
 
         return services;
