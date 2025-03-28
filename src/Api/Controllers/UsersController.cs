@@ -11,6 +11,11 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
     {
         var result = await Mediator.Send(new GetUserByNameRequest() { FirstName = name });
 
+        if (result == null)
+        {
+            return NotFound();
+        }
+
         return Ok(result);
     }
 }
