@@ -15,8 +15,7 @@ public class GetUserByNameRequestHandler(IUserRepository repository, IValidator<
     {
         await validator.ValidateAndThrowAsync(request, cancellationToken);
 
-        var user = await repository.GetUserByName(request.FirstName)
-            ?? throw new UserNotFoundException(request.FirstName);
+        var user = await repository.GetUserByName(request.FirstName);
 
         var result = mapper.Map<UserDto>(user);
 
