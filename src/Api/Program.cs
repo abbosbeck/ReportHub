@@ -1,6 +1,8 @@
+using Api.Middlewares;
 using Application;
 using Infrastructure;
 using Infrastructure.Persistence;
+using Serilog;
 
 DotNetEnv.Env.Load();
 
@@ -17,6 +19,9 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen();
 
+builder.Host.UseSerilog((context, configuration) =>
+    configuration.ReadFrom.Configuration(context.Configuration));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -27,9 +32,13 @@ if (app.Environment.IsDevelopment())
     await app.Services.InitialiseDatabaseAsync();
 }
 
+app.UseSerilogRequestLogging();
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.MapControllers();
 
