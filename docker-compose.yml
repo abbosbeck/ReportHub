@@ -1,0 +1,7 @@
+services:
+  api:
+    image: ${DOCKER_REGISTRY-}api
+    container_name: ReportHub.Api
+    build:
+      context: .
+      dockerfile: src/Api/Dockerfile
