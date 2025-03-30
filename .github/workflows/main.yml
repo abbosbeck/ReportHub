@@ -55,6 +55,7 @@ jobs:
         run: dotnet test ./tests/Tests/Tests.csproj
 
   deploy:
+    needs: test
     runs-on: ubuntu-latest
 
     steps:
@@ -75,7 +76,7 @@ jobs:
         with:
           push: true
           tags: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_APP_NAME }}:${{ github.sha }}
-          file: Exadel.Learning.Sprint1.MediatR/Dockerfile
+          file: src/Api/Dockerfile
 
       - name: Azure Login
         uses: azure/login@v2
