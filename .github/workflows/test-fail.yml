@@ -30,7 +30,7 @@ jobs:
             api
           up-flags: '--build -d'
 
-  test:
+  run-unit-tests:
     needs: build
     runs-on: ubuntu-latest
 
