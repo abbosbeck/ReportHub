@@ -18,4 +18,10 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
 
         return Ok(result);
     }
+
+    [HttpGet]
+    public IActionResult GetSomethingToTest()
+    {
+        return Ok("Working");
+    }
 }
