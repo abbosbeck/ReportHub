@@ -10,8 +10,8 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_CONTAINER_REGISTRY: a
-  CONTAINER_APP_NAME: a
+  AZURE_CONTAINER_REGISTRY: reporthub
+  CONTAINER_APP_NAME: reporthub
   RESOURCE_GROUP: ExadelBootcamp
 
 jobs: 
