@@ -42,4 +42,4 @@ jobs:
           up-flags: '--build -d'
 
       - name: Run tests
-        run: docker compose run dotnet test ReportHub.sln
+        run: docker compose run --build --rm server dotnet test ReportHub.sln
