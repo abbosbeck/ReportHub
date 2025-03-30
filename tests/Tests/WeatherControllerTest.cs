@@ -36,6 +36,6 @@ public class WeatherControllerTest
         await controller.GetWeatherForecastAsync();
 
         // Assert
-        Assert.Pass();
+        Assert.Fail();
     }
 }
