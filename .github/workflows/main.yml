@@ -15,7 +15,7 @@ jobs:
 
     steps: 
       - name: Check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Run docker compose
         uses: hoverkraft-tech/compose-action@v2.0.1
@@ -31,7 +31,7 @@ jobs:
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Run docker compose
         uses: hoverkraft-tech/compose-action@v2.0.1
@@ -40,6 +40,10 @@ jobs:
           services: |
             api
           up-flags: '--build -d'
-
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '9.0.x'
+          
       - name: Run tests
-        run: docker compose run --build --rm server dotnet test ReportHub.sln
+        run: dotnet test ./ReportHub.sln --no-build
