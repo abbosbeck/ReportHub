@@ -47,4 +47,4 @@ jobs:
           up-flags: '--build -d'
           
       - name: Run tests
-        run: dotnet test ./ReportHub.sln --no-build
+        run: dotnet test ./ReportHub.sln --no-build --no-restore --verbosity normal
