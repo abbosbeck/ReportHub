@@ -24,4 +24,22 @@ jobs:
           services: |
             api
           up-flags: '--build -d'
-            
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Run docker compose
+        uses: hoverkraft-tech/compose-action@v2.0.1
+        with:
+          compose-file: './docker-compose.yml'
+          services: |
+            api
+          up-flags: '--build -d'
+
+      - name: Run tests
+        run: dotnet test ReportHub.sln
