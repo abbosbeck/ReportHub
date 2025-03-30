@@ -9,6 +9,11 @@ on:
 
   workflow_dispatch:
 
+env:
+  AZURE_CONTAINER_REGISTRY: a
+  CONTAINER_APP_NAME: a
+  RESOURCE_GROUP: ExadelBootcamp
+
 jobs: 
   build:
     runs-on: ubuntu-latest
