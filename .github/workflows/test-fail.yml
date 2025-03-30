@@ -55,7 +55,7 @@ jobs:
         run: dotnet test ./tests/Tests/Tests.csproj
 
   deploy:
-    needs: test
+    needs: run-unit-tests
     runs-on: ubuntu-latest
 
     steps:
