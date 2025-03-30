@@ -48,6 +48,3 @@ jobs:
           
       - name: Run tests
         run: dotnet test ./ReportHub.sln --no-build
-
-      - name: Test results
-        uses: zyborg/dotnet-tests-report@v1
