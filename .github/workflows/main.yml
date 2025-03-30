@@ -15,10 +15,10 @@ jobs:
 
     steps: 
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Run docker compose
-        uses: hoverkraft-tech/compose-action@v2.0.1
+        uses: hoverkraft-tech/compose-action@v4.0.1
         with: 
           compose-file: './docker-compose.yml'
           services: |
@@ -31,17 +31,18 @@ jobs:
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Run docker compose
-        uses: hoverkraft-tech/compose-action@v2.0.1
+        uses: hoverkraft-tech/compose-action@v4.0.1
         with:
           compose-file: './docker-compose.yml'
           services: |
             api
           up-flags: '--build -d'
+          
       - name: Setup .NET
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '9.0.x'
           
