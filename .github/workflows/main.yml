@@ -1,9 +1,11 @@
 name: ReportHub
 
-on: 
+on:
+  push:
+    branches: ['main']
+    
   pull_request:
     branches: ['main']
-    types: ['closed']
 
   workflow_dispatch:
 
@@ -14,7 +16,6 @@ env:
 
 jobs: 
   build:
-    if: github.event.pull_request.merged
     runs-on: ubuntu-latest
 
     steps: 
@@ -30,7 +31,6 @@ jobs:
           up-flags: '--build -d'
 
   run-unit-tests:
-    if: github.event.pull_request.merged
     needs: build
     runs-on: ubuntu-latest
 
@@ -55,7 +55,6 @@ jobs:
         run: dotnet test ./tests/Tests/Tests.csproj
 
   deploy:
-    if: github.event.pull_request.merged
     needs: run-unit-tests
     runs-on: ubuntu-latest
 
