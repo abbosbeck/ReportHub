@@ -1,4 +1,4 @@
 ﻿global using AutoMapper;
 global using FluentValidation;
 global using MediatR;
-global using Microsoft.AspNet.Identity;
+global using Microsoft.AspNetCore.Identity;
