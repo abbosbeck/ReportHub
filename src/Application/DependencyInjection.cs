@@ -2,6 +2,7 @@
 using Application.Common.Behaviors;
 using Application.Common.Interfaces;
 using Application.Features;
+using Domain.Entity;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Application;
@@ -24,6 +25,8 @@ public static class DependencyInjection
 
             config.AddOpenBehavior(typeof(LoggingPipelineBehavior<,>));
         });
+
+        services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
         return services;
     }

@@ -23,7 +23,6 @@ public static class DependencyInjection
         services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
         services.AddScoped<ISaveChangesInterceptor, SoftDeletableInterceptor>();
         services.AddScoped<IValidator<RegisterUserCommandRequest>, RegisterUserValidator>();
-        services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddAutoMapper(typeof(RegisterUserProfile));
         services.AddAutoMapper(typeof(UserProfile));
         services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(RegisterUserCommandRequest).Assembly));
@@ -37,7 +36,6 @@ public static class DependencyInjection
         services.AddScoped<AppDbContextInitializer>();
 
         services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<IPasswordHasher, PasswordHasher>();
 
         return services;
     }

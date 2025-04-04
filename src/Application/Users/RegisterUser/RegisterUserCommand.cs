@@ -20,7 +20,7 @@ namespace Application.Users.RegisterUser
         public class RegisterUserCommandHandler(
             IUserRepository repository,
             IValidator<RegisterUserCommandRequest> validator,
-            IPasswordHasher passwordHasher,
+            IPasswordHasher<User> passwordHasher,
             IMapper mapper)
             : IRequestHandler<RegisterUserCommandRequest, RegisterUserDto>
         {
@@ -28,16 +28,15 @@ namespace Application.Users.RegisterUser
             {
                 await validator.ValidateAndThrowAsync(request, cancellationToken);
 
-                var hashedPassword = passwordHasher.HashPassword(request.Password);
-
                 var user = new User
                 {
                     FirstName = request.FirstName,
                     LastName = request.LastName,
                     Department = request.Department,
                     PhoneNumber = request.PhoneNumber,
-                    PasswordHash = hashedPassword,
                 };
+
+                user.PasswordHash = passwordHasher.HashPassword(user, request.Password);
 
                 await repository.AddUser(user);
 

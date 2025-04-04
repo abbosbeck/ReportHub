@@ -1,4 +1,5 @@
 ﻿using Application.Common.Interfaces;
+using Domain.Entity;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Application.Users.LoginUser
@@ -12,7 +13,7 @@ namespace Application.Users.LoginUser
         public class LoginUserCommandHandler(
             IUserRepository repository,
             IJwtTokenGenerator jwtTokenGenerator,
-            IPasswordHasher passwordHasher)
+            IPasswordHasher<User> passwordHasher)
             : IRequestHandler<LoginUserCommandReqest, LoginUserDto>
         {
             public async Task<LoginUserDto> Handle(LoginUserCommandReqest request, CancellationToken cancellationToken)
@@ -23,7 +24,8 @@ namespace Application.Users.LoginUser
                     throw new SecurityTokenException("Invalid phone number or password!");
                 }
 
-                var passwordVerificationResult = passwordHasher.VerifyHashedPassword(user.PasswordHash, request.Password);
+                var passwordVerificationResult = passwordHasher
+                    .VerifyHashedPassword(user, user.PasswordHash, request.Password);
 
                 if (passwordVerificationResult != PasswordVerificationResult.Success)
                 {
