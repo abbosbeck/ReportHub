@@ -1,26 +1,12 @@
-﻿
-using Application.Common.Interfaces;
+﻿using Application.Common.Interfaces;
 using Domain.Entity;
-using Microsoft.AspNet.Identity;
 
 namespace Application.Users.RegisterUser
 {
-    public class RegisterUserCommandRequest : IRequest<RegisterUserDto>
-    {
-        public string FirstName { get; set; }
-
-        public string LastName { get; set; }
-
-        public string Department { get; set; }
-
-        public string Password { get; set; }
-
-        public string PhoneNumber { get; set; }
-
-        public class RegisterUserCommandHandler(
+    public class RegisterUserCommandHandler(
             IUserRepository repository,
             IValidator<RegisterUserCommandRequest> validator,
-            IPasswordHasher passwordHasher,
+            IPasswordHasher<User> passwordHasher,
             IMapper mapper)
             : IRequestHandler<RegisterUserCommandRequest, RegisterUserDto>
         {
@@ -28,16 +14,15 @@ namespace Application.Users.RegisterUser
             {
                 await validator.ValidateAndThrowAsync(request, cancellationToken);
 
-                var hashedPassword = passwordHasher.HashPassword(request.Password);
-
                 var user = new User
                 {
                     FirstName = request.FirstName,
                     LastName = request.LastName,
                     Department = request.Department,
                     PhoneNumber = request.PhoneNumber,
-                    PasswordHash = hashedPassword,
                 };
+
+                user.PasswordHash = passwordHasher.HashPassword(user, request.Password);
 
                 await repository.AddUser(user);
 
@@ -45,6 +30,5 @@ namespace Application.Users.RegisterUser
 
                 return result;
             }
-        }
     }
 }
