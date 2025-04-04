@@ -1,13 +1,24 @@
-﻿namespace Infrastructure.Persistence;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
-public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
+namespace Infrastructure.Persistence;
+
+public class AppDbContext(DbContextOptions options) : IdentityDbContext<User, UserRole, Guid>(options)
 {
-    public DbSet<User> Users => Set<User>();
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppContext).Assembly);
 
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<User>()
+            .Ignore(u => u.AccessFailedCount)
+            .Ignore(u => u.EmailConfirmed)
+            .Ignore(u => u.UserName)
+            .Ignore(u => u.Email)
+            .Ignore(u => u.LockoutEnabled)
+            .Ignore(u => u.TwoFactorEnabled)
+            .Ignore(u => u.LockoutEnd)
+            .Ignore(u => u.NormalizedEmail)
+            .Ignore(u => u.NormalizedUserName);
     }
 }
