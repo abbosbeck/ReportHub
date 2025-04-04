@@ -17,8 +17,6 @@ namespace Application.Users.RegisterUser
 
         public string PhoneNumber { get; set; }
 
-        public string Role { get; set; }
-
         public class RegisterUserCommandHandler(
             IUserRepository repository,
             IValidator<RegisterUserCommandRequest> validator,
