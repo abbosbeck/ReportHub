@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Domain.Entity;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure.Persistence;
 

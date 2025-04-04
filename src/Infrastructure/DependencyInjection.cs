@@ -1,9 +1,14 @@
 ﻿using Application.Common.Interfaces;
+using Application.Features;
+using Application.Users.GetUserByName;
+using Application.Users.RegisterUser;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
+using FluentValidation;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Interceptors;
 using Infrastructure.Persistence.Repositories;
+using Microsoft.AspNet.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -17,7 +22,11 @@ public static class DependencyInjection
 
         services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
         services.AddScoped<ISaveChangesInterceptor, SoftDeletableInterceptor>();
-
+        services.AddScoped<IValidator<RegisterUserCommandRequest>, RegisterUserValidator>();
+        services.AddScoped<IPasswordHasher, PasswordHasher>();
+        services.AddAutoMapper(typeof(RegisterUserProfile));
+        services.AddAutoMapper(typeof(UserProfile));
+        services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(RegisterUserCommandRequest).Assembly));
         services.AddDbContext<AppDbContext>((sp, options) =>
         {
             options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
