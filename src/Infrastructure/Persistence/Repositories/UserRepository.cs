@@ -23,7 +23,6 @@ public class UserRepository(AppDbContext context) : IUserRepository
     public async Task<User?> GetUserByRefreshTokenAsync(string refreshToken)
     {
         return await context.Set<User>().FirstOrDefaultAsync(u => EF.Functions.ILike(u.RefreshToken, refreshToken));
-
     }
 
     public async Task SaveChanges()

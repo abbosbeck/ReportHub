@@ -12,7 +12,6 @@ namespace Api.Controllers;
 
 public class UsersController(ISender mediator) : ApiControllerBase(mediator)
 {
-
     [Authorize]
     [HttpGet("{name}")]
     public async Task<IActionResult> GetUserByName(string name)
@@ -31,7 +30,7 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
     [HttpPost("register")]
     public async Task<IActionResult> RegisterUser([FromBody] RegisterUserCommandRequest request)
     {
-        var result = await mediator.Send(request);
+        var result = await Mediator.Send(request);
         return Ok(result);
     }
 
@@ -52,11 +51,11 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
 
     [AllowAnonymous]
     [HttpPost("refresh")]
-    public async Task<IActionResult> RefreshToken(RefreshTokenRequest refreshToken) 
+    public async Task<IActionResult> RefreshToken(RefreshTokenRequest refreshToken)
     {
         var result = await Mediator.Send(refreshToken);
 
-        if (result == null) 
+        if (result == null)
         {
             return BadRequest("Refresh token wrong");
         }

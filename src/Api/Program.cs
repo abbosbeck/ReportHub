@@ -1,3 +1,4 @@
+using System.Text;
 using Application;
 using Infrastructure;
 using Infrastructure.Persistence;
@@ -5,7 +6,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
-using System.Text;
 
 DotNetEnv.Env.Load();
 
@@ -23,7 +23,7 @@ builder.Services.AddAuthentication(options =>
     {
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] !)),
     };
 });
 

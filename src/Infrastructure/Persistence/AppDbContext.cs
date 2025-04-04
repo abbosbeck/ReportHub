@@ -4,13 +4,13 @@ namespace Infrastructure.Persistence;
 
 public class AppDbContext(DbContextOptions options) : IdentityDbContext<User, UserRole, Guid>(options)
 {
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnModelCreating(ModelBuilder builder)
     {
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppContext).Assembly);
+        builder.ApplyConfigurationsFromAssembly(typeof(AppContext).Assembly);
 
-        base.OnModelCreating(modelBuilder);
+        base.OnModelCreating(builder);
 
-        modelBuilder.Entity<User>()
+        builder.Entity<User>()
             .Ignore(u => u.AccessFailedCount)
             .Ignore(u => u.EmailConfirmed)
             .Ignore(u => u.UserName)
