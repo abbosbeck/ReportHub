@@ -1,23 +1,9 @@
-﻿
-using Application.Common.Interfaces;
+﻿using Application.Common.Interfaces;
 using Domain.Entity;
-using Microsoft.AspNetCore.Identity;
 
 namespace Application.Users.RegisterUser
 {
-    public class RegisterUserCommandRequest : IRequest<RegisterUserDto>
-    {
-        public string FirstName { get; set; }
-
-        public string LastName { get; set; }
-
-        public string Department { get; set; }
-
-        public string Password { get; set; }
-
-        public string PhoneNumber { get; set; }
-
-        public class RegisterUserCommandHandler(
+    public class RegisterUserCommandHandler(
             IUserRepository repository,
             IValidator<RegisterUserCommandRequest> validator,
             IPasswordHasher<User> passwordHasher,
@@ -44,6 +30,5 @@ namespace Application.Users.RegisterUser
 
                 return result;
             }
-        }
     }
 }

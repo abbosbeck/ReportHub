@@ -2,7 +2,6 @@
 using Application.Users.LoginUser;
 using Application.Users.RefreshToken;
 using Application.Users.RegisterUser;
-using Domain.Entity;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

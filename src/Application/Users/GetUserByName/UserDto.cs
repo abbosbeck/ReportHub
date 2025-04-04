@@ -9,5 +9,4 @@ public class UserDto
     public string LastName { get; set; }
 
     public string Department { get; set; }
-
 }

@@ -11,7 +11,6 @@ namespace Application.Features
 {
     public class JwtTokenGenerator(IConfiguration configuration, IUserRepository repository) : IJwtTokenGenerator
     {
-
         public string GenerateAccessToken(User user)
         {
             var claims = new List<Claim>
