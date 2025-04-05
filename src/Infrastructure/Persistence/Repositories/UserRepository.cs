@@ -15,6 +15,11 @@ public class UserRepository(AppDbContext context) : IUserRepository
         return await context.Set<User>().FirstOrDefaultAsync(u => EF.Functions.ILike(u.FirstName, firstName));
     }
 
+    public async Task<User?> GetUserByIdAsync(Guid userId)
+    {
+        return await context.Set<User>().FirstOrDefaultAsync(x => x.Id == userId);
+    }
+
     public async Task<User?> GetUserByPhoneNumberAsync(string phoneNumber)
     {
         return await context.Set<User>().FirstOrDefaultAsync(u => EF.Functions.ILike(u.PhoneNumber!, phoneNumber));
