@@ -3,14 +3,14 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Domain.Entity
 {
-    public class UserRole : IdentityRole<Guid>, ISoftDeletable
+    public class UserRole : IdentityUserRole<Guid>
     {
-        public const string Admin = "Admin";
+        public Guid UserId { get; set; }
 
-        public const string User = "User";
+        public Guid RoleId { get; set; }
 
-        public bool IsDeleted { get; set; }
+        public User User { get; set; }
 
-        public DateTime? DeletedOn { get; set; }
+        public Role Role { get; set; }
     }
 }
