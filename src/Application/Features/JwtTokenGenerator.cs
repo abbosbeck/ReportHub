@@ -2,10 +2,8 @@
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using Application.Common.Interfaces;
 using Domain.Entity;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -19,15 +17,15 @@ namespace Application.Features
     {
         public async Task<string> GenerateAccessTokenAsync(User user)
         {
-            var userRoles = await userRoleRepository.GetUserRolesByUserIdAsync(user.Id);
+            var userRole = await userRoleRepository.GetUserRolesByUserIdAsync(user.Id);
 
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.GivenName, user.FirstName),
                 new Claim(JwtRegisteredClaimNames.FamilyName, user.LastName),
+                new Claim(ClaimTypes.Role, userRole),
             };
-            claims.AddRange(userRoles.Select(r => new Claim(ClaimTypes.Role, r)));
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Value.Key));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

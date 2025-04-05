@@ -30,7 +30,7 @@ public static class AddJwtAuthServiceCollectionExtension
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = jwtOptions.Value.Issuer,
                     ValidAudience = jwtOptions.Value.Audience,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Value.Key))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Value.Key)),
                 };
             });
 
