@@ -16,7 +16,7 @@ namespace Application.Users.RefreshToken
                 throw new UnauthorizedAccessException("Invalid refresh token.");
             }
 
-            var accessToken = jwtTokenGenerator.GenerateAccessToken(user);
+            var accessToken = await jwtTokenGenerator.GenerateAccessTokenAsync(user);
             var refreshToken = jwtTokenGenerator.GenerateRefreshToken();
 
             user.RefreshToken = refreshToken;

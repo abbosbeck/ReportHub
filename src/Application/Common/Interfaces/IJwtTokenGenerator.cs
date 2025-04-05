@@ -4,7 +4,7 @@ namespace Application.Common.Interfaces
 {
     public interface IJwtTokenGenerator
     {
-        string GenerateAccessToken(User user);
+        Task<string> GenerateAccessTokenAsync(User user);
 
         string GenerateRefreshToken();
 
