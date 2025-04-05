@@ -22,7 +22,7 @@ public static class DependencyInjection
 
         services.AddJwtAuthentication(jwtOptions);
         services.AddPersistence(keyVaultOptions);
-        services.AddScoped<IPasswordHasher, PasswordHasher>();
+        services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
         services.AddScoped<IUserRepository, UserRepository>();
 
         return services;
