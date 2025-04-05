@@ -24,6 +24,7 @@ public static class DependencyInjection
         services.AddPersistence(keyVaultOptions);
         services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IUserRoleRepository, UserRoleRepository>();
 
         return services;
     }
