@@ -9,4 +9,10 @@ public class UserDto
     public string LastName { get; set; }
 
     public string Department { get; set; }
+<<<<<<< HEAD
+=======
+
+    public string PhoneNumber { get; set; }
+
+>>>>>>> refactor/minor-validation-dto-fixes
 }

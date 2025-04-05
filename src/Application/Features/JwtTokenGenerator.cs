@@ -5,11 +5,12 @@ using System.Text;
 using Application.Common.Interfaces;
 using Domain.Entity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Application.Features
 {
-    public class JwtTokenGenerator(IConfiguration configuration, IUserRepository repository) : IJwtTokenGenerator
+    public class JwtTokenGenerator(IOptions<JwtOptions> jwtOptions, IUserRepository repository) : IJwtTokenGenerator
     {
         public string GenerateAccessToken(User user)
         {
@@ -20,13 +21,13 @@ namespace Application.Features
                 new Claim(ClaimTypes.MobilePhone, user.PhoneNumber),
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Value.Key));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var expires = DateTime.UtcNow.AddMinutes(Convert.ToDouble(configuration["Jwt:AccessTokenExpiryMinutes"]));
+            var expires = DateTime.UtcNow.AddMinutes(Convert.ToDouble(jwtOptions.Value.AccessTokenExpiryMinutes));
 
             var token = new JwtSecurityToken(
-                issuer: configuration["Jwt:Issuer"],
-                audience: configuration["Jwt:Audience"],
+                issuer: jwtOptions.Value.Issuer,
+                audience: jwtOptions.Value.Audience,
                 claims: claims,
                 expires: expires,
                 signingCredentials: creds);
@@ -38,7 +39,7 @@ namespace Application.Features
         {
             var refreshToken = GenerateRefreshToken();
             user.RefreshToken = refreshToken;
-            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(jwtOptions.Value.RefreshTokenExpiryDays);
             await repository.SaveChanges();
             return refreshToken;
         }
