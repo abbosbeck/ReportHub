@@ -20,7 +20,7 @@ namespace Application.Users.LoginUser
                 var user = await repository.GetUserByPhoneNumberAsync(request.PhoneNumber);
                 if (user == null)
                 {
-                    throw new SecurityTokenException("Invalid phone number or password!");
+                    throw new SecurityTokenException("User with specified number was not found!");
                 }
 
                 var passwordVerificationResult = passwordHasher.VerifyHashedPassword(user.PasswordHash, request.Password);

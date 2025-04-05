@@ -1,6 +1,7 @@
 ﻿using Application.Common.Interfaces;
 using Application.Features;
 using Application.Users.LoginUser;
+using Microsoft.Extensions.Options;
 
 namespace Application.Users.RefreshToken
 {
@@ -11,7 +12,8 @@ namespace Application.Users.RefreshToken
 
     public class RefreshTokenRequestHandler(
         IUserRepository repository,
-        IJwtTokenGenerator jwtTokenGenerator)
+        IJwtTokenGenerator jwtTokenGenerator,
+        IOptions<JwtOptions> jwtOptions)
         : IRequestHandler<RefreshTokenRequest, AccessTokenDto>
     {
         public async Task<AccessTokenDto> Handle(RefreshTokenRequest request, CancellationToken cancellationToken)
@@ -27,7 +29,7 @@ namespace Application.Users.RefreshToken
             var refreshToken = jwtTokenGenerator.GenerateRefreshToken();
 
             user.RefreshToken = refreshToken;
-            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(jwtOptions.Value.RefreshTokenExpiryDays);
 
             await repository.UpdateUserAsync(user);
 
