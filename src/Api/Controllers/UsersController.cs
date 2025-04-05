@@ -1,11 +1,12 @@
-﻿using Application.Users.GetUserByName;
+﻿using Application.Common.Constants;
+using Application.Users.GetUserByName;
+using Application.Users.GiveRoleToUser;
 using Application.Users.LoginUser;
 using Application.Users.RefreshToken;
 using Application.Users.RegisterUser;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Api.Controllers;
 
@@ -30,6 +31,7 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
     public async Task<IActionResult> RegisterUser([FromBody] RegisterUserCommandRequest request)
     {
         var result = await Mediator.Send(request);
+
         return Ok(result);
     }
 
@@ -37,15 +39,9 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginUserCommandReqest request)
     {
-        try
-        {
-            var result = await Mediator.Send(request);
-            return Ok(result);
-        }
-        catch (SecurityTokenException ex)
-        {
-            return Unauthorized(new { message = ex.Message });
-        }
+        var result = await Mediator.Send(request);
+
+        return Ok(result);
     }
 
     [AllowAnonymous]
@@ -58,6 +54,14 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
         {
             return BadRequest("Refresh token wrong");
         }
+
+        return Ok(result);
+    }
+
+    [HttpPost("give-role")]
+    public async Task<IActionResult> GiveRoleToUser([FromBody] GiveRoleToUserHandler giveRoleToUser)
+    {
+        var result = await Mediator.Send(giveRoleToUser);
 
         return Ok(result);
     }
