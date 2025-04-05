@@ -4,21 +4,27 @@ using System.Security.Cryptography;
 using System.Text;
 using Application.Common.Interfaces;
 using Domain.Entity;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Application.Features
 {
-    public class JwtTokenGenerator(IOptions<JwtOptions> jwtOptions, IUserRepository repository) : IJwtTokenGenerator
+    public class JwtTokenGenerator(
+        IOptions<JwtOptions> jwtOptions,
+        IUserRepository repository,
+        IUserRoleRepository userRoleRepository)
+        : IJwtTokenGenerator
     {
-        public string GenerateAccessToken(User user)
+        public async Task<string> GenerateAccessTokenAsync(User user)
         {
+            var userRole = await userRoleRepository.GetUserRolesByUserIdAsync(user.Id);
+
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.FirstName + " " + user.LastName),
-                new Claim(ClaimTypes.MobilePhone, user.PhoneNumber),
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.GivenName, user.FirstName),
+                new Claim(JwtRegisteredClaimNames.FamilyName, user.LastName),
+                new Claim(ClaimTypes.Role, userRole),
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Value.Key));

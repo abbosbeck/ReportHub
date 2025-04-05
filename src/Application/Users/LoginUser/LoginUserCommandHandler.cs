@@ -26,7 +26,7 @@ namespace Application.Users.LoginUser
                 throw new SecurityTokenException("Invalid phone number or password");
             }
 
-            var accessToken = jwtTokenGenerator.GenerateAccessToken(user);
+            var accessToken = await jwtTokenGenerator.GenerateAccessTokenAsync(user);
             var refreshToken = jwtTokenGenerator.GenerateRefreshToken();
 
             user.RefreshToken = refreshToken;
