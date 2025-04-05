@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Application.Common.Constants;
 using Application.Common.Interfaces;
 using Domain.Entity;
 using Microsoft.Extensions.Options;
@@ -18,6 +19,7 @@ namespace Application.Features
         public async Task<string> GenerateAccessTokenAsync(User user)
         {
             var userRole = await userRoleRepository.GetUserRolesByUserIdAsync(user.Id);
+            userRole = userRole ?? UserRoles.User;
 
             var claims = new List<Claim>
             {
