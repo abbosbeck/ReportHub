@@ -8,9 +8,9 @@ using Domain.Entities;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Application.Features
-{
-    public class JwtTokenGenerator(
+namespace Application.Common.JWT;
+
+public class JwtTokenGenerator(
         IOptions<JwtOptions> jwtOptions,
         IUserRepository repository,
         IUserRoleRepository userRoleRepository)
@@ -64,4 +64,3 @@ namespace Application.Features
             return Convert.ToBase64String(randomNumber);
         }
     }
-}

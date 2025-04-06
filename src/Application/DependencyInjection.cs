@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using Application.Common.Behaviors;
 using Application.Common.Interfaces;
-using Application.Features;
+using Application.Common.JWT;
 using Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
