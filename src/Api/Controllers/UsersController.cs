@@ -1,4 +1,5 @@
 ﻿using Application.Users.GetUserByName;
+using Application.Users.GetUserByPhoneNumber;
 using Application.Users.GiveRoleToUser;
 using Application.Users.LoginUser;
 using Application.Users.RefreshToken;
@@ -21,6 +22,14 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
         {
             return NotFound();
         }
+
+        return Ok(result);
+    }
+
+    [HttpGet("phone/{phone}")]
+    public async Task<IActionResult> GetUserByPhoneNumber(string phone)
+    {
+        var result = await Mediator.Send(new GetUserByPhoneNumberQuery() { PhoneNumber = phone });
 
         return Ok(result);
     }
