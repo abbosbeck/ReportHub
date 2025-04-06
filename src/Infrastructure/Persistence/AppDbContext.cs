@@ -20,7 +20,7 @@ public class AppDbContext : IdentityDbContext<
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        builder.ApplyConfigurationsFromAssembly(typeof(AppContext).Assembly);
+        builder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
 
         base.OnModelCreating(builder);
     }
