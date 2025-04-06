@@ -20,23 +20,14 @@ namespace Infrastructure.Persistence.Repositories
             return true;
         }
 
-        public async Task<string?> GetUserRolesByUserIdAsync(Guid userId)
+        public async Task<List<string?>> GetUserRolesByUserIdAsync(Guid userId)
         {
-            var userRole = await context.Set<UserRole>()
-                .FirstOrDefaultAsync(x => x.UserId == userId);
-            if (userRole == null)
-            {
-                return null;
-            }
+            var userRoles = await context.UserRoles
+                .Where(x => x.UserId == userId)
+                .Select(x => x.Role.Name)
+                .ToListAsync();
 
-            var role = await context.Set<Role>()
-                .FirstOrDefaultAsync(x => x.Id == userRole.RoleId);
-            if (role == null)
-            {
-                return null;
-            }
-
-            return role.Name;
+            return userRoles;
         }
     }
 }

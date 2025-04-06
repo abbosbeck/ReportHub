@@ -6,6 +6,6 @@ namespace Application.Common.Interfaces
     {
         Task<bool> GiveRoleToUserAsync(UserRole userRole);
 
-        Task<string> GetUserRolesByUserIdAsync(Guid userId);
+        Task<List<string>> GetUserRolesByUserIdAsync(Guid userId);
     }
 }

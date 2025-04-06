@@ -18,16 +18,20 @@ namespace Application.Features
     {
         public async Task<string> GenerateAccessTokenAsync(User user)
         {
-            var userRole = await userRoleRepository.GetUserRolesByUserIdAsync(user.Id);
-            userRole = userRole ?? UserRoles.User;
+            var userRoles = await userRoleRepository.GetUserRolesByUserIdAsync(user.Id);
+            if (!userRoles.Any())
+            {
+                userRoles.Add(UserRoles.User);
+            }
 
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.GivenName, user.FirstName),
                 new Claim(JwtRegisteredClaimNames.FamilyName, user.LastName),
-                new Claim(ClaimTypes.Role, userRole),
             };
+
+            claims.AddRange(userRoles.Select(r => new Claim(ClaimTypes.Role, r)));
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Value.Key));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
