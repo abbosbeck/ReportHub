@@ -1,4 +1,5 @@
-﻿using Application.Common.Interfaces;
+﻿using Application.Common.Exceptions;
+using Application.Common.Interfaces;
 using Domain.Entities;
 
 namespace Application.Users.GiveRoleToUser
@@ -12,11 +13,8 @@ namespace Application.Users.GiveRoleToUser
     {
         public async Task<bool> Handle(GiveRoleToUserCommand request, CancellationToken cancellationToken)
         {
-            var user = await userRepository.GetUserByIdAsync(request.userId);
-            if (user == null)
-            {
-                throw new ArgumentNullException("User not found!");
-            }
+            var user = await userRepository.GetUserByIdAsync(request.userId)
+                ?? throw new NotFoundException($"User is not found with this id: {request.userId}");
 
             var userRole = new UserRole
             {

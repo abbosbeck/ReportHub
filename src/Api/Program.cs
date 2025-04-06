@@ -1,4 +1,5 @@
 using System.Text;
+using Api.Middlewares;
 using Application;
 using Infrastructure;
 using Infrastructure.Persistence;
@@ -68,6 +69,8 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.MapControllers();
 

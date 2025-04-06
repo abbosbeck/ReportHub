@@ -1,10 +1,11 @@
-﻿using Application.Common.Interfaces;
+﻿using Application.Common.Exceptions;
+using Application.Common.Interfaces;
 
 namespace Application.Users.GetUserByName;
 
 public class GetUserByNameRequest : IRequest<UserDto>
 {
-    public string FirstName { get; set; } = string.Empty;
+    public string FirstName { get; init; } = string.Empty;
 }
 
 public class GetUserByNameRequestHandler(IUserRepository repository, IValidator<GetUserByNameRequest> validator, IMapper mapper)
@@ -14,7 +15,8 @@ public class GetUserByNameRequestHandler(IUserRepository repository, IValidator<
     {
         await validator.ValidateAndThrowAsync(request, cancellationToken);
 
-        var user = await repository.GetUserByName(request.FirstName);
+        var user = await repository.GetUserByName(request.FirstName)
+            ?? throw new NotFoundException("User is not found");
 
         var result = mapper.Map<UserDto>(user);
 

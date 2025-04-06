@@ -1,4 +1,5 @@
-﻿using Application.Common.Interfaces;
+﻿using Application.Common.Exceptions;
+using Application.Common.Interfaces;
 
 namespace Application.Users.SoftDeleteUser
 {
@@ -11,8 +12,12 @@ namespace Application.Users.SoftDeleteUser
         public async Task<bool> Handle(SoftDeleteUserCommand request, CancellationToken cancellationToken)
         {
             var isUserDeleted = await userRepository.SoftDeleteUserAsync(request.userId);
+            if (!isUserDeleted)
+            {
+                throw new NotFoundException($"User is not found with this id: {request.userId}");
+            }
 
-            return isUserDeleted;
+            return true;
         }
     }
 }

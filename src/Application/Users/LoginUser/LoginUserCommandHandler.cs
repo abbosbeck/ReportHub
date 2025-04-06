@@ -1,4 +1,5 @@
-﻿using Application.Common.Interfaces;
+﻿using Application.Common.Exceptions;
+using Application.Common.Interfaces;
 using Domain.Entities;
 using Microsoft.IdentityModel.Tokens;
 
@@ -12,18 +13,15 @@ namespace Application.Users.LoginUser
     {
         public async Task<LoginUserDto> Handle(LoginUserCommandReqest request, CancellationToken cancellationToken)
         {
-            var user = await repository.GetUserByPhoneNumberAsync(request.PhoneNumber);
-            if (user == null)
-            {
-                throw new SecurityTokenException("Invalid phone number or password!");
-            }
+            var user = await repository.GetUserByPhoneNumberAsync(request.PhoneNumber)
+                ?? throw new UnauthorizedException("Invalid phone number or password");
 
             var passwordVerificationResult = passwordHasher
                 .VerifyHashedPassword(user, user.PasswordHash, request.Password);
 
             if (passwordVerificationResult != PasswordVerificationResult.Success)
             {
-                throw new SecurityTokenException("Invalid phone number or password");
+                throw new UnauthorizedException("Invalid phone number or password");
             }
 
             var accessToken = await jwtTokenGenerator.GenerateAccessTokenAsync(user);
