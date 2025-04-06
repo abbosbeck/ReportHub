@@ -23,10 +23,17 @@ namespace Infrastructure.Persistence.Repositories
 
         public async Task<List<string?>> GetUserRolesByUserIdAsync(Guid userId)
         {
-            var userRoles = await context.UserRoles
+            var roleIds = await context.UserRoles
                 .Where(x => x.UserId == userId)
-                .Select(x => x.Role.Name)
+                .Select(r => r.RoleId)
                 .ToListAsync();
+
+            List<string?> userRoles = new List<string?>();
+            foreach (var roleId in roleIds)
+            {
+                var role = await context.Roles.FirstOrDefaultAsync(x => x.Id == roleId);
+                userRoles.Add(role?.Name);
+            }
 
             return userRoles;
         }
