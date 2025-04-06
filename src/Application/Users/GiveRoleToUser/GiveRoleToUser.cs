@@ -1,12 +1,15 @@
-﻿using Application.Common.Exceptions;
+﻿using Application.Common.Attributes;
+using Application.Common.Constants;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Domain.Entities;
 
 namespace Application.Users.GiveRoleToUser
 {
+    [AllowedFor(UserRoles.Admin)]
     public sealed record GiveRoleToUserCommand(Guid userId, string roleName) : IRequest<bool>;
 
-    public class GiveRoleToUserHandler(
+    public class GiveRoleToUser(
         IUserRepository userRepository,
         IUserRoleRepository userRoleRepository)
         : IRequestHandler<GiveRoleToUserCommand, bool>

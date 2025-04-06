@@ -1,8 +1,11 @@
-﻿using Application.Common.Exceptions;
+﻿using Application.Common.Attributes;
+using Application.Common.Constants;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 
 namespace Application.Users.SoftDeleteUser
 {
+    [AllowedFor(UserRoles.Admin)]
     public sealed record SoftDeleteUserCommand(Guid userId) : IRequest<bool>;
 
     public class SoftDeleteUserHandler(

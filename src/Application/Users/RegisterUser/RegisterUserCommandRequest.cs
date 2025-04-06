@@ -1,5 +1,8 @@
-﻿namespace Application.Users.RegisterUser
+﻿using Application.Common.Attributes;
+
+namespace Application.Users.RegisterUser
 {
+    [AllowedFor]
     public class RegisterUserCommandRequest : IRequest<RegisterUserDto>
     {
         public string FirstName { get; set; }

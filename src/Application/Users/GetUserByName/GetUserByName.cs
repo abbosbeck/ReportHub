@@ -1,8 +1,11 @@
-﻿using Application.Common.Exceptions;
+﻿using Application.Common.Attributes;
+using Application.Common.Constants;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 
 namespace Application.Users.GetUserByName;
 
+[AllowedFor(UserRoles.Admin)]
 public class GetUserByNameRequest : IRequest<UserDto>
 {
     public string FirstName { get; init; } = string.Empty;
