@@ -21,8 +21,18 @@ public class AppDbContext : IdentityDbContext<
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
+        base.OnModelCreating(builder);
+
         builder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
 
-        base.OnModelCreating(builder);
+        IgnoreUnusedIdentityTables(builder);
+    }
+
+    private static void IgnoreUnusedIdentityTables(ModelBuilder builder)
+    {
+        builder.Ignore<IdentityUserClaim<Guid>>();
+        builder.Ignore<IdentityRoleClaim<Guid>>();
+        builder.Ignore<IdentityUserToken<Guid>>();
+        builder.Ignore<IdentityUserLogin<Guid>>();
     }
 }
