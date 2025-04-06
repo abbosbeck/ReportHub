@@ -4,6 +4,7 @@ using Application.Users.GiveRoleToUser;
 using Application.Users.LoginUser;
 using Application.Users.RefreshToken;
 using Application.Users.RegisterUser;
+using Application.Users.SoftDeleteUser;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -62,6 +63,14 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
     public async Task<IActionResult> GiveRoleToUser([FromBody] GiveRoleToUserCommand giveRoleToUser)
     {
         var result = await Mediator.Send(giveRoleToUser);
+
+        return Ok(result);
+    }
+
+    [HttpPost("soft-delete-user")]
+    public async Task<IActionResult> SoftDeleteUser([FromBody] SoftDeleteUserCommand softDeleteUserCommand)
+    {
+        var result = await Mediator.Send(softDeleteUserCommand);
 
         return Ok(result);
     }

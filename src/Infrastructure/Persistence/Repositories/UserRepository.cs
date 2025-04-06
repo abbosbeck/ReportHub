@@ -40,4 +40,23 @@ public class UserRepository(AppDbContext context) : IUserRepository
         context.Users.Update(user);
         await context.SaveChangesAsync();
     }
+
+    public async Task<bool> SoftDeleteUserAsync(Guid userId)
+    {
+        var user = await GetUserByIdAsync(userId);
+        if (user == null)
+        {
+            return false;
+        }
+
+        if (user.IsDeleted)
+        {
+            return true;
+        }
+
+        user.IsDeleted = true;
+        await UpdateUserAsync(user);
+
+        return true;
+    }
 }
