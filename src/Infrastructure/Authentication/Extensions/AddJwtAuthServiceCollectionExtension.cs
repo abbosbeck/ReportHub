@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using Application.Common.JWT;
+using Application.Common.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

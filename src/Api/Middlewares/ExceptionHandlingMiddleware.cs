@@ -56,6 +56,15 @@ public class ExceptionHandlingMiddleware(RequestDelegate next)
                         Status = StatusCodes.Status403Forbidden,
                         Instance = context.Request.Path,
                     },
+                NotFoundException =>
+                    new ProblemDetails
+                    {
+                        Title = nameof(exception),
+                        Detail = exception.Message,
+                        Type = "https://httpstatuses.com/404",
+                        Status = StatusCodes.Status404NotFound,
+                        Instance = context.Request.Path,
+                    },
                 _ => new ProblemDetails
                 {
                     Title = nameof(exception),

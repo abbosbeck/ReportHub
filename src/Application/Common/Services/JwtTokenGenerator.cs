@@ -8,7 +8,7 @@ using Domain.Entities;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Application.Common.JWT;
+namespace Application.Common.Services;
 
 public class JwtTokenGenerator(
         IOptions<JwtOptions> jwtOptions,

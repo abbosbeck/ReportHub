@@ -1,5 +1,5 @@
 ﻿using Application.Common.Interfaces;
-using Application.Common.JWT;
+using Application.Common.Services;
 using Domain.Entities;
 using Infrastructure.Authentication.Extensions;
 using Infrastructure.Persistence.Extensions;

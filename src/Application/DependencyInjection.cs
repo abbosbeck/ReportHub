@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using Application.Common.Behaviors;
 using Application.Common.Interfaces;
-using Application.Common.JWT;
+using Application.Common.Services;
 using Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,10 +26,13 @@ public static class DependencyInjection
         {
             config.RegisterServicesFromAssembly(assembly);
 
+            config.AddOpenBehavior(typeof(AuthorizationPipelineBehavior<,>));
             config.AddOpenBehavior(typeof(LoggingPipelineBehavior<,>));
         });
 
         services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
+        services.AddHttpContextAccessor();
 
         return services;
     }
