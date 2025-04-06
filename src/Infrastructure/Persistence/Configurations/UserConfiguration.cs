@@ -25,6 +25,8 @@ internal class UserConfiguration : IEntityTypeConfiguration<User>
             .Ignore(u => u.TwoFactorEnabled)
             .Ignore(u => u.LockoutEnd)
             .Ignore(u => u.NormalizedEmail)
-            .Ignore(u => u.NormalizedUserName);
+            .Ignore(u => u.NormalizedUserName)
+            .Ignore(u => u.SecurityStamp)
+            .Ignore(u => u.PhoneNumberConfirmed);
     }
 }
