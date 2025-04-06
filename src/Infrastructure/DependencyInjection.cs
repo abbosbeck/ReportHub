@@ -1,5 +1,6 @@
 ﻿using Application.Common.Interfaces;
 using Application.Features;
+using Domain.Entities;
 using Infrastructure.Authentication.Extensions;
 using Infrastructure.Persistence.Extensions;
 using Infrastructure.Persistence.Repositories;

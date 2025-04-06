@@ -1,5 +1,5 @@
 ﻿using Application.Common.Interfaces;
-using Domain.Entity;
+using Domain.Entities;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Application.Users.LoginUser

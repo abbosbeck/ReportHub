@@ -2,7 +2,7 @@
 using Application.Common.Behaviors;
 using Application.Common.Interfaces;
 using Application.Features;
-using Domain.Entity;
+using Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

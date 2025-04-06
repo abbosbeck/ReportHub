@@ -1,4 +1,4 @@
-﻿using Domain.Entity;
+﻿using Domain.Entities;
 
 namespace Application.Users.GetUserByName;
 
