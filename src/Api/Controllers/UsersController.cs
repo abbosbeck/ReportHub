@@ -1,5 +1,4 @@
-﻿using Application.Common.Constants;
-using Application.Users.GetUserByName;
+﻿using Application.Users.GetUserByName;
 using Application.Users.GiveRoleToUser;
 using Application.Users.LoginUser;
 using Application.Users.RefreshToken;
@@ -13,7 +12,6 @@ namespace Api.Controllers;
 
 public class UsersController(ISender mediator) : ApiControllerBase(mediator)
 {
-    [Authorize]
     [HttpGet("{name}")]
     public async Task<IActionResult> GetUserByName(string name)
     {
