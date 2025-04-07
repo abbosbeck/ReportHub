@@ -1,4 +1,5 @@
 ﻿using Application.Common.Attributes;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Domain.Entities;
 
@@ -25,24 +26,30 @@ public class RegisterUserCommandHandler(
         IMapper mapper)
         : IRequestHandler<RegisterUserCommand, RegisterUserDto>
 {
-        public async Task<RegisterUserDto> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
+    public async Task<RegisterUserDto> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
+    {
+        await validator.ValidateAndThrowAsync(request, cancellationToken);
+
+        var existUser = await repository.GetUserByPhoneNumberAsync(request.PhoneNumber);
+        if (existUser is not null)
         {
-            await validator.ValidateAndThrowAsync(request, cancellationToken);
-
-            var user = new User
-            {
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                Department = request.Department,
-                PhoneNumber = request.PhoneNumber,
-            };
-
-            user.PasswordHash = passwordHasher.HashPassword(user, request.Password);
-
-            await repository.AddUser(user);
-
-            var result = mapper.Map<RegisterUserDto>(user);
-
-            return result;
+            throw new ConflictException("A user with this phone number already exists.");
         }
+
+        var user = new User
+        {
+            FirstName = request.FirstName,
+            LastName = request.LastName,
+            Department = request.Department,
+            PhoneNumber = request.PhoneNumber,
+        };
+
+        user.PasswordHash = passwordHasher.HashPassword(user, request.Password);
+
+        await repository.AddUser(user);
+
+        var result = mapper.Map<RegisterUserDto>(user);
+
+        return result;
+    }
 }
