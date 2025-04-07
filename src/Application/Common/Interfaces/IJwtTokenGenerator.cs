@@ -1,13 +1,12 @@
 ﻿using Domain.Entities;
 
-namespace Application.Common.Interfaces
+namespace Application.Common.Interfaces;
+
+public interface IJwtTokenGenerator
 {
-    public interface IJwtTokenGenerator
-    {
-        Task<string> GenerateAccessTokenAsync(User user);
+    Task<string> GenerateAccessTokenAsync(User user);
 
-        string GenerateRefreshToken();
+    string GenerateRefreshToken();
 
-        Task<string> GenerateAndSaveRefreshToken(User user);
-    }
+    Task<string> GenerateAndSaveRefreshToken(User user);
 }

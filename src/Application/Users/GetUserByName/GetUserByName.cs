@@ -11,7 +11,10 @@ public sealed class GetUserByNameRequest : IRequest<UserDto>
     public string FirstName { get; init; } = string.Empty;
 }
 
-public class GetUserByNameRequestHandler(IUserRepository repository, IValidator<GetUserByNameRequest> validator, IMapper mapper)
+public class GetUserByNameRequestHandler(
+    IUserRepository repository,
+    IValidator<GetUserByNameRequest> validator,
+    IMapper mapper)
     : IRequestHandler<GetUserByNameRequest, UserDto>
 {
     public async Task<UserDto> Handle(GetUserByNameRequest request, CancellationToken cancellationToken)

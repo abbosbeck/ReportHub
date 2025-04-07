@@ -1,6 +1,5 @@
 ﻿using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure.Persistence;
@@ -92,7 +91,7 @@ public class AppDbContextInitializer(AppDbContext context, IPasswordHasher<User>
                     context.Set<UserRole>().Add(new UserRole
                     {
                         UserId = adminUser.Id,
-                        RoleId = adminRole.Id
+                        RoleId = adminRole.Id,
                     });
                 }
 
@@ -103,7 +102,7 @@ public class AppDbContextInitializer(AppDbContext context, IPasswordHasher<User>
                     context.Set<UserRole>().Add(new UserRole
                     {
                         UserId = justUser.Id,
-                        RoleId = userRole.Id
+                        RoleId = userRole.Id,
                     });
                 }
 
