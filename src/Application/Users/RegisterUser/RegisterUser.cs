@@ -2,7 +2,6 @@
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Domain.Entities;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Application.Users.RegisterUser;
 
