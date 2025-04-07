@@ -5,17 +5,17 @@ using Application.Common.Interfaces;
 namespace Application.Users.RefreshToken;
 
 [AllowedFor]
-public class RefreshTokenRequest : IRequest<AccessTokenDto>
+public sealed class RefreshTokenQuery : IRequest<AccessTokenDto>
 {
     public string RefreshToken { get; set; }
 }
 
-public class RefreshTokenRequestHandler(
+public class RefreshTokenQueryHandler(
     IUserRepository repository,
     IJwtTokenGenerator jwtTokenGenerator)
-    : IRequestHandler<RefreshTokenRequest, AccessTokenDto>
+    : IRequestHandler<RefreshTokenQuery, AccessTokenDto>
 {
-    public async Task<AccessTokenDto> Handle(RefreshTokenRequest request, CancellationToken cancellationToken)
+    public async Task<AccessTokenDto> Handle(RefreshTokenQuery request, CancellationToken cancellationToken)
     {
         var user = await repository.GetUserByRefreshTokenAsync(request.RefreshToken);
         if (user == null || user.RefreshToken != request.RefreshToken

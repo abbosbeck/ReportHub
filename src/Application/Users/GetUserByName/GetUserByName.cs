@@ -6,7 +6,7 @@ using Application.Common.Interfaces;
 namespace Application.Users.GetUserByName;
 
 [AllowedFor(UserRoles.Admin)]
-public class GetUserByNameRequest : IRequest<UserDto>
+public sealed class GetUserByNameRequest : IRequest<UserDto>
 {
     public string FirstName { get; init; } = string.Empty;
 }

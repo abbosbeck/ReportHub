@@ -36,7 +36,7 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
 
     [AllowAnonymous]
     [HttpPost("register")]
-    public async Task<IActionResult> RegisterUser([FromBody] RegisterUserCommandRequest request)
+    public async Task<IActionResult> RegisterUser([FromBody] RegisterUserQuery request)
     {
         var result = await Mediator.Send(request);
 
@@ -54,7 +54,7 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
 
     [AllowAnonymous]
     [HttpPost("refresh")]
-    public async Task<IActionResult> RefreshToken(RefreshTokenRequest refreshToken)
+    public async Task<IActionResult> RefreshToken(RefreshTokenQuery refreshToken)
     {
         var result = await Mediator.Send(refreshToken);
 
