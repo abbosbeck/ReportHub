@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 namespace Application.Users.RegisterUser;
 
 [AllowedFor]
-public sealed class RegisterUserQuery : IRequest<RegisterUserDto>
+public sealed class RegisterUserCommand : IRequest<RegisterUserDto>
 {
     public string FirstName { get; set; }
 
@@ -19,14 +19,14 @@ public sealed class RegisterUserQuery : IRequest<RegisterUserDto>
     public string PhoneNumber { get; set; }
 }
 
-public class RegisterUserQueryHandler(
+public class RegisterUserCommandHandler(
         IUserRepository repository,
-        IValidator<RegisterUserQuery> validator,
+        IValidator<RegisterUserCommand> validator,
         IPasswordHasher<User> passwordHasher,
         IMapper mapper)
-        : IRequestHandler<RegisterUserQuery, RegisterUserDto>
+        : IRequestHandler<RegisterUserCommand, RegisterUserDto>
 {
-        public async Task<RegisterUserDto> Handle(RegisterUserQuery request, CancellationToken cancellationToken)
+        public async Task<RegisterUserDto> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
         {
             await validator.ValidateAndThrowAsync(request, cancellationToken);
 

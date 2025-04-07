@@ -36,7 +36,7 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
 
     [AllowAnonymous]
     [HttpPost("register")]
-    public async Task<IActionResult> RegisterUser([FromBody] RegisterUserQuery request)
+    public async Task<IActionResult> RegisterUser([FromBody] RegisterUserCommand request)
     {
         var result = await Mediator.Send(request);
 
