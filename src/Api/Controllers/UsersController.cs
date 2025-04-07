@@ -45,7 +45,7 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
 
     [AllowAnonymous]
     [HttpPost("login")]
-    public async Task<IActionResult> Login(LoginUserCommandReqest request)
+    public async Task<IActionResult> Login(LoginUserQuery request)
     {
         var result = await Mediator.Send(request);
 

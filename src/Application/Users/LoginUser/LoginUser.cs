@@ -1,17 +1,26 @@
-﻿using Application.Common.Exceptions;
+﻿using Application.Common.Attributes;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Domain.Entities;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Identity;
 
 namespace Application.Users.LoginUser
 {
-    public class LoginUserCommandHandler(
+    [AllowedFor]
+    public sealed class LoginUserQuery : IRequest<LoginUserDto>
+    {
+        public string PhoneNumber { get; set; }
+
+        public string Password { get; set; }
+    }
+
+    public class LoginUserQueryHandler(
             IUserRepository repository,
             IJwtTokenGenerator jwtTokenGenerator,
             IPasswordHasher<User> passwordHasher)
-            : IRequestHandler<LoginUserCommandReqest, LoginUserDto>
+            : IRequestHandler<LoginUserQuery, LoginUserDto>
     {
-        public async Task<LoginUserDto> Handle(LoginUserCommandReqest request, CancellationToken cancellationToken)
+        public async Task<LoginUserDto> Handle(LoginUserQuery request, CancellationToken cancellationToken)
         {
             var user = await repository.GetUserByPhoneNumberAsync(request.PhoneNumber)
                 ?? throw new UnauthorizedException("Invalid phone number or password");
