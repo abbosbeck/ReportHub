@@ -2,7 +2,7 @@
 
 namespace Application.Users.RegisterUser;
 
-public class RegisterUserValidator : AbstractValidator<RegisterUserQuery>
+public class RegisterUserValidator : AbstractValidator<RegisterUserCommand>
 {
     public RegisterUserValidator()
     {
