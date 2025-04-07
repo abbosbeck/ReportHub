@@ -67,7 +67,7 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
     }
 
     [HttpPost("give-role")]
-    public async Task<IActionResult> GiveRoleToUser([FromBody] GiveRoleToUserCommand giveRoleToUser)
+    public async Task<IActionResult> GiveRoleToUser([FromBody] GiveRoleToUserQuery giveRoleToUser)
     {
         var result = await Mediator.Send(giveRoleToUser);
 
