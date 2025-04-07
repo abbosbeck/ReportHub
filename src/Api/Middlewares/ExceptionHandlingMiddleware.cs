@@ -65,6 +65,15 @@ public class ExceptionHandlingMiddleware(RequestDelegate next)
                         Status = StatusCodes.Status404NotFound,
                         Instance = context.Request.Path,
                     },
+                ConflictException =>
+                    new ProblemDetails
+                    {
+                        Title = nameof(exception),
+                        Detail = exception.Message,
+                        Type = "https://httpsstatus.com/409",
+                        Status = StatusCodes.Status409Conflict,
+                        Instance = context.Request.Path,
+                    },
                 _ => new ProblemDetails
                 {
                     Title = nameof(exception),
