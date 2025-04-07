@@ -7,7 +7,9 @@ using Microsoft.Extensions.Options;
 namespace Infrastructure.Persistence.Extensions;
 public static class AddPersistenceServiceCollectionExtension
 {
-    public static IServiceCollection AddPersistence(this IServiceCollection services, IOptions<KeyVaultOptions> keyVaultOptions)
+    public static IServiceCollection AddPersistence(
+        this IServiceCollection services,
+        IOptions<KeyVaultOptions> keyVaultOptions)
     {
         var connectionString = GetConnectionString(keyVaultOptions);
         services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
@@ -22,6 +24,7 @@ public static class AddPersistenceServiceCollectionExtension
         services.AddScoped<AppDbContextInitializer>();
         return services;
     }
+
     private static string GetConnectionString(IOptions<KeyVaultOptions> keyVaultOptions)
     {
         var keyVaultUrl = keyVaultOptions.Value.KeyVaultURL;

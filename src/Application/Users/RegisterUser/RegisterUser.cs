@@ -1,7 +1,6 @@
 ﻿using Application.Common.Attributes;
 using Application.Common.Interfaces;
 using Domain.Entities;
-using Microsoft.AspNetCore.Identity;
 
 namespace Application.Users.RegisterUser;
 

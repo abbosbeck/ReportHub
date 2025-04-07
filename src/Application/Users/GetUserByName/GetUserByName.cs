@@ -6,15 +6,18 @@ using Application.Common.Interfaces;
 namespace Application.Users.GetUserByName;
 
 [AllowedFor(UserRoles.Admin)]
-public sealed class GetUserByNameRequest : IRequest<UserDto>
+public sealed class GetUserByNameQuery : IRequest<UserDto>
 {
     public string FirstName { get; init; } = string.Empty;
 }
 
-public class GetUserByNameRequestHandler(IUserRepository repository, IValidator<GetUserByNameRequest> validator, IMapper mapper)
-    : IRequestHandler<GetUserByNameRequest, UserDto>
+public class GetUserByNameQueryHandler(
+    IUserRepository repository,
+    IValidator<GetUserByNameQuery> validator,
+    IMapper mapper)
+    : IRequestHandler<GetUserByNameQuery, UserDto>
 {
-    public async Task<UserDto> Handle(GetUserByNameRequest request, CancellationToken cancellationToken)
+    public async Task<UserDto> Handle(GetUserByNameQuery request, CancellationToken cancellationToken)
     {
         await validator.ValidateAndThrowAsync(request, cancellationToken);
 

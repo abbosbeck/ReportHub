@@ -24,7 +24,7 @@ namespace Infrastructure.Migrations
                     LastModifiedBy = table.Column<string>(type: "text", nullable: true),
                     Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true)
+                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true),
                 },
                 constraints: table =>
                 {
@@ -49,7 +49,7 @@ namespace Infrastructure.Migrations
                     LastModifiedBy = table.Column<string>(type: "text", nullable: true),
                     PasswordHash = table.Column<string>(type: "text", nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "text", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "text", nullable: true)
+                    PhoneNumber = table.Column<string>(type: "text", nullable: true),
                 },
                 constraints: table =>
                 {
@@ -63,7 +63,7 @@ namespace Infrastructure.Migrations
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     RoleId = table.Column<Guid>(type: "uuid", nullable: false),
                     UserId1 = table.Column<Guid>(type: "uuid", nullable: true),
-                    RoleId1 = table.Column<Guid>(type: "uuid", nullable: true)
+                    RoleId1 = table.Column<Guid>(type: "uuid", nullable: true),
                 },
                 constraints: table =>
                 {

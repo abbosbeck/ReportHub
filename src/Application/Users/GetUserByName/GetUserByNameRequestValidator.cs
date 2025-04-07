@@ -1,6 +1,6 @@
 ﻿namespace Application.Users.GetUserByName;
 
-public class GetUserByNameRequestValidator : AbstractValidator<GetUserByNameRequest>
+public class GetUserByNameRequestValidator : AbstractValidator<GetUserByNameQuery>
 {
     public GetUserByNameRequestValidator()
     {

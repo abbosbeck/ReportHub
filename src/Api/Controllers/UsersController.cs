@@ -16,7 +16,7 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
     [HttpGet("{name}")]
     public async Task<IActionResult> GetUserByName(string name)
     {
-        var result = await Mediator.Send(new GetUserByNameRequest() { FirstName = name });
+        var result = await Mediator.Send(new GetUserByNameQuery() { FirstName = name });
 
         if (result == null)
         {
@@ -54,7 +54,7 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
 
     [AllowAnonymous]
     [HttpPost("refresh")]
-    public async Task<IActionResult> RefreshToken(RefreshTokenQuery refreshToken)
+    public async Task<IActionResult> RefreshToken(RefreshTokenCommand refreshToken)
     {
         var result = await Mediator.Send(refreshToken);
 
@@ -67,7 +67,7 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
     }
 
     [HttpPost("give-role")]
-    public async Task<IActionResult> GiveRoleToUser([FromBody] GiveRoleToUserQuery giveRoleToUser)
+    public async Task<IActionResult> GiveRoleToUser([FromBody] GiveRoleToUserCommand giveRoleToUser)
     {
         var result = await Mediator.Send(giveRoleToUser);
 
@@ -75,7 +75,7 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
     }
 
     [HttpPost("soft-delete-user")]
-    public async Task<IActionResult> SoftDeleteUser([FromBody] SoftDeleteUserQuery softDeleteUserCommand)
+    public async Task<IActionResult> SoftDeleteUser([FromBody] SoftDeleteUserCommand softDeleteUserCommand)
     {
         var result = await Mediator.Send(softDeleteUserCommand);
 
