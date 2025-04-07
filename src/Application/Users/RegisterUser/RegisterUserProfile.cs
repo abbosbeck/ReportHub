@@ -1,12 +1,11 @@
 ﻿using Domain.Entities;
 
-namespace Application.Users.RegisterUser
+namespace Application.Users.RegisterUser;
+
+public class RegisterUserProfile : Profile
 {
-    public class RegisterUserProfile : Profile
+    public RegisterUserProfile()
     {
-        public RegisterUserProfile()
-        {
-            CreateMap<User, RegisterUserDto>();
-        }
+        CreateMap<User, RegisterUserDto>();
     }
 }

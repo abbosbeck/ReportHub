@@ -1,14 +1,21 @@
-﻿using Application.Common.Exceptions;
+﻿using Application.Common.Attributes;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 
 namespace Application.Users.RefreshToken;
 
-public class RefreshTokenRequestHandler(
+[AllowedFor]
+public sealed class RefreshTokenQuery : IRequest<AccessTokenDto>
+{
+    public string RefreshToken { get; set; }
+}
+
+public class RefreshTokenQueryHandler(
     IUserRepository repository,
     IJwtTokenGenerator jwtTokenGenerator)
-    : IRequestHandler<RefreshTokenRequest, AccessTokenDto>
+    : IRequestHandler<RefreshTokenQuery, AccessTokenDto>
 {
-    public async Task<AccessTokenDto> Handle(RefreshTokenRequest request, CancellationToken cancellationToken)
+    public async Task<AccessTokenDto> Handle(RefreshTokenQuery request, CancellationToken cancellationToken)
     {
         var user = await repository.GetUserByRefreshTokenAsync(request.RefreshToken);
         if (user == null || user.RefreshToken != request.RefreshToken

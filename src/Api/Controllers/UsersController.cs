@@ -36,7 +36,7 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
 
     [AllowAnonymous]
     [HttpPost("register")]
-    public async Task<IActionResult> RegisterUser([FromBody] RegisterUserCommandRequest request)
+    public async Task<IActionResult> RegisterUser([FromBody] RegisterUserQuery request)
     {
         var result = await Mediator.Send(request);
 
@@ -45,7 +45,7 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
 
     [AllowAnonymous]
     [HttpPost("login")]
-    public async Task<IActionResult> Login(LoginUserCommandReqest request)
+    public async Task<IActionResult> Login(LoginUserQuery request)
     {
         var result = await Mediator.Send(request);
 
@@ -54,7 +54,7 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
 
     [AllowAnonymous]
     [HttpPost("refresh")]
-    public async Task<IActionResult> RefreshToken(RefreshTokenRequest refreshToken)
+    public async Task<IActionResult> RefreshToken(RefreshTokenQuery refreshToken)
     {
         var result = await Mediator.Send(refreshToken);
 
@@ -67,7 +67,7 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
     }
 
     [HttpPost("give-role")]
-    public async Task<IActionResult> GiveRoleToUser([FromBody] GiveRoleToUserCommand giveRoleToUser)
+    public async Task<IActionResult> GiveRoleToUser([FromBody] GiveRoleToUserQuery giveRoleToUser)
     {
         var result = await Mediator.Send(giveRoleToUser);
 
@@ -75,7 +75,7 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
     }
 
     [HttpPost("soft-delete-user")]
-    public async Task<IActionResult> SoftDeleteUser([FromBody] SoftDeleteUserCommand softDeleteUserCommand)
+    public async Task<IActionResult> SoftDeleteUser([FromBody] SoftDeleteUserQuery softDeleteUserCommand)
     {
         var result = await Mediator.Send(softDeleteUserCommand);
 

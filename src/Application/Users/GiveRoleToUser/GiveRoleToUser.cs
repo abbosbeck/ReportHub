@@ -4,33 +4,37 @@ using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Domain.Entities;
 
-namespace Application.Users.GiveRoleToUser
+namespace Application.Users.GiveRoleToUser;
+
+[AllowedFor(UserRoles.Admin)]
+public sealed class GiveRoleToUserQuery : IRequest<bool>
 {
-    [AllowedFor(UserRoles.Admin)]
-    public sealed record GiveRoleToUserCommand(Guid userId, string roleName) : IRequest<bool>;
+    public Guid UserId { get; set; }
 
-    public class GiveRoleToUser(
-        IUserRepository userRepository,
-        IUserRoleRepository userRoleRepository)
-        : IRequestHandler<GiveRoleToUserCommand, bool>
+    public string RoleName { get; set; }
+}
+
+public class GiveRoleToUserQueryHandler(
+    IUserRepository userRepository,
+    IUserRoleRepository userRoleRepository)
+    : IRequestHandler<GiveRoleToUserQuery, bool>
+{
+    public async Task<bool> Handle(GiveRoleToUserQuery request, CancellationToken cancellationToken)
     {
-        public async Task<bool> Handle(GiveRoleToUserCommand request, CancellationToken cancellationToken)
+        var user = await userRepository.GetUserByIdAsync(request.UserId)
+            ?? throw new NotFoundException($"User is not found with this id: {request.UserId}");
+
+        var userRole = new UserRole
         {
-            var user = await userRepository.GetUserByIdAsync(request.userId)
-                ?? throw new NotFoundException($"User is not found with this id: {request.userId}");
-
-            var userRole = new UserRole
+            UserId = user.Id,
+            Role = new Role
             {
-                UserId = user.Id,
-                Role = new Role
-                {
-                    Name = request.roleName,
-                },
-            };
+                Name = request.RoleName,
+            },
+        };
 
-            var addUserRole = await userRoleRepository.GiveRoleToUserAsync(userRole);
+        var addUserRole = await userRoleRepository.GiveRoleToUserAsync(userRole);
 
-            return addUserRole;
-        }
+        return addUserRole;
     }
 }

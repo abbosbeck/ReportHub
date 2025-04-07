@@ -6,7 +6,7 @@ using Application.Common.Interfaces;
 namespace Application.Users.GetUserByPhoneNumber;
 
 [AllowedFor(UserRoles.Admin)]
-public class GetUserByPhoneNumberQuery : IRequest<UserDto>
+public sealed class GetUserByPhoneNumberQuery : IRequest<UserDto>
 {
     public string PhoneNumber { get; init; }
 }
