@@ -6,16 +6,16 @@ using Application.Common.Interfaces;
 namespace Application.Users.SoftDeleteUser;
 
 [AllowedFor(UserRoles.Admin)]
-public sealed class SoftDeleteUserQuery : IRequest<bool>
+public sealed class SoftDeleteUserCommand : IRequest<bool>
 {
     public Guid UserId { get; set; }
 }
 
-public class SoftDeleteUserQueryHandler(
+public class SoftDeleteUserCommandHandler(
     IUserRepository userRepository)
-    : IRequestHandler<SoftDeleteUserQuery, bool>
+    : IRequestHandler<SoftDeleteUserCommand, bool>
 {
-    public async Task<bool> Handle(SoftDeleteUserQuery request, CancellationToken cancellationToken)
+    public async Task<bool> Handle(SoftDeleteUserCommand request, CancellationToken cancellationToken)
     {
         var isUserDeleted = await userRepository.SoftDeleteUserAsync(request.UserId);
         if (!isUserDeleted)

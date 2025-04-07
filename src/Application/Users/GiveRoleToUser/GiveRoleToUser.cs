@@ -7,19 +7,19 @@ using Domain.Entities;
 namespace Application.Users.GiveRoleToUser;
 
 [AllowedFor(UserRoles.Admin)]
-public sealed class GiveRoleToUserQuery : IRequest<bool>
+public sealed class GiveRoleToUserCommand : IRequest<bool>
 {
     public Guid UserId { get; set; }
 
     public string RoleName { get; set; }
 }
 
-public class GiveRoleToUserQueryHandler(
+public class GiveRoleToUserCommandHandler(
     IUserRepository userRepository,
     IUserRoleRepository userRoleRepository)
-    : IRequestHandler<GiveRoleToUserQuery, bool>
+    : IRequestHandler<GiveRoleToUserCommand, bool>
 {
-    public async Task<bool> Handle(GiveRoleToUserQuery request, CancellationToken cancellationToken)
+    public async Task<bool> Handle(GiveRoleToUserCommand request, CancellationToken cancellationToken)
     {
         var user = await userRepository.GetUserByIdAsync(request.UserId)
             ?? throw new NotFoundException($"User is not found with this id: {request.UserId}");
