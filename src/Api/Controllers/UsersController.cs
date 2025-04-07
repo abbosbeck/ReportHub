@@ -75,7 +75,7 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
     }
 
     [HttpPost("soft-delete-user")]
-    public async Task<IActionResult> SoftDeleteUser([FromBody] SoftDeleteUserCommand softDeleteUserCommand)
+    public async Task<IActionResult> SoftDeleteUser([FromBody] SoftDeleteUserQuery softDeleteUserCommand)
     {
         var result = await Mediator.Send(softDeleteUserCommand);
 
