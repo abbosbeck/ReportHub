@@ -6,10 +6,10 @@ namespace Infrastructure.Persistence;
 
 public class AppDbContext : IdentityDbContext<
     User,
-    Role,
+    SystemRole,
     Guid,
     IdentityUserClaim<Guid>,
-    UserRole,
+    UserSystemRole,
     IdentityUserLogin<Guid>,
     IdentityRoleClaim<Guid>,
     IdentityUserToken<Guid>>
@@ -19,6 +19,12 @@ public class AppDbContext : IdentityDbContext<
     {
     }
 
+    public DbSet<Client> Clients { get; set; }
+
+    public DbSet<ClientRole> ClientRoles { get; set; }
+
+    public DbSet<UserClientRole> UserClientRoles { get; set; }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -26,6 +32,9 @@ public class AppDbContext : IdentityDbContext<
         builder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
 
         IgnoreUnusedIdentityTables(builder);
+
+        builder.Entity<SystemRole>().ToTable("SystemRoles");
+        builder.Entity<UserSystemRole>().ToTable("UserSystemRoles");
     }
 
     private static void IgnoreUnusedIdentityTables(ModelBuilder builder)

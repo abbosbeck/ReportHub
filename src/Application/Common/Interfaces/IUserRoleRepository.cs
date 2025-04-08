@@ -1,10 +1,11 @@
 ﻿using Domain.Entities;
 
-namespace Application.Common.Interfaces;
-
-public interface IUserRoleRepository
+namespace Application.Common.Interfaces
 {
-    Task<bool> GiveRoleToUserAsync(UserRole userRole);
+    public interface IUserRoleRepository
+    {
+        Task<bool> GiveRoleToUserAsync(UserSystemRole userRole);
 
-    Task<List<string>> GetUserRolesByUserIdAsync(Guid userId);
+        Task<List<string>> GetUserRolesByUserIdAsync(Guid userId);
+    }
 }

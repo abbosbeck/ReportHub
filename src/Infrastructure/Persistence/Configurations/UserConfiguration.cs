@@ -7,6 +7,8 @@ internal class UserConfiguration : IEntityTypeConfiguration<User>
 {
     public void Configure(EntityTypeBuilder<User> builder)
     {
+        builder.ToTable("Users");
+
         builder.HasQueryFilter(u => !u.IsDeleted);
 
         builder.Property(u => u.FirstName)
