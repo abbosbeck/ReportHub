@@ -64,15 +64,15 @@ public class AppDbContextInitializer(AppDbContext context, IPasswordHasher<User>
                 await context.SaveChangesAsync();
             }
 
-            if (!await context.Set<Role>().AnyAsync())
+            if (!await context.Set<SystemRole>().AnyAsync())
             {
-                context.Set<Role>().Add(new Role
+                context.Set<SystemRole>().Add(new SystemRole
                 {
                     Name = "Admin",
                     NormalizedName = "ADMIN",
                     IsDeleted = false,
                 });
-                context.Set<Role>().Add(new Role
+                context.Set<SystemRole>().Add(new SystemRole
                 {
                     Name = "User",
                     NormalizedName = "USER",
@@ -81,25 +81,25 @@ public class AppDbContextInitializer(AppDbContext context, IPasswordHasher<User>
                 await context.SaveChangesAsync();
             }
 
-            if (!await context.Set<UserRole>().AnyAsync())
+            if (!await context.Set<UserSystemRole>().AnyAsync())
             {
-                var adminRole = await context.Set<Role>().FirstOrDefaultAsync(r => r.Name == "Admin");
+                var adminRole = await context.Set<SystemRole>().FirstOrDefaultAsync(r => r.Name == "Admin");
                 var adminUser = await context.Set<User>().FirstOrDefaultAsync(u => u.FirstName == "Admin");
 
                 if (adminRole != null && adminUser != null)
                 {
-                    context.Set<UserRole>().Add(new UserRole
+                    context.Set<UserSystemRole>().Add(new UserSystemRole
                     {
                         UserId = adminUser.Id,
                         RoleId = adminRole.Id,
                     });
                 }
 
-                var userRole = await context.Set<Role>().FirstOrDefaultAsync(r => r.Name == "User");
+                var userRole = await context.Set<SystemRole>().FirstOrDefaultAsync(r => r.Name == "User");
                 var justUser = await context.Set<User>().FirstOrDefaultAsync(u => u.FirstName == "John");
                 if (userRole != null && justUser != null)
                 {
-                    context.Set<UserRole>().Add(new UserRole
+                    context.Set<UserSystemRole>().Add(new UserSystemRole
                     {
                         UserId = justUser.Id,
                         RoleId = userRole.Id,
