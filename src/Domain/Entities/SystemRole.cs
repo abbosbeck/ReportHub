@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Domain.Entities;
 
-public class Role : IdentityRole<Guid>, ISoftDeletable, IBaseEntity, IAuditableEntity
+public class SystemRole : IdentityRole<Guid>, ISoftDeletable, IBaseEntity, IAuditableEntity
 {
     public bool IsDeleted { get; set; }
 
