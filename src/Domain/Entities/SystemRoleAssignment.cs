@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Domain.Entities;
 
-public class UserSystemRole : IdentityUserRole<Guid>, IBaseEntity, ISoftDeletable, IAuditableEntity
+public class SystemRoleAssignment : IdentityUserRole<Guid>, IBaseEntity, ISoftDeletable, IAuditableEntity
 {
     public User User { get; init; }
 

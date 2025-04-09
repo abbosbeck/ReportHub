@@ -2,7 +2,7 @@
 
 namespace Domain.Entities;
 
-public class UserClientRole : BaseAuditableEntity, ISoftDeletable
+public class ClientRoleAssignment : BaseAuditableEntity, ISoftDeletable
 {
     public Guid UserId { get; set; }
 
