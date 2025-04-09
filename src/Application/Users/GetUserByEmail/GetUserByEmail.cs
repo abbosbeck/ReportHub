@@ -5,7 +5,7 @@ using Domain.Entities;
 
 namespace Application.Users.GetUserByEmail;
 
-[AllowedFor(UserRoles.Admin)]
+[AllowedFor(SystemUserRoles.SystemAdmin)]
 public sealed class GetUserByEmailQuery : IRequest<UserDto>
 {
     public string Email { get; init; }

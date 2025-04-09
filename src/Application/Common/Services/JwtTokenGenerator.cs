@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Application.Common.Constants;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Domain.Entities;
 using Microsoft.Extensions.Options;
@@ -21,7 +22,7 @@ public class JwtTokenGenerator(
             var userRoles = await userRoleRepository.GetUserRolesByUserIdAsync(user.Id);
             if (!userRoles.Any())
             {
-                userRoles.Add(UserRoles.User);
+                throw new ForbiddenException("You do not have access to the server!");
             }
 
             var claims = new List<Claim>

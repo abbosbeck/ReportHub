@@ -6,7 +6,7 @@ using Domain.Entities;
 
 namespace Application.Users.GiveRoleToUser;
 
-[AllowedFor(UserRoles.Admin)]
+[AllowedFor(SystemUserRoles.SystemAdmin)]
 public sealed class GiveRoleToUserCommand : IRequest<bool>
 {
     public Guid UserId { get; set; }

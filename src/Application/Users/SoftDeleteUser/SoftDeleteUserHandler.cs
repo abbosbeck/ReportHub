@@ -5,7 +5,7 @@ using Application.Common.Interfaces;
 
 namespace Application.Users.SoftDeleteUser;
 
-[AllowedFor(UserRoles.Admin)]
+[AllowedFor(SystemUserRoles.SystemAdmin)]
 public sealed class SoftDeleteUserCommand : IRequest<bool>
 {
     public Guid UserId { get; set; }
