@@ -9,7 +9,7 @@ public class AppDbContext : IdentityDbContext<
     SystemRole,
     Guid,
     IdentityUserClaim<Guid>,
-    UserSystemRole,
+    SystemRoleAssignment,
     IdentityUserLogin<Guid>,
     IdentityRoleClaim<Guid>,
     IdentityUserToken<Guid>>
@@ -23,7 +23,13 @@ public class AppDbContext : IdentityDbContext<
 
     public DbSet<ClientRole> ClientRoles { get; set; }
 
-    public DbSet<UserClientRole> UserClientRoles { get; set; }
+    public DbSet<ClientRoleAssignment> UserClientRoles { get; set; }
+
+    public DbSet<Invoice> Invoices { get; set; }
+
+    public DbSet<Item> Items { get; set; }
+
+    public DbSet<Customer> Customers { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -34,7 +40,6 @@ public class AppDbContext : IdentityDbContext<
         IgnoreUnusedIdentityTables(builder);
 
         builder.Entity<SystemRole>().ToTable("SystemRoles");
-        builder.Entity<UserSystemRole>().ToTable("UserSystemRoles");
     }
 
     private static void IgnoreUnusedIdentityTables(ModelBuilder builder)
