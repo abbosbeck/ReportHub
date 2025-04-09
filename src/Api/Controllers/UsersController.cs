@@ -1,6 +1,6 @@
 ﻿using Application.Users.ConfirmUserEmail;
+using Application.Users.GetUserByEmail;
 using Application.Users.GetUserByName;
-using Application.Users.GetUserByPhoneNumber;
 using Application.Users.GiveRoleToUser;
 using Application.Users.LoginUser;
 using Application.Users.RefreshToken;
@@ -27,10 +27,10 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
         return Ok(result);
     }
 
-    [HttpGet("phone/{phone}")]
-    public async Task<IActionResult> GetUserByPhoneNumber(string phone)
+    [HttpGet("email/{email}")]
+    public async Task<IActionResult> GetUserByPhoneNumber(string email)
     {
-        var result = await Mediator.Send(new GetUserByPhoneNumberQuery() { PhoneNumber = phone });
+        var result = await Mediator.Send(new GetUserByEmailQuery() { Email = email });
 
         return Ok(result);
     }

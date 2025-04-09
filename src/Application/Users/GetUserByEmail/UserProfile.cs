@@ -1,6 +1,6 @@
 using Domain.Entities;
 
-namespace Application.Users.GetUserByPhoneNumber;
+namespace Application.Users.GetUserByEmail;
 
 public class UserProfile : Profile
 {

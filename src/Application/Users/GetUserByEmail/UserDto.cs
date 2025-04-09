@@ -1,4 +1,4 @@
-namespace Application.Users.GetUserByPhoneNumber;
+namespace Application.Users.GetUserByEmail;
 
 public class UserDto
 {
