@@ -1,40 +1,37 @@
-﻿using Application.Common.Exceptions;
-using Application.Common.Interfaces;
+﻿using Application.Common.Interfaces;
 using Application.Users.LoginUser;
 using Domain.Entities;
-using FluentValidation;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 using Moq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Application.Common.Exceptions;
 
 namespace Tests;
 
 public class LoginUserTests
 {
-    private Mock<UserManager<User>> mockUserManager;
-    private Mock<IJwtTokenGenerator> mockJwtTokenGenerator;
-    private Mock<IValidator<LoginUserCommand>> mockValidator;
-    private LoginUserCommandHandler handler;
+    private Mock<IUserRepository> _mockUserRepository;
+    private Mock<IJwtTokenGenerator> _mockJwtTokenGenerator;
+    private Mock<IPasswordHasher<User>> _mockPasswordHasher;
+    private LoginUserQueryHandler _handler;
 
     [SetUp]
     public void Setup()
     {
-        mockUserManager = new Mock<UserManager<User>>(
-            Mock.Of<IUserStore<User>>(),
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null);
-        mockJwtTokenGenerator = new Mock<IJwtTokenGenerator>();
-        mockValidator = new Mock<IValidator<LoginUserCommand>>();
+        _mockUserRepository = new Mock<IUserRepository>();
+        _mockJwtTokenGenerator = new Mock<IJwtTokenGenerator>();
+        _mockPasswordHasher = new Mock<IPasswordHasher<User>>();
 
-        handler = new LoginUserCommandHandler(
-            mockUserManager.Object,
-            mockJwtTokenGenerator.Object,
-            mockValidator.Object);
+        _handler = new LoginUserQueryHandler(
+            _mockUserRepository.Object,
+            _mockJwtTokenGenerator.Object,
+            _mockPasswordHasher.Object
+        );
     }
 
     [Test]
@@ -44,39 +41,34 @@ public class LoginUserTests
         var user = new User
         {
             Id = Guid.NewGuid(),
-            Email = "user@gmail.com",
-            PasswordHash = "hashed_password",
-            EmailConfirmed = true,
+            PhoneNumber = "+998909009090",
+            PasswordHash = "hashed_password"
         };
 
-        var command = new LoginUserCommand
+        var query = new LoginUserQuery
         {
-            Email = user.Email,
-            Password = "password123",
+            PhoneNumber = user.PhoneNumber,
+            Password = "password123"
         };
 
-        mockUserManager
-            .Setup(r => r.FindByEmailAsync(user.Email))
+        _mockUserRepository
+            .Setup(r => r.GetUserByPhoneNumberAsync(user.PhoneNumber))
             .ReturnsAsync(user);
 
-        mockUserManager
-            .Setup(h => h.CheckPasswordAsync(user, command.Password))
-            .ReturnsAsync(true);
+        _mockPasswordHasher
+            .Setup(h => h.VerifyHashedPassword(user, user.PasswordHash, query.Password))
+            .Returns(PasswordVerificationResult.Success);
 
-        mockJwtTokenGenerator
+        _mockJwtTokenGenerator
             .Setup(j => j.GenerateAccessTokenAsync(user))
             .ReturnsAsync("access_token");
 
-        mockJwtTokenGenerator
+        _mockJwtTokenGenerator
             .Setup(j => j.GenerateRefreshToken())
             .Returns("refresh_token");
 
-        mockUserManager
-            .Setup(r => r.UpdateAsync(user))
-            .ReturnsAsync(IdentityResult.Success);
-
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await _handler.Handle(query, CancellationToken.None);
 
         // Assert
         Assert.That(result.AccessToken, Is.EqualTo("access_token"));
@@ -88,28 +80,27 @@ public class LoginUserTests
     {
         var user = new User
         {
-            Email = "user@gmail.com",
-            PasswordHash = "hashed_pass",
-            EmailConfirmed = true,
+            PhoneNumber = "+9989009090",
+            PasswordHash = "hashed_pass"
         };
 
-        var command = new LoginUserCommand
+        var command = new LoginUserQuery
         {
-            Email = user.Email,
-            Password = "wrong_password",
+            PhoneNumber = user.PhoneNumber,
+            Password = "wrong_password"
         };
 
-        mockUserManager
-            .Setup(r => r.FindByEmailAsync(user.Email))
+        _mockUserRepository
+            .Setup(r => r.GetUserByPhoneNumberAsync(user.PhoneNumber))
             .ReturnsAsync(user);
 
-        mockUserManager
-            .Setup(h => h.CheckPasswordAsync(user, command.Password))
-            .ReturnsAsync(false);
+        _mockPasswordHasher
+            .Setup(h => h.VerifyHashedPassword(user, user.PasswordHash, command.Password))
+            .Returns(PasswordVerificationResult.Failed);
 
         Assert.ThrowsAsync<UnauthorizedException>(async () =>
         {
-            await handler.Handle(command, CancellationToken.None);
+            await _handler.Handle(command, CancellationToken.None);
         });
     }
 }

@@ -2,40 +2,35 @@
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 
 namespace Application.Users.LoginUser;
 
 [AllowedFor]
-public sealed class LoginUserCommand : IRequest<LoginUserDto>
+public sealed class LoginUserQuery : IRequest<LoginUserDto>
 {
-    public string Email { get; set; }
+    public string PhoneNumber { get; set; }
 
     public string Password { get; set; }
 }
 
-public class LoginUserCommandHandler(
-        UserManager<User> userManager,
+public class LoginUserQueryHandler(
+        IUserRepository repository,
         IJwtTokenGenerator jwtTokenGenerator,
-        IValidator<LoginUserCommand> validator)
-        : IRequestHandler<LoginUserCommand, LoginUserDto>
+        IPasswordHasher<User> passwordHasher)
+        : IRequestHandler<LoginUserQuery, LoginUserDto>
 {
-    public async Task<LoginUserDto> Handle(LoginUserCommand request, CancellationToken cancellationToken)
+    public async Task<LoginUserDto> Handle(LoginUserQuery request, CancellationToken cancellationToken)
     {
-        await validator.ValidateAndThrowAsync(request, cancellationToken: cancellationToken);
+        var user = await repository.GetUserByPhoneNumberAsync(request.PhoneNumber)
+            ?? throw new UnauthorizedException("Invalid phone number or password");
 
-        var user = await userManager.FindByEmailAsync(request.Email)
-            ?? throw new UnauthorizedException("Invalid email or password");
+        var passwordVerificationResult = passwordHasher
+            .VerifyHashedPassword(user, user.PasswordHash, request.Password);
 
-        if (!user.EmailConfirmed)
+        if (passwordVerificationResult != PasswordVerificationResult.Success)
         {
-            throw new UnauthorizedException("Email is not confirmed");
-        }
-
-        var passwordVerificationResult = await userManager.CheckPasswordAsync(user, request.Password);
-
-        if (!passwordVerificationResult)
-        {
-            throw new UnauthorizedException("Invalid email or password");
+            throw new UnauthorizedException("Invalid phone number or password");
         }
 
         var accessToken = await jwtTokenGenerator.GenerateAccessTokenAsync(user);
@@ -44,11 +39,7 @@ public class LoginUserCommandHandler(
         user.RefreshToken = refreshToken;
         user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
 
-        var result = await userManager.UpdateAsync(user);
-        if (!result.Succeeded)
-        {
-            throw new UnauthorizedAccessException(string.Join(", ", result.Errors.Select(e => e.Description)));
-        }
+        await repository.UpdateUserAsync(user);
 
         return new LoginUserDto
         {
