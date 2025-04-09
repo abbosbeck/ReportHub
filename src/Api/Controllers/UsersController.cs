@@ -14,7 +14,7 @@ namespace Api.Controllers;
 
 public class UsersController(ISender mediator) : ApiControllerBase(mediator)
 {
-    [HttpGet("{name}")]
+    [HttpGet("name/{name}")]
     public async Task<IActionResult> GetUserByName(string name)
     {
         var result = await Mediator.Send(new GetUserByNameQuery() { FirstName = name });
@@ -27,8 +27,8 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
         return Ok(result);
     }
 
-    [HttpGet]
-    public async Task<IActionResult> GetUserByEmail([FromQuery] string email)
+    [HttpGet("{email}")]
+    public async Task<IActionResult> GetUserByEmail(string email)
     {
         var result = await Mediator.Send(new GetUserByEmailQuery() { Email = email });
 
