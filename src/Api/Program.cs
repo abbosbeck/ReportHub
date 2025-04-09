@@ -40,13 +40,13 @@ builder.Services.AddSwaggerGen(c =>
                     Id = "Bearer",
                 },
             },
-            new string[] { }
+            []
         },
     });
 });
 
-builder.Host.UseSerilog((context, configuration) =>
-    configuration.ReadFrom.Configuration(context.Configuration));
+builder.Host.UseSerilog((context, loggerConfiguration) =>
+    loggerConfiguration.ReadFrom.Configuration(context.Configuration));
 
 var app = builder.Build();
 

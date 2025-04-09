@@ -27,6 +27,7 @@ public static class DependencyInjection
         var jwtOptions = serviceProvider.GetRequiredService<IOptions<JwtOptions>>();
 
         services.AddJwtAuthentication(jwtOptions);
+        services.AddAuthorization();
         services.AddPersistence(keyVaultOptions);
         services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
         services.AddScoped<IUserRepository, UserRepository>();
