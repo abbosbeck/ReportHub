@@ -6,7 +6,7 @@ on:
     
   pull_request:
     branches: ['main']
-
+    
   workflow_dispatch:
 
 env:
@@ -14,17 +14,24 @@ env:
   CONTAINER_APP_NAME: reporthub
   RESOURCE_GROUP: ExadelBootcamp
 
-jobs: 
+jobs:
   build:
     runs-on: ubuntu-latest
 
-    steps: 
+    steps:
       - name: Check out code
         uses: actions/checkout@v4
+        
+      - name: Verify PR reference
+        run: |
+          if ! git ls-remote --exit-code origin refs/pull/${{ github.event.pull_request.number }}/merge; then
+            echo "Pull request reference does not exist"
+            exit 1
+          fi
 
       - name: Run docker compose
         uses: hoverkraft-tech/compose-action@v2.0.1
-        with: 
+        with:
           compose-file: './docker-compose.yml'
           services: |
             api
