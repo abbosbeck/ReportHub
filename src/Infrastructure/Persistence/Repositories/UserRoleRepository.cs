@@ -5,7 +5,7 @@ namespace Infrastructure.Persistence.Repositories
 {
     public class UserRoleRepository(AppDbContext context) : IUserRoleRepository
     {
-        public async Task<bool> GiveRoleToUserAsync(UserSystemRole userRole)
+        public async Task<bool> GiveRoleToUserAsync(SystemRoleAssignment userRole)
         {
             var role = await context.Set<SystemRole>()
                 .FirstOrDefaultAsync(x => x.Name == userRole.Role.Name);
@@ -15,7 +15,7 @@ namespace Infrastructure.Persistence.Repositories
             }
 
             userRole.RoleId = role.Id;
-            await context.Set<UserSystemRole>().AddAsync(userRole);
+            await context.Set<SystemRoleAssignment>().AddAsync(userRole);
             await context.SaveChangesAsync();
 
             return true;

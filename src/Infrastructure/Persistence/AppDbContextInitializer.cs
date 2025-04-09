@@ -85,14 +85,14 @@ public class AppDbContextInitializer(AppDbContext context, IPasswordHasher<User>
                 await context.SaveChangesAsync();
             }
 
-            if (!await context.Set<UserSystemRole>().AnyAsync())
+            if (!await context.Set<SystemRoleAssignment>().AnyAsync())
             {
                 var adminRole = await context.Set<SystemRole>().FirstOrDefaultAsync(r => r.Name == "Admin");
                 var adminUser = await context.Set<User>().FirstOrDefaultAsync(u => u.FirstName == "Admin");
 
                 if (adminRole != null && adminUser != null)
                 {
-                    context.Set<UserSystemRole>().Add(new UserSystemRole
+                    context.Set<SystemRoleAssignment>().Add(new SystemRoleAssignment
                     {
                         UserId = adminUser.Id,
                         RoleId = adminRole.Id,
@@ -103,7 +103,7 @@ public class AppDbContextInitializer(AppDbContext context, IPasswordHasher<User>
                 var justUser = await context.Set<User>().FirstOrDefaultAsync(u => u.FirstName == "John");
                 if (userRole != null && justUser != null)
                 {
-                    context.Set<UserSystemRole>().Add(new UserSystemRole
+                    context.Set<SystemRoleAssignment>().Add(new SystemRoleAssignment
                     {
                         UserId = justUser.Id,
                         RoleId = userRole.Id,

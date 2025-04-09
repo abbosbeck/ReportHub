@@ -24,7 +24,7 @@ public class GiveRoleToUserCommandHandler(
         var user = await userRepository.GetUserByIdAsync(request.UserId)
             ?? throw new NotFoundException($"User is not found with this id: {request.UserId}");
 
-        var userRole = new UserSystemRole
+        var userRole = new SystemRoleAssignment
         {
             UserId = user.Id,
             Role = new SystemRole
