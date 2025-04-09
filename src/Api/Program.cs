@@ -8,9 +8,10 @@ using Serilog;
 DotNetEnv.Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
 
-builder.Services.AddApplicationDependencies(builder.Configuration);
-builder.Services.AddInfrastructureDependencies(builder.Configuration);
+builder.Services.AddApplicationDependencies(configuration);
+builder.Services.AddInfrastructureDependencies(configuration);
 builder.Services.AddControllers();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -44,6 +45,18 @@ builder.Services.AddSwaggerGen(c =>
                                 new string[] { }
                             },
                         });
+});
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(
+        name: "ReportHubOrigin",
+        builder =>
+        {
+            builder
+                .WithOrigins(configuration["AppUrl"])
+                .AllowAnyMethod();
+        });
 });
 
 builder.Host.UseSerilog((context, configuration) =>
