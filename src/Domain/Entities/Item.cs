@@ -11,7 +11,7 @@ public class Item : BaseAuditableEntity, ISoftDeletable
 
     public string Price { get; set; }
 
-    public PaymentStatus PaymentStatus { get; set; }
+    public ItemPaymentStatus PaymentStatus { get; set; }
 
     public string Currency { get; set; }
 

@@ -1,7 +1,8 @@
 ﻿namespace Domain.Enums;
 
-public enum PaymentStatus
+public enum InvoicePaymentStatus
 {
     Paid,
+    PartiallyPaid,
     Unpaid,
 }

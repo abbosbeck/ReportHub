@@ -23,7 +23,7 @@ public class Invoice : BaseAuditableEntity, ISoftDeletable
 
     public Customer Customer { get; set; }
 
-    public PaymentStatus PaymentStatus { get; set; }
+    public InvoicePaymentStatus PaymentStatus { get; set; }
 
     public bool IsDeleted { get; set; }
 
