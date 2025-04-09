@@ -1,4 +1,5 @@
-﻿using Application.Users.GetUserByName;
+﻿using Application.Users.ConfirmUserEmail;
+using Application.Users.GetUserByName;
 using Application.Users.GetUserByPhoneNumber;
 using Application.Users.GiveRoleToUser;
 using Application.Users.LoginUser;
@@ -45,7 +46,7 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
 
     [AllowAnonymous]
     [HttpPost("login")]
-    public async Task<IActionResult> Login(LoginUserQuery request)
+    public async Task<IActionResult> Login(LoginUserCommand request)
     {
         var result = await Mediator.Send(request);
 
@@ -62,6 +63,15 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
         {
             return BadRequest("Refresh token wrong");
         }
+
+        return Ok(result);
+    }
+
+    [AllowAnonymous]
+    [HttpGet("confirm-email")]
+    public async Task<IActionResult> ConfirmEmail([FromQuery] Guid id, [FromQuery] string token)
+    {
+        var result = await Mediator.Send(new ConfirmUserEmailQuery() { Token = token, UserId = id });
 
         return Ok(result);
     }
