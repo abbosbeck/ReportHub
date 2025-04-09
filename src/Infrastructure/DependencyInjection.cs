@@ -1,10 +1,13 @@
 ﻿using Application.Common.Interfaces;
 using Application.Common.Services;
 using Domain.Entities;
+using Infrastructure.Authentication;
 using Infrastructure.Authentication.Extensions;
+using Infrastructure.Persistence;
 using Infrastructure.Persistence.Extensions;
 using Infrastructure.Persistence.Repositories;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -29,6 +32,29 @@ public static class DependencyInjection
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IUserRoleRepository, UserRoleRepository>();
 
+        services.AddIdentity(configuration);
+
         return services;
+    }
+
+    private static void AddIdentity(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddIdentity<User, SystemRole>(options =>
+        {
+            options.Password.RequiredLength = 6;
+            options.Password.RequireDigit = true;
+            options.Password.RequireUppercase = false;
+            options.Password.RequireLowercase = false;
+            options.Password.RequireNonAlphanumeric = true;
+
+            options.User.RequireUniqueEmail = true;
+        })
+            .AddEntityFrameworkStores<AppDbContext>()
+            .AddDefaultTokenProviders();
+
+        services.AddScoped<IEmailSender, EmailService>();
+
+        services.Configure<EmailOptions>(configuration.GetSection(nameof(EmailOptions)));
+        services.Configure<SmtpOptions>(configuration.GetSection(nameof(SmtpOptions)));
     }
 }
