@@ -20,9 +20,10 @@ public sealed class RegisterUserCommand : IRequest<RegisterUserDto>
 }
 
 public class RegisterUserCommandHandler(
-        IUserRepository repository,
         IValidator<RegisterUserCommand> validator,
-        IPasswordHasher<User> passwordHasher,
+        UserManager<User> userManager,
+        IConfiguration configuration,
+        IEmailSender emailSender,
         IMapper mapper)
         : IRequestHandler<RegisterUserCommand, RegisterUserDto>
 {
