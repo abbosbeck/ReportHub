@@ -6,6 +6,7 @@ public class RegisterUserProfile : Profile
 {
     public RegisterUserProfile()
     {
-        CreateMap<User, RegisterUserDto>();
+        CreateMap<User, UserDto>();
+        CreateMap<RegisterUserCommand, User>();
     }
 }

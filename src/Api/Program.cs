@@ -1,10 +1,7 @@
-using System.Text;
 using Api.Middlewares;
 using Application;
 using Infrastructure;
 using Infrastructure.Persistence;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
 
