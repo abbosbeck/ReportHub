@@ -13,6 +13,7 @@ var configuration = builder.Configuration;
 builder.Services.AddApplicationDependencies(configuration);
 builder.Services.AddInfrastructureDependencies(configuration);
 builder.Services.AddControllers();
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
@@ -26,7 +27,7 @@ builder.Services.AddSwaggerGen(c =>
         Name = "Authorization",
         Type = SecuritySchemeType.Http,
         BearerFormat = "JWT",
-        Scheme = "bearer",
+        Scheme = "Bearer",
     });
 
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -61,6 +62,8 @@ if (app.Environment.IsDevelopment())
 app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
+
+app.UseRouting();
 
 app.UseAuthentication();
 
