@@ -11,7 +11,7 @@ public class Invoice : BaseAuditableEntity, ISoftDeletable
 
     public DateTime DueDate { get; set; }
 
-    public string Amount { get; set; }
+    public decimal Amount { get; set; }
 
     public string Currency { get; set; }
 
