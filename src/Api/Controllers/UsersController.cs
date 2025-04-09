@@ -27,8 +27,8 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
         return Ok(result);
     }
 
-    [HttpGet("email/{email}")]
-    public async Task<IActionResult> GetUserByPhoneNumber(string email)
+    [HttpGet]
+    public async Task<IActionResult> GetUserByEmail([FromQuery] string email)
     {
         var result = await Mediator.Send(new GetUserByEmailQuery() { Email = email });
 
