@@ -47,18 +47,6 @@ builder.Services.AddSwaggerGen(c =>
                         });
 });
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(
-        name: "ReportHubOrigin",
-        builder =>
-        {
-            builder
-                .WithOrigins(configuration["AppUrl"])
-                .AllowAnyMethod();
-        });
-});
-
 builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
 
