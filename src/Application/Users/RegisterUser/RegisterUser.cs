@@ -23,8 +23,8 @@ public sealed class RegisterUserCommand : IRequest<UserDto>
 }
 
 public class RegisterUserCommandHandler(
-        UserManager<User> userManager,
         IValidator<RegisterUserCommand> validator,
+        UserManager<User> userManager,
         IConfiguration configuration,
         IEmailSender emailSender,
         IMapper mapper)
