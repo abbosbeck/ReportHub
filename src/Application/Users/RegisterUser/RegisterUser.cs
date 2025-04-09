@@ -1,15 +1,12 @@
 ﻿using Application.Common.Attributes;
 using Application.Common.Exceptions;
+using Application.Common.Interfaces;
 using Domain.Entities;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Configuration;
-using System.Text;
 
 namespace Application.Users.RegisterUser;
 
 [AllowedFor]
-public sealed class RegisterUserCommand : IRequest<UserDto>
+public sealed class RegisterUserCommand : IRequest<RegisterUserDto>
 {
     public string FirstName { get; set; }
 
@@ -19,40 +16,40 @@ public sealed class RegisterUserCommand : IRequest<UserDto>
 
     public string Password { get; set; }
 
-    public string Email { get; set; }
+    public string PhoneNumber { get; set; }
 }
 
 public class RegisterUserCommandHandler(
-        UserManager<User> userManager,
+        IUserRepository repository,
         IValidator<RegisterUserCommand> validator,
-        IConfiguration configuration,
-        IEmailSender emailSender,
+        IPasswordHasher<User> passwordHasher,
         IMapper mapper)
-        : IRequestHandler<RegisterUserCommand, UserDto>
+        : IRequestHandler<RegisterUserCommand, RegisterUserDto>
 {
-    public async Task<UserDto> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
+    public async Task<RegisterUserDto> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
         await validator.ValidateAndThrowAsync(request, cancellationToken);
 
-        var user = mapper.Map<User>(request);
-        user.UserName = user.Email;
-
-        var result = await userManager.CreateAsync(user, request.Password);
-        if (!result.Succeeded)
+        var existUser = await repository.GetUserByPhoneNumberAsync(request.PhoneNumber);
+        if (existUser is not null)
         {
-            throw new UnauthorizedException(string.Join(", ", result.Errors.Select(e => e.Description)));
+            throw new ConflictException("A user with this phone number already exists.");
         }
 
-        var emailConfirmationToken = await userManager.GenerateEmailConfirmationTokenAsync(user);
-        var encodedEmailToken = Encoding.UTF8.GetBytes(emailConfirmationToken);
-        var validEmailToken = WebEncoders.Base64UrlEncode(encodedEmailToken);
-        var confirmationUrl = $"{configuration["AppUrl"]}/api/users/confirm-email?id={user.Id}&token={validEmailToken}";
+        var user = new User
+        {
+            FirstName = request.FirstName,
+            LastName = request.LastName,
+            Department = request.Department,
+            PhoneNumber = request.PhoneNumber,
+        };
 
-        await emailSender.SendEmailAsync(
-            user.Email,
-            "Email confirmation!",
-            $@"<h1>Welcome to ReportHub</h1>Please confirm your account by clicking <a href='{confirmationUrl}'>here</a>");
+        user.PasswordHash = passwordHasher.HashPassword(user, request.Password);
 
-        return mapper.Map<UserDto>(user);
+        await repository.AddUser(user);
+
+        var result = mapper.Map<RegisterUserDto>(user);
+
+        return result;
     }
 }

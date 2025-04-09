@@ -19,12 +19,16 @@ internal class UserConfiguration : IEntityTypeConfiguration<User>
             .HasMaxLength(200)
             .IsRequired();
 
-        builder
-            .Ignore(u => u.AccessFailedCount)
+        builder.Ignore(u => u.AccessFailedCount)
+            .Ignore(u => u.EmailConfirmed)
+            .Ignore(u => u.UserName)
+            .Ignore(u => u.Email)
             .Ignore(u => u.LockoutEnabled)
             .Ignore(u => u.TwoFactorEnabled)
             .Ignore(u => u.LockoutEnd)
-            .Ignore(u => u.PhoneNumber)
+            .Ignore(u => u.NormalizedEmail)
+            .Ignore(u => u.NormalizedUserName)
+            .Ignore(u => u.SecurityStamp)
             .Ignore(u => u.PhoneNumberConfirmed);
     }
 }

@@ -44,9 +44,7 @@ public class AppDbContextInitializer(AppDbContext context, IPasswordHasher<User>
                     FirstName = "Admin",
                     LastName = "Admin",
                     Department = "Admin",
-                    Email = "admin@gmail.com",
-                    NormalizedEmail = "ADMIN@GMAIL.COM",
-                    EmailConfirmed = true,
+                    PhoneNumber = "991112233",
                     IsDeleted = false,
                 };
                 adminUser.PasswordHash = passwordHasher.HashPassword(adminUser, "Password1234!");
@@ -57,9 +55,7 @@ public class AppDbContextInitializer(AppDbContext context, IPasswordHasher<User>
                     FirstName = "John",
                     LastName = "John",
                     Department = "Workers",
-                    Email = "user@gmail.com",
-                    NormalizedEmail = "USER@GMAIL.COM",
-                    EmailConfirmed = true,
+                    PhoneNumber = "951112233",
                     IsDeleted = false,
                 };
                 regularUser.PasswordHash = passwordHasher.HashPassword(regularUser, "Password1234!");

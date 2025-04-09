@@ -1,6 +1,6 @@
 ﻿namespace Application.Users.RegisterUser;
 
-public class UserDto
+public class RegisterUserDto
 {
     public Guid Id { get; set; }
 
@@ -9,6 +9,4 @@ public class UserDto
     public string LastName { get; set; }
 
     public string Department { get; set; }
-
-    public string Email { get; set; }
 }

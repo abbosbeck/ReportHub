@@ -5,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace Infrastructure.Persistence.Extensions;
-
 public static class AddPersistenceServiceCollectionExtension
 {
     public static IServiceCollection AddPersistence(

@@ -1,5 +1,4 @@
 ﻿namespace Infrastructure;
-
 public class KeyVaultOptions
 {
     public string KeyVaultURL { get; set; }
