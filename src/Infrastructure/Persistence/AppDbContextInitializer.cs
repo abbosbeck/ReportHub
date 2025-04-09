@@ -43,11 +43,15 @@ public class AppDbContextInitializer(AppDbContext context, IPasswordHasher<User>
                 {
                     FirstName = "Admin",
                     LastName = "Admin",
+                    UserName = "Admin",
+                    NormalizedUserName = "ADMIN",
                     Department = "Admin",
                     Email = "admin@gmail.com",
                     NormalizedEmail = "ADMIN@GMAIL.COM",
                     EmailConfirmed = true,
                     IsDeleted = false,
+                    SecurityStamp = "random",
+                    ConcurrencyStamp = "random",
                 };
                 adminUser.PasswordHash = passwordHasher.HashPassword(adminUser, "Password1234!");
                 context.Set<User>().Add(adminUser);
