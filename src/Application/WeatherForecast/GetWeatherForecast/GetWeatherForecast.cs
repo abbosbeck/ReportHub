@@ -3,7 +3,7 @@ using Application.Common.Constants;
 
 namespace Application.WeatherForecast.GetWeatherForecast;
 
-[AllowedFor(UserRoles.Admin)]
+[AllowedFor(SystemUserRoles.SystemAdmin)]
 public class GetWeatherForecastRequest : IRequest<IEnumerable<WeatherForecast>>
 {
 }

@@ -52,19 +52,6 @@ public class AppDbContextInitializer(AppDbContext context, IPasswordHasher<User>
                 adminUser.PasswordHash = passwordHasher.HashPassword(adminUser, "Password1234!");
                 context.Set<User>().Add(adminUser);
 
-                var regularUser = new User
-                {
-                    FirstName = "John",
-                    LastName = "John",
-                    Department = "Workers",
-                    Email = "user@gmail.com",
-                    NormalizedEmail = "USER@GMAIL.COM",
-                    EmailConfirmed = true,
-                    IsDeleted = false,
-                };
-                regularUser.PasswordHash = passwordHasher.HashPassword(regularUser, "Password1234!");
-                context.Set<User>().Add(regularUser);
-
                 await context.SaveChangesAsync();
             }
 
@@ -72,23 +59,21 @@ public class AppDbContextInitializer(AppDbContext context, IPasswordHasher<User>
             {
                 context.Set<SystemRole>().Add(new SystemRole
                 {
-                    Name = "Admin",
-                    NormalizedName = "ADMIN",
+                    Name = "SystemAdmin",
+                    NormalizedName = "SYSTEMADMIN",
                     IsDeleted = false,
                 });
-                context.Set<SystemRole>().Add(new SystemRole
-                {
-                    Name = "User",
-                    NormalizedName = "USER",
-                    IsDeleted = false,
-                });
+
                 await context.SaveChangesAsync();
             }
 
             if (!await context.Set<SystemRoleAssignment>().AnyAsync())
             {
-                var adminRole = await context.Set<SystemRole>().FirstOrDefaultAsync(r => r.Name == "Admin");
-                var adminUser = await context.Set<User>().FirstOrDefaultAsync(u => u.FirstName == "Admin");
+                var adminRole = await context.Set<SystemRole>()
+                    .FirstOrDefaultAsync(r => r.NormalizedName == "SYSTEMADMIN");
+
+                var adminUser = await context.Set<User>()
+                    .FirstOrDefaultAsync(u => u.NormalizedEmail == "ADMIN@GMAIL.COM");
 
                 if (adminRole != null && adminUser != null)
                 {
@@ -99,16 +84,21 @@ public class AppDbContextInitializer(AppDbContext context, IPasswordHasher<User>
                     });
                 }
 
-                var userRole = await context.Set<SystemRole>().FirstOrDefaultAsync(r => r.Name == "User");
-                var justUser = await context.Set<User>().FirstOrDefaultAsync(u => u.FirstName == "John");
-                if (userRole != null && justUser != null)
+                await context.SaveChangesAsync();
+            }
+
+            if (!await context.ClientRoles.AnyAsync())
+            {
+                context.ClientRoles.Add(new ClientRole
                 {
-                    context.Set<SystemRoleAssignment>().Add(new SystemRoleAssignment
-                    {
-                        UserId = justUser.Id,
-                        RoleId = userRole.Id,
-                    });
-                }
+                    Name = "ClientAdmin",
+                    IsDeleted = false,
+                });
+                context.ClientRoles.Add(new ClientRole
+                {
+                    Name = "Regular",
+                    IsDeleted = false,
+                });
 
                 await context.SaveChangesAsync();
             }

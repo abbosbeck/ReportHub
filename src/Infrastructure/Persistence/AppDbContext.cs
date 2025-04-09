@@ -23,7 +23,7 @@ public class AppDbContext : IdentityDbContext<
 
     public DbSet<ClientRole> ClientRoles { get; set; }
 
-    public DbSet<ClientRoleAssignment> UserClientRoles { get; set; }
+    public DbSet<ClientRoleAssignment> ClientRoleAssignment { get; set; }
 
     public DbSet<Invoice> Invoices { get; set; }
 
