@@ -1,4 +1,5 @@
-﻿using Application.Common.Interfaces;
+﻿using Application.Common.Exceptions;
+using Application.Common.Interfaces;
 using Domain.Entities;
 
 namespace Infrastructure.Persistence.Repositories;
@@ -10,7 +11,7 @@ public class ClientRepository(AppDbContext context) : IClientRepository
         client.Id = Guid.NewGuid();
 
         await context.Clients.AddAsync(client);
-        await RegisterClientRoleAssignmentAsync(client.Id, userId);
+        await RegisterClientRoleAssignmentAsync(client.Id, userId, "ClientAdmin");
 
         await context.SaveChangesAsync();
 
@@ -28,15 +29,28 @@ public class ClientRepository(AppDbContext context) : IClientRepository
         return await context.Clients.FirstOrDefaultAsync(c => c.Email == email);
     }
 
-    public async Task<Client> GetClientByIdAsync(Guid Id)
+    public async Task<Client> GetClientByIdAsync(Guid id)
     {
-        return await context.Clients.FirstOrDefaultAsync(c => c.Id == Id);
+        return await context.Clients.FirstOrDefaultAsync(c => c.Id == id);
     }
 
-    private async Task RegisterClientRoleAssignmentAsync(Guid clientId, Guid userId)
+    public async Task<bool> GiveRoleToClientMemberAsync(Guid clientId, string roleName)
+    {
+        Guid userId = clientId;
+        await RegisterClientRoleAssignmentAsync(clientId, userId, roleName);
+        await context.SaveChangesAsync();
+
+        return true;
+    }
+
+    private async Task RegisterClientRoleAssignmentAsync(Guid clientId, Guid userId, string roleName)
     {
         var clientRole = await context.ClientRoles
-            .FirstOrDefaultAsync(r => r.Name == "ClientAdmin");
+            .FirstOrDefaultAsync(r => r.Name == roleName);
+        if (clientRole is null)
+        {
+            throw new NotFoundException("There is no role with this name.");
+        }
 
         var clientRoleAssignment = new ClientRoleAssignment
         {

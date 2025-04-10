@@ -1,4 +1,5 @@
 ﻿using Application.Clients.AddClientMember;
+using Application.Clients.GiveRoleToClientMember;
 using Application.Clients.RegisterClient;
 using Application.Users.RegisterUser;
 using MediatR;
@@ -20,6 +21,14 @@ public class ClientsController(ISender mediator) : ApiControllerBase(mediator)
     public async Task<IActionResult> AddClientMember([FromBody] AddClientMemberCommand addClientMemberCommand)
     {
         var result = await Mediator.Send(addClientMemberCommand);
+
+        return Ok(result);
+    }
+
+    [HttpPost("give-role")]
+    public async Task<IActionResult> GiveRoleToClientMember([FromBody] GiveRoleToClientMemberCommand giveRoleToClientMemberCommand)
+    {
+        var result = await Mediator.Send(giveRoleToClientMemberCommand);
 
         return Ok(result);
     }
