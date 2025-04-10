@@ -5,13 +5,16 @@ using Application.Common.Interfaces;
 
 namespace Application.Common.Behaviors;
 
-public class AuthorizationPipelineBehavior<TRequest, TResponse>(ICurrentUserService currentUserService)
+public class AuthorizationPipelineBehavior<TRequest, TResponse>(
+    ICurrentUserService currentUserService,
+    IRequestHandler<TRequest, TResponse> handler)
     : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : class, IBaseRequest
+    where TRequest : IRequest<TResponse>
+    where TResponse : notnull
 {
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
-        var requiredRoles = request.GetType().GetCustomAttribute<AllowedForAttribute>()?.Roles;
+        var requiredRoles = handler.GetType().GetCustomAttribute<AllowedForAttribute>()?.Roles;
         if (requiredRoles is null or[])
         {
             return await next();
