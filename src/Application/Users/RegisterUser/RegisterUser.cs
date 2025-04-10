@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using Application.Common.Exceptions;
+using Application.Common.Interfaces;
 using Domain.Entities;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 
@@ -24,7 +24,7 @@ public class RegisterUserCommandHandler(
         UserManager<User> userManager,
         IValidator<RegisterUserCommand> validator,
         IConfiguration configuration,
-        IEmailSender emailSender,
+        IEmailService emailService,
         IMapper mapper)
         : IRequestHandler<RegisterUserCommand, UserDto>
 {
@@ -46,7 +46,7 @@ public class RegisterUserCommandHandler(
         var validEmailToken = WebEncoders.Base64UrlEncode(encodedEmailToken);
         var confirmationUrl = $"{configuration["AppUrl"]}/api/users/confirm-email?id={user.Id}&token={validEmailToken}";
 
-        await emailSender.SendEmailAsync(
+        await emailService.SendEmailAsync(
             user.Email,
             "Email confirmation!",
             $@"<h1>Welcome to ReportHub</h1>Please confirm your account by clicking <a href='{confirmationUrl}'>here</a>");
