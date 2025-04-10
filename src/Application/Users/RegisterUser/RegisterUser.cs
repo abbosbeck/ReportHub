@@ -1,8 +1,8 @@
-﻿using System.Text;
+﻿using System.Web;
+using Application.Common.Constants;
 using Application.Common.Exceptions;
+using Application.Common.Interfaces;
 using Domain.Entities;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 
 namespace Application.Users.RegisterUser;
@@ -24,7 +24,7 @@ public class RegisterUserCommandHandler(
         UserManager<User> userManager,
         IValidator<RegisterUserCommand> validator,
         IConfiguration configuration,
-        IEmailSender emailSender,
+        IEmailService emailService,
         IMapper mapper)
         : IRequestHandler<RegisterUserCommand, UserDto>
 {
@@ -41,12 +41,11 @@ public class RegisterUserCommandHandler(
             throw new UnauthorizedException(string.Join(", ", result.Errors.Select(e => e.Description)));
         }
 
-        var emailConfirmationToken = await userManager.GenerateEmailConfirmationTokenAsync(user);
-        var encodedEmailToken = Encoding.UTF8.GetBytes(emailConfirmationToken);
-        var validEmailToken = WebEncoders.Base64UrlEncode(encodedEmailToken);
-        var confirmationUrl = $"{configuration["AppUrl"]}/api/users/confirm-email?id={user.Id}&token={validEmailToken}";
+        var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+        var encodedToken = HttpUtility.UrlEncode(token);
+        var confirmationUrl = $"{configuration["AppUrl"]}/api/users/confirm-email?id={user.Id}&token={encodedToken}";
 
-        await emailSender.SendEmailAsync(
+        await emailService.SendEmailAsync(
             user.Email,
             "Email confirmation!",
             $@"<h1>Welcome to ReportHub</h1>Please confirm your account by clicking <a href='{confirmationUrl}'>here</a>");

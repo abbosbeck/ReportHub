@@ -4,17 +4,17 @@ namespace Domain.Entities;
 
 public class ClientRoleAssignment : BaseAuditableEntity, ISoftDeletable
 {
-    public Guid UserId { get; set; }
+    public Guid UserId { get; init; }
 
-    public User User { get; set; }
+    public User User { get; init; }
 
-    public Guid ClientId { get; set; }
+    public Guid ClientId { get; init; }
 
-    public Client Client { get; set; }
+    public Client Client { get; init; }
 
-    public Guid ClientRoleId { get; set; }
+    public Guid ClientRoleId { get; init; }
 
-    public ClientRole ClientRole { get; set; }
+    public ClientRole ClientRole { get; init; }
 
     public bool IsDeleted { get; set; }
 

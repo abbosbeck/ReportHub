@@ -1,13 +1,13 @@
-﻿using MailKit.Net.Smtp;
+﻿using Application.Common.Interfaces;
+using MailKit.Net.Smtp;
 using MailKit.Security;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using MimeKit.Text;
 
 namespace Infrastructure.Authentication;
 
-public class EmailService(IOptions<EmailOptions> emailOptions, IOptions<SmtpOptions> smtpOptions) : IEmailSender
+public class EmailService(IOptions<EmailOptions> emailOptions, IOptions<SmtpOptions> smtpOptions) : IEmailService
 {
     private readonly EmailOptions emailOptions = emailOptions.Value;
     private readonly SmtpOptions smtpOptions = smtpOptions.Value;

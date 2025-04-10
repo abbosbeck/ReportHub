@@ -24,12 +24,12 @@ public class AuthorizationPipelineBehavior<TRequest, TResponse>(
 
         var roles = currentUserService.Roles;
 
-        if (requiresSystemRoles.Intersect(roles).Any() && requiresClientRoles is null or[])
+        if (requiresSystemRoles != null && requiresSystemRoles.Intersect(roles).Any() && requiresClientRoles is null or[])
         {
             return await next();
         }
 
-        if (requiresClientRoles.Intersect(roles).Any() && requiresSystemRoles is null or [])
+        if (requiresClientRoles != null && requiresClientRoles.Intersect(roles).Any() && requiresSystemRoles is null or [])
         {
             return await next();
         }

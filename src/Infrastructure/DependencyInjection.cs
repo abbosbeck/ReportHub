@@ -7,7 +7,6 @@ using Infrastructure.Persistence;
 using Infrastructure.Persistence.Extensions;
 using Infrastructure.Persistence.Repositories;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -56,7 +55,7 @@ public static class DependencyInjection
             .AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders();
 
-        services.AddScoped<IEmailSender, EmailService>();
+        services.AddSingleton<IEmailService, EmailService>();
 
         services.Configure<EmailOptions>(configuration.GetSection(nameof(EmailOptions)));
         services.Configure<SmtpOptions>(configuration.GetSection(nameof(SmtpOptions)));

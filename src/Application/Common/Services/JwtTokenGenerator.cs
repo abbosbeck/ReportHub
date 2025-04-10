@@ -20,11 +20,6 @@ public class JwtTokenGenerator(
         public async Task<string> GenerateAccessTokenAsync(User user)
         {
             var userRoles = await userRoleRepository.GetUserRolesByUserIdAsync(user.Id);
-            if (!userRoles.Any())
-            {
-                throw new ForbiddenException("You do not have access to the server!");
-            }
-
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
@@ -35,7 +30,7 @@ public class JwtTokenGenerator(
             claims.AddRange(userRoles.Select(r => new Claim(ClaimTypes.Role, r)));
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Value.Key));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var expires = DateTime.UtcNow.AddMinutes(Convert.ToDouble(jwtOptions.Value.AccessTokenExpiryMinutes));
 
             var token = new JwtSecurityToken(
@@ -43,7 +38,7 @@ public class JwtTokenGenerator(
                 audience: jwtOptions.Value.Audience,
                 claims: claims,
                 expires: expires,
-                signingCredentials: creds);
+                signingCredentials: signingCredentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }

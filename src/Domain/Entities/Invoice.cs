@@ -5,25 +5,25 @@ namespace Domain.Entities;
 
 public class Invoice : BaseAuditableEntity, ISoftDeletable
 {
-    public string InvoiceNumber { get; set; }
+    public string InvoiceNumber { get; init; }
 
-    public DateTime IssueDate { get; set; }
+    public DateTime IssueDate { get; init; }
 
-    public DateTime DueDate { get; set; }
+    public DateTime DueDate { get; init; }
 
-    public decimal Amount { get; set; }
+    public decimal Amount { get; init; }
 
-    public string Currency { get; set; }
+    public string Currency { get; init; }
 
-    public Guid ClientId { get; set; }
+    public Guid ClientId { get; init; }
 
-    public Client Client { get; set; }
+    public Client Client { get; init; }
 
-    public Guid CustomerId { get; set; }
+    public Guid CustomerId { get; init; }
 
-    public Customer Customer { get; set; }
+    public Customer Customer { get; init; }
 
-    public InvoicePaymentStatus PaymentStatus { get; set; }
+    public InvoicePaymentStatus PaymentStatus { get; init; }
 
     public bool IsDeleted { get; set; }
 

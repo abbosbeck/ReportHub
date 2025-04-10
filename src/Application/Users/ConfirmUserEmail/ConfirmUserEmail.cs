@@ -1,16 +1,14 @@
-﻿using System.Text;
-using Application.Common.Attributes;
+﻿using System.Web;
 using Application.Common.Exceptions;
 using Domain.Entities;
-using Microsoft.AspNetCore.WebUtilities;
 
 namespace Application.Users.ConfirmUserEmail;
 
 public sealed class ConfirmUserEmailQuery : IRequest<bool>
 {
-    public Guid UserId { get; set; }
+    public Guid UserId { get; init; }
 
-    public string Token { get; set; }
+    public string Token { get; init; }
 }
 
 public class ConfirmUserEmailQueryHandler(UserManager<User> userManager)
@@ -21,9 +19,7 @@ public class ConfirmUserEmailQueryHandler(UserManager<User> userManager)
         var user = await userManager.FindByIdAsync(request.UserId.ToString())
             ?? throw new NotFoundException($"User is not found with this id: {request.UserId}");
 
-        var decodedToken = WebEncoders.Base64UrlDecode(request.Token);
-        var emailConfirmationToken = Encoding.UTF8.GetString(decodedToken);
-        var result = await userManager.ConfirmEmailAsync(user, emailConfirmationToken);
+        var result = await userManager.ConfirmEmailAsync(user, request.Token!);
 
         if (!result.Succeeded)
         {
