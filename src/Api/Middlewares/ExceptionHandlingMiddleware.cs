@@ -14,16 +14,20 @@ public class ExceptionHandlingMiddleware(RequestDelegate next)
         }
         catch (Exception exception)
         {
+            var title = exception.GetType().Name;
+            var detail = exception.Message;
+            var instance = context.Request.Path;
+
             var problemDetails = exception switch
             {
                 ValidationException validationException =>
                     new ProblemDetails()
                     {
-                        Title = nameof(validationException),
-                        Detail = validationException.Message,
+                        Title = title,
+                        Detail = detail,
                         Type = "https://httpstatuses.com/400",
                         Status = StatusCodes.Status400BadRequest,
-                        Instance = context.Request.Path,
+                        Instance = instance,
                         Extensions =
                         {
                             ["errors"] = validationException.Errors,
@@ -36,7 +40,7 @@ public class ExceptionHandlingMiddleware(RequestDelegate next)
                         Detail = exception.Message,
                         Type = "https://httpstatuses.com/400",
                         Status = StatusCodes.Status400BadRequest,
-                        Instance = context.Request.Path,
+                        Instance = instance,
                     },
                 UnauthorizedException =>
                     new ProblemDetails
@@ -45,7 +49,7 @@ public class ExceptionHandlingMiddleware(RequestDelegate next)
                         Detail = exception.Message,
                         Type = "https://httpstatuses.com/401",
                         Status = StatusCodes.Status401Unauthorized,
-                        Instance = context.Request.Path,
+                        Instance = instance,
                     },
                 ForbiddenException =>
                     new ProblemDetails
@@ -54,7 +58,7 @@ public class ExceptionHandlingMiddleware(RequestDelegate next)
                         Detail = exception.Message,
                         Type = "https://httpstatuses.com/403",
                         Status = StatusCodes.Status403Forbidden,
-                        Instance = context.Request.Path,
+                        Instance = instance,
                     },
                 NotFoundException =>
                     new ProblemDetails
@@ -63,7 +67,7 @@ public class ExceptionHandlingMiddleware(RequestDelegate next)
                         Detail = exception.Message,
                         Type = "https://httpstatuses.com/404",
                         Status = StatusCodes.Status404NotFound,
-                        Instance = context.Request.Path,
+                        Instance = instance,
                     },
                 ConflictException =>
                     new ProblemDetails
@@ -72,7 +76,7 @@ public class ExceptionHandlingMiddleware(RequestDelegate next)
                         Detail = exception.Message,
                         Type = "https://httpsstatus.com/409",
                         Status = StatusCodes.Status409Conflict,
-                        Instance = context.Request.Path,
+                        Instance = instance,
                     },
                 _ => new ProblemDetails
                 {
@@ -80,7 +84,7 @@ public class ExceptionHandlingMiddleware(RequestDelegate next)
                     Detail = exception.Message,
                     Type = "https://httpstatuses.com/500",
                     Status = StatusCodes.Status500InternalServerError,
-                    Instance = context.Request.Path,
+                    Instance = instance,
                 }
             };
 
