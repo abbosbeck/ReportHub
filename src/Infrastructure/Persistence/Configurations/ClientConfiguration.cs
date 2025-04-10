@@ -12,5 +12,15 @@ internal class ClientConfiguration : IEntityTypeConfiguration<Client>
         builder.Property(c => c.Name)
             .HasMaxLength(200)
             .IsRequired();
+
+        builder.HasIndex(c => c.Email)
+            .IsUnique();
+
+        builder.Property(c => c.Email)
+            .HasMaxLength(200)
+            .IsRequired();
+
+        builder.Property(c => c.Password)
+            .IsRequired();
     }
 }
