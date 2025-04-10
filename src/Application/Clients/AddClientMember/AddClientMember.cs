@@ -1,5 +1,4 @@
-﻿
-using Application.Common.Attributes;
+﻿using Application.Common.Attributes;
 using Application.Common.Constants;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
@@ -21,7 +20,7 @@ public class AddClientMemberCommandHandler(
     IClientRepository repository,
     IMapper mapper,
     IPasswordHasher<Client> passwordHasher,
-    IValidator<AddClientMemberCommand> validator) 
+    IValidator<AddClientMemberCommand> validator)
     : IRequestHandler<AddClientMemberCommand, ClientDto>
 {
     public async Task<ClientDto> Handle(AddClientMemberCommand request, CancellationToken cancellationToken)

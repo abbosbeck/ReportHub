@@ -29,7 +29,7 @@ public class AuthorizationPipelineBehavior<TRequest, TResponse>(
             return await next();
         }
 
-        if (requiresClientRoles != null && requiresClientRoles.Intersect(roles).Any() && requiresSystemRoles is null or [])
+        if (requiresClientRoles != null && requiresClientRoles.Intersect(roles).Any() && requiresSystemRoles is null or[])
         {
             return await next();
         }

@@ -11,22 +11,22 @@ public class UserRepository(AppDbContext context) : IUserRepository
         await context.SaveChangesAsync();
     }
 
-    public async Task<User?> GetUserByName(string firstName)
+    public async Task<User> GetUserByName(string firstName)
     {
         return await context.Set<User>().FirstOrDefaultAsync(u => EF.Functions.ILike(u.FirstName, firstName));
     }
 
-    public async Task<User?> GetUserByIdAsync(Guid userId)
+    public async Task<User> GetUserByIdAsync(Guid userId)
     {
         return await context.Set<User>().FirstOrDefaultAsync(x => x.Id == userId);
     }
 
-    public async Task<User?> GetUserByPhoneNumberAsync(string phoneNumber)
+    public async Task<User> GetUserByPhoneNumberAsync(string phoneNumber)
     {
         return await context.Set<User>().FirstOrDefaultAsync(u => EF.Functions.ILike(u.PhoneNumber!, phoneNumber));
     }
 
-    public async Task<User?> GetUserByRefreshTokenAsync(string refreshToken)
+    public async Task<User> GetUserByRefreshTokenAsync(string refreshToken)
     {
         return await context.Set<User>().FirstOrDefaultAsync(u => EF.Functions.ILike(u.RefreshToken, refreshToken));
     }

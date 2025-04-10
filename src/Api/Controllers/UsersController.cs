@@ -14,27 +14,6 @@ namespace Api.Controllers;
 
 public class UsersController(ISender mediator) : ApiControllerBase(mediator)
 {
-    [HttpGet("name/{name}")]
-    public async Task<IActionResult> GetUserByName(string name)
-    {
-        var result = await Mediator.Send(new GetUserByNameQuery() { FirstName = name });
-
-        if (result == null)
-        {
-            return NotFound();
-        }
-
-        return Ok(result);
-    }
-
-    [HttpGet("{email}")]
-    public async Task<IActionResult> GetUserByEmail(string email)
-    {
-        var result = await Mediator.Send(new GetUserByEmailQuery() { Email = email });
-
-        return Ok(result);
-    }
-
     [AllowAnonymous]
     [HttpPost("register")]
     public async Task<IActionResult> RegisterUser([FromBody] RegisterUserCommand request)
@@ -80,6 +59,27 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
     public async Task<IActionResult> GiveRoleToUser([FromBody] GiveRoleToUserCommand giveRoleToUser)
     {
         var result = await Mediator.Send(giveRoleToUser);
+
+        return Ok(result);
+    }
+
+    [HttpGet("name/{name}")]
+    public async Task<IActionResult> GetUserByName(string name)
+    {
+        var result = await Mediator.Send(new GetUserByNameQuery() { FirstName = name });
+
+        if (result == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(result);
+    }
+
+    [HttpGet("{email}")]
+    public async Task<IActionResult> GetUserByEmail(string email)
+    {
+        var result = await Mediator.Send(new GetUserByEmailQuery() { Email = email });
 
         return Ok(result);
     }

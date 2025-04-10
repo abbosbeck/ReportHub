@@ -1,5 +1,4 @@
-﻿
-using Application.Common.Interfaces;
+﻿using Application.Common.Interfaces;
 
 namespace Application.Clients.SoftDeleteClient;
 
