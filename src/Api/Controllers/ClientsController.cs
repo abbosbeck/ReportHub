@@ -7,7 +7,7 @@ namespace Api.Controllers;
 
 public class ClientsController(ISender mediator) : ApiControllerBase(mediator)
 {
-    [HttpPost("create-client")]
+    [HttpPost("register-client")]
     public async Task<IActionResult> RegisterClient([FromBody] RegisterClientCommand registerClientCommand)
     {
         var result = await Mediator.Send(registerClientCommand);
