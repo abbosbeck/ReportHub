@@ -1,8 +1,7 @@
-﻿using System.Text;
+﻿using System.Web;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Domain.Entities;
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 
 namespace Application.Users.RegisterUser;
@@ -41,10 +40,9 @@ public class RegisterUserCommandHandler(
             throw new UnauthorizedException(string.Join(", ", result.Errors.Select(e => e.Description)));
         }
 
-        var emailConfirmationToken = await userManager.GenerateEmailConfirmationTokenAsync(user);
-        var encodedEmailToken = Encoding.UTF8.GetBytes(emailConfirmationToken);
-        var validEmailToken = WebEncoders.Base64UrlEncode(encodedEmailToken);
-        var confirmationUrl = $"{configuration["AppUrl"]}/api/users/confirm-email?id={user.Id}&token={validEmailToken}";
+        var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+        var encodedToken = HttpUtility.UrlEncode(token);
+        var confirmationUrl = $"{configuration["AppUrl"]}/api/users/confirm-email?id={user.Id}&token={encodedToken}";
 
         await emailService.SendEmailAsync(
             user.Email,
