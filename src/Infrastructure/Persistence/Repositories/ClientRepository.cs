@@ -6,6 +6,12 @@ namespace Infrastructure.Persistence.Repositories;
 
 public class ClientRepository(AppDbContext context) : IClientRepository
 {
+    public async Task UpdateClientAsync(Client client)
+    {
+        context.Clients.Update(client);
+        await context.SaveChangesAsync();
+    }
+
     public async Task<Client> AddClientAdminAsync(Client client, Guid userId)
     {
         client.Id = Guid.NewGuid();
@@ -38,6 +44,15 @@ public class ClientRepository(AppDbContext context) : IClientRepository
     {
         Guid userId = clientId;
         await RegisterClientRoleAssignmentAsync(clientId, userId, roleName);
+        await context.SaveChangesAsync();
+
+        return true;
+    }
+
+    public async Task<bool> SoftDeleteClientAsync(Guid id)
+    {
+        var client = await GetClientByIdAsync(id);
+        await UpdateClientAsync(client);
         await context.SaveChangesAsync();
 
         return true;

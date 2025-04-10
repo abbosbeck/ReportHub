@@ -13,4 +13,8 @@ public interface IClientRepository
     Task<Client> GetClientByIdAsync(Guid id);
 
     Task<bool> GiveRoleToClientMemberAsync(Guid clientId, string roleName);
+
+    Task<bool> SoftDeleteClientAsync(Guid id);
+
+    Task UpdateClientAsync(Client client);
 }

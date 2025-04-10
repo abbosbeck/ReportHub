@@ -1,6 +1,7 @@
 ﻿using Application.Clients.AddClientMember;
 using Application.Clients.GiveRoleToClientMember;
 using Application.Clients.RegisterClient;
+using Application.Clients.SoftDeleteClient;
 using Application.Users.RegisterUser;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -31,5 +32,13 @@ public class ClientsController(ISender mediator) : ApiControllerBase(mediator)
         var result = await Mediator.Send(giveRoleToClientMemberCommand);
 
         return Ok(result);
+    }
+
+    [HttpDelete("soft-delete-client")]
+    public async Task<IActionResult> SoftDeleteClient(Guid clientId)
+    {
+        var result = await Mediator.Send(new SoftDeleteClientCommand { ClientId = clientId });
+
+        return Ok();
     }
 }
