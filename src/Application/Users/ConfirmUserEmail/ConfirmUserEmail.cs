@@ -19,8 +19,7 @@ public class ConfirmUserEmailQueryHandler(UserManager<User> userManager)
         var user = await userManager.FindByIdAsync(request.UserId.ToString())
             ?? throw new NotFoundException($"User is not found with this id: {request.UserId}");
 
-        var decodedToken = HttpUtility.UrlDecode(request.Token);
-        var result = await userManager.ConfirmEmailAsync(user, decodedToken);
+        var result = await userManager.ConfirmEmailAsync(user, request.Token!);
 
         if (!result.Succeeded)
         {
