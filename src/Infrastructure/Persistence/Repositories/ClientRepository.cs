@@ -17,6 +17,12 @@ public class ClientRepository(AppDbContext context) : IClientRepository
         return await GetClientByIdAsync(client.Id);
     }
 
+    public async Task AddClientMemberAsync(Client client)
+    {
+        await context.AddAsync(client);
+        await context.SaveChangesAsync();
+    }
+
     public async Task<Client> GetClientByEmailAsync(string email)
     {
         return await context.Clients.FirstOrDefaultAsync(c => c.Email == email);

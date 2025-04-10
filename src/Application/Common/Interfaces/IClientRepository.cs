@@ -6,6 +6,8 @@ public interface IClientRepository
 {
     Task<Client> AddClientAdminAsync(Client client, Guid userId);
 
+    Task AddClientMemberAsync(Client client);
+
     Task<Client> GetClientByEmailAsync(string email);
 
     Task<Client> GetClientByIdAsync(Guid Id);
