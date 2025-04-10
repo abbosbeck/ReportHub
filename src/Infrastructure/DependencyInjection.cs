@@ -30,8 +30,10 @@ public static class DependencyInjection
         services.AddAuthorization();
         services.AddPersistence(keyVaultOptions);
         services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+        services.AddScoped<IPasswordHasher<Client>, PasswordHasher<Client>>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IUserRoleRepository, UserRoleRepository>();
+        services.AddScoped<IClientRepository, ClientRepository>();
 
         services.AddIdentity(configuration);
 
