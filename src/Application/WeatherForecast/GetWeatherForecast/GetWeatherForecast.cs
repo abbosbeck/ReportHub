@@ -1,9 +1,5 @@
-﻿using Application.Common.Attributes;
-using Application.Common.Constants;
+﻿namespace Application.WeatherForecast.GetWeatherForecast;
 
-namespace Application.WeatherForecast.GetWeatherForecast;
-
-[AllowedFor(SystemUserRoles.SystemAdmin)]
 public class GetWeatherForecastRequest : IRequest<IEnumerable<WeatherForecast>>
 {
 }

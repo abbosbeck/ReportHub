@@ -15,7 +15,7 @@ public class RegisterClientCommand : IRequest<ClientDto>
     public string Password { get; set; }
 }
 
-[AllowedFor(SystemUserRoles.SystemAdmin)]
+[RequiresSystemRole(SystemUserRoles.SystemAdmin)]
 public class RegisterClientCommandHandler(
     IClientRepository clientRepository,
     IValidator<RegisterClientCommand> validator,

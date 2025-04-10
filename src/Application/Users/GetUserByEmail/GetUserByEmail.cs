@@ -5,12 +5,12 @@ using Domain.Entities;
 
 namespace Application.Users.GetUserByEmail;
 
-[AllowedFor(SystemUserRoles.SystemAdmin)]
 public sealed class GetUserByEmailQuery : IRequest<UserDto>
 {
     public string Email { get; init; }
 }
 
+[RequiresSystemRole(SystemUserRoles.SystemAdmin)]
 public class GetUserByEmailQueryHandler(IMapper mapper, UserManager<User> userManager)
     : IRequestHandler<GetUserByEmailQuery, UserDto>
 {

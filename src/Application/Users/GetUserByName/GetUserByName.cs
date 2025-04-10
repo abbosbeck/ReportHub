@@ -5,12 +5,12 @@ using Application.Common.Interfaces;
 
 namespace Application.Users.GetUserByName;
 
-[AllowedFor(SystemUserRoles.SystemAdmin)]
 public sealed class GetUserByNameQuery : IRequest<UserDto>
 {
     public string FirstName { get; init; } = string.Empty;
 }
 
+[RequiresSystemRole(SystemUserRoles.SystemAdmin)]
 public class GetUserByNameQueryHandler(
     IUserRepository repository,
     IValidator<GetUserByNameQuery> validator,

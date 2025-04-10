@@ -1,12 +1,11 @@
-﻿using Application.Common.Attributes;
+﻿using System.Text;
+using Application.Common.Attributes;
 using Application.Common.Exceptions;
 using Domain.Entities;
 using Microsoft.AspNetCore.WebUtilities;
-using System.Text;
 
 namespace Application.Users.ConfirmUserEmail;
 
-[AllowedFor]
 public sealed class ConfirmUserEmailQuery : IRequest<bool>
 {
     public Guid UserId { get; set; }

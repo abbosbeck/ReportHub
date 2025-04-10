@@ -1,14 +1,12 @@
-﻿using Application.Common.Attributes;
+﻿using System.Text;
 using Application.Common.Exceptions;
 using Domain.Entities;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
-using System.Text;
 
 namespace Application.Users.RegisterUser;
 
-[AllowedFor]
 public sealed class RegisterUserCommand : IRequest<UserDto>
 {
     public string FirstName { get; set; }

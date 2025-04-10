@@ -1,11 +1,9 @@
-﻿using Application.Common.Attributes;
-using Application.Common.Exceptions;
+﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Domain.Entities;
 
 namespace Application.Users.LoginUser;
 
-[AllowedFor]
 public sealed class LoginUserCommand : IRequest<LoginUserDto>
 {
     public string Email { get; set; }
