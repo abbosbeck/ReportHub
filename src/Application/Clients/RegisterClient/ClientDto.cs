@@ -2,9 +2,9 @@
 
 public class ClientDto
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; init; }
 
-    public string Name { get; set; }
+    public string Name { get; init; }
 
-    public string Email { get; set; }
+    public string Email { get; init; }
 }

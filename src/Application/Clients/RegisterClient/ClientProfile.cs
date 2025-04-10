@@ -2,9 +2,9 @@
 
 namespace Application.Clients.RegisterClient;
 
-public class RegisterClientProfile : Profile
+public class ClientProfile : Profile
 {
-    public RegisterClientProfile()
+    public ClientProfile()
     {
         CreateMap<RegisterClientCommand, Client>();
         CreateMap<Client, ClientDto>();

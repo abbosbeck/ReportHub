@@ -26,7 +26,7 @@ public class RegisterClientCommandHandler(
 {
     public async Task<ClientDto> Handle(RegisterClientCommand request, CancellationToken cancellationToken)
     {
-        await validator.ValidateAndThrowAsync(request);
+        await validator.ValidateAndThrowAsync(request, cancellationToken: cancellationToken);
 
         var existClient = await clientRepository.GetClientByEmailAsync(request.Email);
         if (existClient is not null)
