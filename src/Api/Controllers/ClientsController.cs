@@ -1,4 +1,5 @@
-﻿using Application.Clients.RegisterClient;
+﻿using Application.Clients.AddClientMember;
+using Application.Clients.RegisterClient;
 using Application.Users.RegisterUser;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +13,14 @@ public class ClientsController(ISender mediator) : ApiControllerBase(mediator)
     {
         var result = await Mediator.Send(registerClientCommand);
         
+        return Ok(result);
+    }
+
+    [HttpPost("add-client-member")]
+    public async Task<IActionResult> AddClientMember([FromBody] AddClientMemberCommand addClientMemberCommand)
+    {
+        var result = await Mediator.Send(addClientMemberCommand);
+
         return Ok(result);
     }
 }
