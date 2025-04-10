@@ -36,8 +36,8 @@ public class ExceptionHandlingMiddleware(RequestDelegate next)
                 BadRequestException =>
                     new ProblemDetails
                     {
-                        Title = nameof(exception),
-                        Detail = exception.Message,
+                        Title = title,
+                        Detail = detail,
                         Type = "https://httpstatuses.com/400",
                         Status = StatusCodes.Status400BadRequest,
                         Instance = instance,
@@ -45,8 +45,8 @@ public class ExceptionHandlingMiddleware(RequestDelegate next)
                 UnauthorizedException =>
                     new ProblemDetails
                     {
-                        Title = nameof(exception),
-                        Detail = exception.Message,
+                        Title = title,
+                        Detail = detail,
                         Type = "https://httpstatuses.com/401",
                         Status = StatusCodes.Status401Unauthorized,
                         Instance = instance,
@@ -54,8 +54,8 @@ public class ExceptionHandlingMiddleware(RequestDelegate next)
                 ForbiddenException =>
                     new ProblemDetails
                     {
-                        Title = nameof(exception),
-                        Detail = exception.Message,
+                        Title = title,
+                        Detail = detail,
                         Type = "https://httpstatuses.com/403",
                         Status = StatusCodes.Status403Forbidden,
                         Instance = instance,
@@ -63,8 +63,8 @@ public class ExceptionHandlingMiddleware(RequestDelegate next)
                 NotFoundException =>
                     new ProblemDetails
                     {
-                        Title = nameof(exception),
-                        Detail = exception.Message,
+                        Title = title,
+                        Detail = detail,
                         Type = "https://httpstatuses.com/404",
                         Status = StatusCodes.Status404NotFound,
                         Instance = instance,
@@ -72,16 +72,16 @@ public class ExceptionHandlingMiddleware(RequestDelegate next)
                 ConflictException =>
                     new ProblemDetails
                     {
-                        Title = nameof(exception),
-                        Detail = exception.Message,
+                        Title = title,
+                        Detail = detail,
                         Type = "https://httpsstatus.com/409",
                         Status = StatusCodes.Status409Conflict,
                         Instance = instance,
                     },
                 _ => new ProblemDetails
                 {
-                    Title = nameof(exception),
-                    Detail = exception.Message,
+                    Title = title,
+                    Detail = detail,
                     Type = "https://httpstatuses.com/500",
                     Status = StatusCodes.Status500InternalServerError,
                     Instance = instance,
