@@ -1,4 +1,6 @@
-﻿using Application.Common.Exceptions;
+﻿using Application.Common.Attributes;
+using Application.Common.Constants;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Domain.Entities;
 
@@ -13,6 +15,7 @@ public class RegisterClientCommand : IRequest<ClientDto>
     public string Password { get; set; }
 }
 
+[AllowedFor(SystemUserRoles.SystemAdmin)]
 public class RegisterClientCommandHandler(
     IClientRepository clientRepository,
     IValidator<RegisterClientCommand> validator,
