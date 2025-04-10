@@ -1,10 +1,8 @@
-﻿using Application.Common.Attributes;
-using Application.Common.Exceptions;
+﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 
 namespace Application.Users.RefreshToken;
 
-[AllowedFor]
 public sealed class RefreshTokenCommand : IRequest<AccessTokenDto>
 {
     public string RefreshToken { get; set; }
