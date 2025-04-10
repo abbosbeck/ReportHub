@@ -1,12 +1,13 @@
-﻿using Application.Common.Attributes;
+﻿
+using Application.Common.Attributes;
 using Application.Common.Constants;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Domain.Entities;
 
-namespace Application.Clients.RegisterClient;
+namespace Application.Clients.AddClientMember;
 
-public class RegisterClientCommand : IRequest<ClientDto>
+public class AddClientMemberCommand : IRequest<ClientDto>
 {
     public string Name { get; set; }
 
@@ -15,29 +16,29 @@ public class RegisterClientCommand : IRequest<ClientDto>
     public string Password { get; set; }
 }
 
-[RequiresSystemRole(SystemUserRoles.SystemAdmin)]
-public class RegisterClientCommandHandler(
+[RequiresClientRole(ClientUserRoles.ClientAdmin)]
+public class AddClientMemberCommandHandler(
     IClientRepository repository,
-    IValidator<RegisterClientCommand> validator,
+    IMapper mapper,
     IPasswordHasher<Client> passwordHasher,
-    ICurrentUserService currentUser,
-    IMapper mapper)
-    : IRequestHandler<RegisterClientCommand, ClientDto>
+    IValidator<AddClientMemberCommand> validator) 
+    : IRequestHandler<AddClientMemberCommand, ClientDto>
 {
-    public async Task<ClientDto> Handle(RegisterClientCommand request, CancellationToken cancellationToken)
+    public async Task<ClientDto> Handle(AddClientMemberCommand request, CancellationToken cancellationToken)
     {
         await validator.ValidateAndThrowAsync(request, cancellationToken);
 
         var existClient = await repository.GetClientByEmailAsync(request.Email);
         if (existClient is not null)
         {
-            throw new ConflictException("There is a client with this email");
+            throw new ConflictException("There is a member with this email");
         }
 
         var client = mapper.Map<Client>(request);
         client.Password = passwordHasher.HashPassword(client, client.Password);
 
-        var freshClient = await repository.AddClientAdminAsync(client, currentUser.UserId);
+        await repository.AddClientMemberAsync(client);
+        var freshClient = await repository.GetClientByEmailAsync(client.Email);
 
         return mapper.Map<ClientDto>(freshClient);
     }
