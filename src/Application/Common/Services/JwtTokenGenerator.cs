@@ -2,8 +2,6 @@
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using Application.Common.Constants;
-using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Domain.Entities;
 using Microsoft.Extensions.Options;
@@ -13,7 +11,8 @@ namespace Application.Common.Services;
 
 public class JwtTokenGenerator(
         IOptions<JwtOptions> jwtOptions,
-        IUserRepository repository,
+        IUserRepository userRepository,
+        IClientRoleAssignmentRepository clientRoleAssignmentRepository,
         IUserRoleRepository userRoleRepository)
         : IJwtTokenGenerator
     {
@@ -43,12 +42,38 @@ public class JwtTokenGenerator(
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
+        public async Task<string> GenerateAccessTokenAsync(Client client)
+        {
+            var clientRoles = await clientRoleAssignmentRepository.GetClientRolesByClientIdAsync(client.Id);
+
+            var claims = new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, client.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, client.Email),
+            };
+
+            claims.AddRange(clientRoles.Select(r => new Claim(ClaimTypes.Role, r)));
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Value.Key));
+            var signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var expires = DateTime.UtcNow.AddMinutes(Convert.ToDouble(jwtOptions.Value.AccessTokenExpiryMinutes));
+
+            var token = new JwtSecurityToken(
+                issuer: jwtOptions.Value.Issuer,
+                audience: jwtOptions.Value.Audience,
+                claims: claims,
+                expires: expires,
+                signingCredentials: signingCredentials);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
         public async Task<string> GenerateAndSaveRefreshToken(User user)
         {
             var refreshToken = GenerateRefreshToken();
             user.RefreshToken = refreshToken;
             user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(jwtOptions.Value.RefreshTokenExpiryDays);
-            await repository.SaveChanges();
+            await userRepository.SaveChanges();
             return refreshToken;
         }
 
