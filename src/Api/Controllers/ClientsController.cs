@@ -4,6 +4,7 @@ using Application.Clients.LoginClient;
 using Application.Clients.RegisterClient;
 using Application.Clients.SoftDeleteClient;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
@@ -18,6 +19,7 @@ public class ClientsController(ISender mediator) : ApiControllerBase(mediator)
         return Ok(result);
     }
 
+    [AllowAnonymous]
     [HttpPost("login")]
     public async Task<IActionResult> LoginAsync([FromBody] LoginClientCommand command)
     {
