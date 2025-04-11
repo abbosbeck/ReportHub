@@ -27,10 +27,10 @@ public class AddClientMemberCommandHandler(
     {
         await validator.ValidateAndThrowAsync(request, cancellationToken);
 
-        var existClient = await repository.GetClientByEmailAsync(request.Email);
-        if (existClient is not null)
+        var existClient = repository.IsClientExists(request.Email);
+        if (existClient)
         {
-            throw new ConflictException("There is a member with this email");
+            throw new ConflictException("There is a member with this email!");
         }
 
         var client = mapper.Map<Client>(request);

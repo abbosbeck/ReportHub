@@ -1,4 +1,5 @@
-﻿using Application.Common.Exceptions;
+﻿using System.Runtime.Serialization;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Domain.Entities;
 
@@ -33,6 +34,11 @@ public class ClientRepository(AppDbContext context) : IClientRepository
     public async Task<Client> GetClientByEmailAsync(string email)
     {
         return await context.Clients.FirstOrDefaultAsync(c => c.Email == email);
+    }
+
+    public bool IsClientExists(string email)
+    {
+        return context.Clients.Any(c => c.Email == email);
     }
 
     public async Task<Client> GetClientByIdAsync(Guid id)
