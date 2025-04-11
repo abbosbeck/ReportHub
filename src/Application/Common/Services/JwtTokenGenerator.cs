@@ -21,10 +21,6 @@ public class JwtTokenGenerator(
     public async Task<string> GenerateAccessTokenAsync(User user)
     {
         var userRoles = await userRoleRepository.GetUserRolesByUserIdAsync(user.Id);
-        if (userRoles is null)
-        {
-            throw new ForbiddenException("You do not have access to the server!");
-        }
 
         var claims = new List<Claim>
         {
@@ -52,10 +48,6 @@ public class JwtTokenGenerator(
     public async Task<string> GenerateAccessTokenAsync(Client client)
     {
         var clientRoles = await clientRoleAssignmentRepository.GetClientRolesByClientIdAsync(client.Id);
-        if (clientRoles is null)
-        {
-            clientRoles.Add(ClientUserRoles.Regular);
-        }
 
         var claims = new List<Claim>
         {
