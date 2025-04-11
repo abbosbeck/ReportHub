@@ -1,12 +1,10 @@
-﻿using Application.Common.Attributes;
-using Application.Common.Constants;
-using Application.Common.Exceptions;
+﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Domain.Entities;
 
-namespace Application.Customers.CreateCustomer;
+namespace Application.Customers.AddCustomer;
 
-public class CreateCustomerCommand : IRequest<CustomerDto>
+public class AddCustomerCommand : IRequest<CustomerDto>
 {
     public string Name { get; init; }
 
@@ -15,15 +13,14 @@ public class CreateCustomerCommand : IRequest<CustomerDto>
     public string Country { get; init; }
 }
 
-[RequiresClientRole(ClientUserRoles.ClientAdmin)]
-public class CreateCustomerCommandHandler(
+public class AddCustomerCommandHandler(
+    IMapper mapper,
     ICustomerRepository repository,
-    IValidator<CreateCustomerCommand> validator,
     ICurrentUserService currentUser,
-    IMapper mapper)
-    : IRequestHandler<CreateCustomerCommand, CustomerDto>
+    IValidator<AddCustomerCommand> validator)
+    : IRequestHandler<AddCustomerCommand, CustomerDto>
 {
-    public async Task<CustomerDto> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
+    public async Task<CustomerDto> Handle(AddCustomerCommand request, CancellationToken cancellationToken)
     {
         await validator.ValidateAndThrowAsync(request);
 

@@ -1,6 +1,6 @@
-﻿using Application.Common.Interfaces;
+﻿using System.Runtime.Serialization;
+using Application.Common.Interfaces;
 using Domain.Entities;
-using System.Runtime.Serialization;
 
 namespace Infrastructure.Persistence.Repositories;
 
@@ -23,7 +23,7 @@ public class CustomerRepository(AppDbContext context) : ICustomerRepository
     }
 
     public bool CheckIsCustomerExistByEmail(string email)
-    {
+{
         return context.Customers.Any(c => c.Email == email);
     }
 
