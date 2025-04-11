@@ -35,8 +35,6 @@ namespace Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
-                    Email = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
-                    Password = table.Column<string>(type: "text", nullable: false),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     DeletedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -127,7 +125,7 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ClientRoleAssignment",
+                name: "ClientRoleAssignments",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -143,21 +141,21 @@ namespace Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ClientRoleAssignment", x => x.Id);
+                    table.PrimaryKey("PK_ClientRoleAssignments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ClientRoleAssignment_ClientRoles_ClientRoleId",
+                        name: "FK_ClientRoleAssignments_ClientRoles_ClientRoleId",
                         column: x => x.ClientRoleId,
                         principalTable: "ClientRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ClientRoleAssignment_Clients_ClientId",
+                        name: "FK_ClientRoleAssignments_Clients_ClientId",
                         column: x => x.ClientId,
                         principalTable: "Clients",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ClientRoleAssignment_Users_UserId",
+                        name: "FK_ClientRoleAssignments_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -165,7 +163,7 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SystemRoleAssignment",
+                name: "SystemRoleAssignments",
                 columns: table => new
                 {
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
@@ -180,15 +178,15 @@ namespace Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SystemRoleAssignment", x => new { x.UserId, x.RoleId });
+                    table.PrimaryKey("PK_SystemRoleAssignments", x => new { x.UserId, x.RoleId });
                     table.ForeignKey(
-                        name: "FK_SystemRoleAssignment_SystemRoles_RoleId",
+                        name: "FK_SystemRoleAssignments_SystemRoles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "SystemRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_SystemRoleAssignment_Users_UserId",
+                        name: "FK_SystemRoleAssignments_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -240,7 +238,6 @@ namespace Infrastructure.Migrations
                     Name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     Description = table.Column<string>(type: "text", nullable: true),
                     Price = table.Column<decimal>(type: "numeric", nullable: false),
-                    PaymentStatus = table.Column<int>(type: "integer", nullable: false),
                     Currency = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: false),
                     ClientId = table.Column<Guid>(type: "uuid", nullable: false),
                     InvoiceId = table.Column<Guid>(type: "uuid", nullable: false),
@@ -269,25 +266,19 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ClientRoleAssignment_ClientId",
-                table: "ClientRoleAssignment",
+                name: "IX_ClientRoleAssignments_ClientId",
+                table: "ClientRoleAssignments",
                 column: "ClientId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ClientRoleAssignment_ClientRoleId",
-                table: "ClientRoleAssignment",
+                name: "IX_ClientRoleAssignments_ClientRoleId",
+                table: "ClientRoleAssignments",
                 column: "ClientRoleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ClientRoleAssignment_UserId",
-                table: "ClientRoleAssignment",
+                name: "IX_ClientRoleAssignments_UserId",
+                table: "ClientRoleAssignments",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Clients_Email",
-                table: "Clients",
-                column: "Email",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Customers_ClientId",
@@ -315,8 +306,8 @@ namespace Infrastructure.Migrations
                 column: "InvoiceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SystemRoleAssignment_RoleId",
-                table: "SystemRoleAssignment",
+                name: "IX_SystemRoleAssignments_RoleId",
+                table: "SystemRoleAssignments",
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
@@ -341,13 +332,13 @@ namespace Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ClientRoleAssignment");
+                name: "ClientRoleAssignments");
 
             migrationBuilder.DropTable(
                 name: "Items");
 
             migrationBuilder.DropTable(
-                name: "SystemRoleAssignment");
+                name: "SystemRoleAssignments");
 
             migrationBuilder.DropTable(
                 name: "ClientRoles");
