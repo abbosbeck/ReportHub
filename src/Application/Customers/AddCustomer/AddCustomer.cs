@@ -22,7 +22,7 @@ public class AddCustomerCommandHandler(
 {
     public async Task<CustomerDto> Handle(AddCustomerCommand request, CancellationToken cancellationToken)
     {
-        await validator.ValidateAndThrowAsync(request);
+        await validator.ValidateAndThrowAsync(request, cancellationToken: cancellationToken);
 
         var isExistCustomer = repository.CheckIsCustomerExistByEmail(request.Email);
         if (isExistCustomer)

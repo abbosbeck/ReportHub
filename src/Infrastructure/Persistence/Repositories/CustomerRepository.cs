@@ -12,9 +12,9 @@ public class CustomerRepository(AppDbContext context) : ICustomerRepository
         await SaveChangesAsync();
     }
 
-    public Task<IEnumerable<Customer>> GetAllCustomer()
+    public async Task<IEnumerable<Customer>> GetAllCustomer()
     {
-        throw new NotImplementedException();
+        return await context.Customers.ToListAsync();
     }
 
     public Task<Customer> GetCustomerById(Guid id)
