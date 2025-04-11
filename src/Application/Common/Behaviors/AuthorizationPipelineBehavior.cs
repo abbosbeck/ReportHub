@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using Application.Common.Attributes;
 using Application.Common.Exceptions;
-using Application.Common.Interfaces;
+using Application.Common.Interfaces.Authorization;
 
 namespace Application.Common.Behaviors;
 

@@ -14,8 +14,8 @@ namespace Infrastructure.Persistence.Configurations
                 .IsRequired();
 
             builder.Property(i => i.Currency)
-            .HasMaxLength(40)
-            .IsRequired();
+                .HasMaxLength(40)
+                .IsRequired();
 
             builder.Property(i => i.Price).IsRequired();
         }

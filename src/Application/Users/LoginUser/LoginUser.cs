@@ -1,10 +1,11 @@
-﻿using Application.Common.Exceptions;
-using Application.Common.Interfaces;
+﻿using Application.Common.Attributes;
+using Application.Common.Exceptions;
+using Application.Common.Interfaces.Authorization;
 using Domain.Entities;
 
 namespace Application.Users.LoginUser;
 
-public sealed class LoginUserCommand : IRequest<LoginUserDto>
+public sealed class LoginUserCommand : IRequest<LoginDto>
 {
     public string Email { get; set; }
 
@@ -15,9 +16,9 @@ public class LoginUserCommandHandler(
         UserManager<User> userManager,
         IJwtTokenGenerator jwtTokenGenerator,
         IValidator<LoginUserCommand> validator)
-        : IRequestHandler<LoginUserCommand, LoginUserDto>
+        : IRequestHandler<LoginUserCommand, LoginDto>
 {
-    public async Task<LoginUserDto> Handle(LoginUserCommand request, CancellationToken cancellationToken)
+    public async Task<LoginDto> Handle(LoginUserCommand request, CancellationToken cancellationToken)
     {
         await validator.ValidateAndThrowAsync(request, cancellationToken: cancellationToken);
 
@@ -48,7 +49,7 @@ public class LoginUserCommandHandler(
             throw new UnauthorizedAccessException(string.Join(", ", result.Errors.Select(e => e.Description)));
         }
 
-        return new LoginUserDto
+        return new LoginDto
         {
             AccessToken = accessToken,
             RefreshToken = refreshToken,

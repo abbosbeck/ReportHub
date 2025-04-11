@@ -1,7 +1,6 @@
 ﻿using System.Web;
-using Application.Common.Constants;
 using Application.Common.Exceptions;
-using Application.Common.Interfaces;
+using Application.Common.Interfaces.Authorization;
 using Domain.Entities;
 using Microsoft.Extensions.Configuration;
 
@@ -15,9 +14,9 @@ public sealed class RegisterUserCommand : IRequest<UserDto>
 
     public string Department { get; set; }
 
-    public string Password { get; set; }
-
     public string Email { get; set; }
+
+    public string Password { get; set; }
 }
 
 public class RegisterUserCommandHandler(

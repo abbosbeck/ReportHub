@@ -23,7 +23,7 @@ public class SoftDeletableInterceptor : SaveChangesInterceptor
         return base.SavingChangesAsync(eventData, result, cancellationToken);
     }
 
-    private static void DeleteEntities(DbContext? context)
+    private static void DeleteEntities(DbContext context)
     {
         if (context == null)
         {

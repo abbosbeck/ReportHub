@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 using Application.Common.Behaviors;
-using Application.Common.Interfaces;
+using Application.Common.Interfaces.Authorization;
 using Application.Common.Services;
 using Domain.Entities;
 using Microsoft.Extensions.Configuration;
@@ -10,7 +10,9 @@ namespace Application;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddApplicationDependencies(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddApplicationDependencies(
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
         var assembly = Assembly.GetExecutingAssembly();
 

@@ -1,4 +1,5 @@
-﻿using Application.Common.Interfaces;
+﻿using Application.Common.Interfaces.Authorization;
+using Application.Common.Interfaces.Repositories;
 using Application.Common.Services;
 using Domain.Entities;
 using Infrastructure.Authentication;
@@ -29,12 +30,8 @@ public static class DependencyInjection
         services.AddAuthorization();
         services.AddPersistence(keyVaultOptions);
         services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
-        services.AddScoped<IPasswordHasher<Client>, PasswordHasher<Client>>();
         services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<IUserRoleRepository, UserRoleRepository>();
-        services.AddScoped<IClientRepository, ClientRepository>();
-        services.AddScoped<IClientRoleAssignmentRepository, ClientRoleAssignmentRepository>();
-        services.AddScoped<ICustomerRepository, CustomerRepository>();
+        services.AddScoped<ISystemRoleAssignmentRepository, SystemRoleAssignmentRepository>();
 
         services.AddIdentity(configuration);
 
@@ -43,7 +40,7 @@ public static class DependencyInjection
 
     private static void AddIdentity(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddIdentityCore<User>(options =>
+        services.AddIdentity<User, SystemRole>(options =>
         {
             options.Password.RequiredLength = 6;
             options.Password.RequireDigit = true;
@@ -53,11 +50,10 @@ public static class DependencyInjection
 
             options.User.RequireUniqueEmail = true;
         })
-            .AddRoles<SystemRole>()
             .AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders();
 
-        services.AddSingleton<IEmailService, EmailService>();
+        services.AddScoped<IEmailService, EmailService>();
 
         services.Configure<EmailOptions>(configuration.GetSection(nameof(EmailOptions)));
         services.Configure<SmtpOptions>(configuration.GetSection(nameof(SmtpOptions)));

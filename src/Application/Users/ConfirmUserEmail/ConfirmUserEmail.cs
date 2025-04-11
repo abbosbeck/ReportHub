@@ -1,5 +1,4 @@
-﻿using System.Web;
-using Application.Common.Exceptions;
+﻿using Application.Common.Exceptions;
 using Domain.Entities;
 
 namespace Application.Users.ConfirmUserEmail;

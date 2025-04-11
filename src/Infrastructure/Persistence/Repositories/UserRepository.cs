@@ -1,63 +1,40 @@
-﻿using Application.Common.Interfaces;
+﻿using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
 
 namespace Infrastructure.Persistence.Repositories;
 
 public class UserRepository(AppDbContext context) : IUserRepository
 {
-    public async Task AddUser(User user)
+    public async Task<User> AddAsync(User user)
     {
-        await context.Set<User>().AddAsync(user);
+        await context.AddAsync(user);
         await context.SaveChangesAsync();
+
+        return user;
     }
 
-    public async Task<User> GetUserByName(string firstName)
+    public async Task<bool> DeleteAsync(User user)
     {
-        return await context.Set<User>().FirstOrDefaultAsync(u => EF.Functions.ILike(u.FirstName, firstName));
+        context.Remove(user);
+
+        return await context.SaveChangesAsync() > 0;
     }
 
-    public async Task<User> GetUserByIdAsync(Guid userId)
+    public async Task<User> GetByIdAsync(Guid userId)
     {
-        return await context.Set<User>().FirstOrDefaultAsync(x => x.Id == userId);
+        return await context.Users.FindAsync(userId);
     }
 
-    public async Task<User> GetUserByPhoneNumberAsync(string phoneNumber)
+    public async Task<User> GetByRefreshTokenAsync(string refreshToken)
     {
-        return await context.Set<User>().FirstOrDefaultAsync(u => EF.Functions.ILike(u.PhoneNumber!, phoneNumber));
+        return await context.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
     }
 
-    public async Task<User> GetUserByRefreshTokenAsync(string refreshToken)
+    public async Task<User> UpdateAsync(User user)
     {
-        return await context.Set<User>().FirstOrDefaultAsync(u => EF.Functions.ILike(u.RefreshToken, refreshToken));
-    }
-
-    public async Task SaveChanges()
-    {
-         await context.SaveChangesAsync();
-    }
-
-    public async Task UpdateUserAsync(User user)
-    {
-        context.Users.Update(user);
+        context.Update(user);
         await context.SaveChangesAsync();
-    }
 
-    public async Task<bool> SoftDeleteUserAsync(Guid userId)
-    {
-        var user = await GetUserByIdAsync(userId);
-        if (user == null)
-        {
-            return false;
-        }
-
-        if (user.IsDeleted)
-        {
-            return true;
-        }
-
-        user.IsDeleted = true;
-        await UpdateUserAsync(user);
-
-        return true;
+        return user;
     }
 }

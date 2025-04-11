@@ -6,9 +6,12 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Infrastructure.Authentication.Extensions;
+
 public static class AddJwtAuthServiceCollectionExtension
 {
-    public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IOptions<JwtOptions> jwtOptions)
+    public static IServiceCollection AddJwtAuthentication(
+        this IServiceCollection services,
+        IOptions<JwtOptions> jwtOptions)
     {
         services.AddAuthentication(options =>
             {

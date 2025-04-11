@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.Common.Constants;
+using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -41,11 +42,11 @@ public class AppDbContextInitializer(AppDbContext context, IPasswordHasher<User>
             {
                 var adminUser = new User
                 {
-                    FirstName = "Admin",
-                    LastName = "Admin",
-                    UserName = "Admin",
-                    NormalizedUserName = "ADMIN",
-                    Department = "Admin",
+                    FirstName = SystemRoles.SuperAdmin,
+                    LastName = SystemRoles.SuperAdmin,
+                    UserName = SystemRoles.SuperAdmin,
+                    NormalizedUserName = SystemRoles.SuperAdmin.ToUpper(),
+                    Department = SystemRoles.SuperAdmin,
                     Email = "admin@gmail.com",
                     NormalizedEmail = "ADMIN@GMAIL.COM",
                     EmailConfirmed = true,
@@ -63,8 +64,8 @@ public class AppDbContextInitializer(AppDbContext context, IPasswordHasher<User>
             {
                 context.Set<SystemRole>().Add(new SystemRole
                 {
-                    Name = "SystemAdmin",
-                    NormalizedName = "SYSTEMADMIN",
+                    Name = SystemRoles.SuperAdmin,
+                    NormalizedName = SystemRoles.SuperAdmin.ToUpper(),
                     IsDeleted = false,
                 });
 
@@ -74,7 +75,7 @@ public class AppDbContextInitializer(AppDbContext context, IPasswordHasher<User>
             if (!await context.Set<SystemRoleAssignment>().AnyAsync())
             {
                 var adminRole = await context.Set<SystemRole>()
-                    .FirstOrDefaultAsync(r => r.NormalizedName == "SYSTEMADMIN");
+                    .FirstOrDefaultAsync(r => r.Name == SystemRoles.SuperAdmin);
 
                 var adminUser = await context.Set<User>()
                     .FirstOrDefaultAsync(u => u.NormalizedEmail == "ADMIN@GMAIL.COM");
@@ -95,15 +96,19 @@ public class AppDbContextInitializer(AppDbContext context, IPasswordHasher<User>
             {
                 context.ClientRoles.Add(new ClientRole
                 {
-                    Name = "ClientAdmin",
+                    Name = ClientRoles.Owner,
                     IsDeleted = false,
                 });
                 context.ClientRoles.Add(new ClientRole
                 {
-                    Name = "Regular",
+                    Name = ClientRoles.ClientAdmin,
                     IsDeleted = false,
                 });
-
+                context.ClientRoles.Add(new ClientRole
+                {
+                    Name = ClientRoles.Operator,
+                    IsDeleted = false,
+                });
                 await context.SaveChangesAsync();
             }
         }
