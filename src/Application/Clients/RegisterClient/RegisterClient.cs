@@ -28,8 +28,8 @@ public class RegisterClientCommandHandler(
     {
         await validator.ValidateAndThrowAsync(request, cancellationToken);
 
-        var existClient = await repository.GetClientByEmailAsync(request.Email);
-        if (existClient is not null)
+        var existClient = repository.IsClientExists(request.Email);
+        if (existClient)
         {
             throw new ConflictException("There is a client with this email");
         }

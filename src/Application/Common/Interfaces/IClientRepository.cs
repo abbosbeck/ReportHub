@@ -10,6 +10,8 @@ public interface IClientRepository
 
     Task<Client> GetClientByEmailAsync(string email);
 
+    bool IsClientExists(string email);
+
     Task<Client> GetClientByIdAsync(Guid id);
 
     Task<bool> GiveRoleToClientMemberAsync(Guid clientId, string roleName);
