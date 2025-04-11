@@ -15,6 +15,7 @@ public class CreateCustomerCommand : IRequest<CustomerDto>
     public string Country { get; init; }
 }
 
+[RequiresClientRole(ClientUserRoles.ClientAdmin)]
 public class CreateCustomerCommandHandler(
     ICustomerRepository repository,
     IValidator<CreateCustomerCommand> validator,
@@ -29,7 +30,7 @@ public class CreateCustomerCommandHandler(
         var isExistCustomer = repository.CheckIsCustomerExistByEmail(request.Email);
         if (isExistCustomer)
         {
-            throw new ConflictException("There is customer with this email!");
+            throw new ConflictException("There is already a customer with this email!");
         }
 
         var newCustomer = mapper.Map<Customer>(request);
