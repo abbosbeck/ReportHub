@@ -12,9 +12,9 @@ namespace Api.Controllers;
 public class ClientsController(ISender mediator) : ApiControllerBase(mediator)
 {
     [HttpPost("register")]
-    public async Task<IActionResult> RegisterClient([FromBody] RegisterClientCommand registerClientCommand)
+    public async Task<IActionResult> RegisterClient([FromBody] RegisterClientCommand command)
     {
-        var result = await Mediator.Send(registerClientCommand);
+        var result = await Mediator.Send(command);
 
         return Ok(result);
     }
@@ -29,17 +29,17 @@ public class ClientsController(ISender mediator) : ApiControllerBase(mediator)
     }
 
     [HttpPost("add-client-member")]
-    public async Task<IActionResult> AddClientMember([FromBody] AddClientMemberCommand addClientMemberCommand)
+    public async Task<IActionResult> AddClientMember([FromBody] AddClientMemberCommand command)
     {
-        var result = await Mediator.Send(addClientMemberCommand);
+        var result = await Mediator.Send(command);
 
         return Ok(result);
     }
 
     [HttpPost("give-role")]
-    public async Task<IActionResult> GiveRoleToClientMember([FromBody] GiveRoleToClientMemberCommand giveRoleToClientMemberCommand)
+    public async Task<IActionResult> GiveRoleToClientMember([FromBody] GiveRoleToClientMemberCommand command)
     {
-        var result = await Mediator.Send(giveRoleToClientMemberCommand);
+        var result = await Mediator.Send(command);
 
         return Ok(result);
     }
