@@ -34,6 +34,7 @@ public static class DependencyInjection
         services.AddScoped<IUserRoleRepository, UserRoleRepository>();
         services.AddScoped<IClientRepository, ClientRepository>();
         services.AddScoped<IClientRoleAssignmentRepository, ClientRoleAssignmentRepository>();
+        services.AddScoped<ICustomerRepository, CustomerRepository>();
 
         services.AddIdentity(configuration);
 
