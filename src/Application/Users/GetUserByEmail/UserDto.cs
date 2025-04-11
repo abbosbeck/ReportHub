@@ -10,5 +10,5 @@ public class UserDto
 
     public string Department { get; set; }
 
-    public string PhoneNumber { get; set; }
+    public string Email { get; set; }
 }

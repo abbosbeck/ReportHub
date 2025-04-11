@@ -7,7 +7,7 @@ namespace Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<SystemRoleAssignment> builder)
         {
-            builder.ToTable("SystemRoleAssignment");
+            builder.ToTable("SystemRoleAssignments");
 
             builder.Ignore(x => x.User);
             builder.Ignore(x => x.Role);

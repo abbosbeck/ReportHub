@@ -1,5 +1,6 @@
 ﻿using Application.Common.Exceptions;
-using Application.Common.Interfaces;
+using Application.Common.Interfaces.Authorization;
+using Application.Common.Interfaces.Repositories;
 
 namespace Application.Users.RefreshToken;
 
@@ -10,12 +11,15 @@ public sealed class RefreshTokenCommand : IRequest<AccessTokenDto>
 
 public class RefreshTokenCommandHandler(
     IUserRepository repository,
-    IJwtTokenGenerator jwtTokenGenerator)
+    IJwtTokenGenerator jwtTokenGenerator,
+    IValidator<RefreshTokenCommand> validator)
     : IRequestHandler<RefreshTokenCommand, AccessTokenDto>
 {
     public async Task<AccessTokenDto> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
     {
-        var user = await repository.GetUserByRefreshTokenAsync(request.RefreshToken);
+        await validator.ValidateAndThrowAsync(request, cancellationToken: cancellationToken);
+
+        var user = await repository.GetByRefreshTokenAsync(request.RefreshToken);
         if (user == null || user.RefreshToken != request.RefreshToken
                          || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
         {
@@ -28,7 +32,7 @@ public class RefreshTokenCommandHandler(
         user.RefreshToken = refreshToken;
         user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
 
-        await repository.UpdateUserAsync(user);
+        await repository.UpdateAsync(user);
 
         return new AccessTokenDto
         {

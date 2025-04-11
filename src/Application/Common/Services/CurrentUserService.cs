@@ -1,5 +1,5 @@
 ﻿using Application.Common.Exceptions;
-using Application.Common.Interfaces;
+using Application.Common.Interfaces.Authorization;
 using Microsoft.AspNetCore.Http;
 
 namespace Application.Common.Services;

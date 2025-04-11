@@ -4,10 +4,10 @@ public class RegisterUserValidator : AbstractValidator<RegisterUserCommand>
 {
     public RegisterUserValidator()
     {
-        RuleFor(u => u.FirstName).NotEmpty().WithMessage("First name is required");
-        RuleFor(u => u.LastName).NotEmpty().WithMessage("Last name is required");
-        RuleFor(u => u.Department).NotEmpty().WithMessage("Department is required");
-        RuleFor(u => u.Email).NotEmpty().EmailAddress().WithMessage("Please provide valid email");
-        RuleFor(u => u.Password).NotEmpty().MinimumLength(6).WithMessage("Password must be at least 6 characters");
+        RuleFor(u => u.FirstName).NotEmpty();
+        RuleFor(u => u.LastName).NotEmpty();
+        RuleFor(u => u.Department).NotEmpty();
+        RuleFor(u => u.Email).NotEmpty().EmailAddress();
+        RuleFor(u => u.Password).NotEmpty().MinimumLength(6);
     }
 }
