@@ -1,4 +1,5 @@
-﻿using Application.Common.Constants;
+﻿using Application.Common.Attributes;
+using Application.Common.Constants;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
@@ -12,6 +13,7 @@ public class CreateClientCommand : IRequest<ClientDto>
     public Guid OwnerId { get; set; }
 }
 
+[RequiresSystemRole(SystemRoles.SuperAdmin)]
 public class CreateClientCommandHandler(
     IClientRepository clientRepository,
     IClientRoleAssignmentRepository clientRoleAssignmentRepository,
