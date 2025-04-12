@@ -40,7 +40,9 @@ public class CreateClientCommandHandler(
     private async Task AssignClientRoleAsync(
         Client client, Guid ownerId, string roleName)
     {
-        var clientRole = await clientRoleRepository.GetByNameAsync(roleName);
+        var clientRole = await clientRoleRepository.GetByNameAsync(roleName)
+            ?? throw new NotFoundException("Role not found!");
+
         var clientRoleAssignment = new ClientRoleAssignment
         {
             ClientId = client.Id,
