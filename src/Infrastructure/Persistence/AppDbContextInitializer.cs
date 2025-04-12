@@ -69,6 +69,13 @@ public class AppDbContextInitializer(AppDbContext context, IPasswordHasher<User>
                     IsDeleted = false,
                 });
 
+                context.Set<SystemRole>().Add(new SystemRole
+                {
+                    Name = SystemRoles.Regular,
+                    NormalizedName = SystemRoles.Regular.ToUpper(),
+                    IsDeleted = false,
+                });
+
                 await context.SaveChangesAsync();
             }
 
