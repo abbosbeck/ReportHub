@@ -12,7 +12,7 @@ public class SystemRoleAssignmentRepository(AppDbContext context) : ISystemRoleA
         return await context.SaveChangesAsync() > 0;
     }
 
-    public async Task<List<string>> GetByNameAsync(Guid userId)
+    public async Task<List<string>> GetRolesByUserIdAsync(Guid userId)
     {
         var roles = await context.UserRoles
             .Where(r => r.UserId == userId)

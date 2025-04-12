@@ -19,7 +19,7 @@ public class JwtTokenGenerator(
     {
         public async Task<string> GenerateAccessTokenAsync(User user)
         {
-            var userRoles = await systemRoleAssignmentRepository.GetSystemRolesByUserIdAsync(user.Id);
+            var userRoles = await systemRoleAssignmentRepository.GetRolesByUserIdAsync(user.Id);
 
             var claims = new List<Claim>
             {

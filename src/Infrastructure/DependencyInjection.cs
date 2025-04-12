@@ -32,6 +32,9 @@ public static class DependencyInjection
         services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ISystemRoleAssignmentRepository, SystemRoleAssignmentRepository>();
+        services.AddScoped<IClientRepository, ClientRepository>();
+        services.AddScoped<IClientRoleAssignmentRepository, ClientRoleAssignmentRepository>();
+        services.AddScoped<IClientRoleRepository, ClientRoleRepository>();
 
         services.AddIdentity(configuration);
 

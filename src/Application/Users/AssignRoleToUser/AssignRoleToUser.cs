@@ -17,6 +17,7 @@ public sealed class AssignRoleToUserCommand : IRequest<bool>
 public class AssignRoleToUserCommandHandler(
     IUserRepository userRepository,
     ISystemRoleAssignmentRepository systemRoleAssignmentRepository,
+    ISystemRoleRepository systemRoleRepository,
     IValidator<AssignRoleToUserCommand> validator)
     : IRequestHandler<AssignRoleToUserCommand, bool>
 {
@@ -27,13 +28,13 @@ public class AssignRoleToUserCommandHandler(
         var user = await userRepository.GetByIdAsync(request.UserId)
             ?? throw new NotFoundException($"User is not found with this id: {request.UserId}");
 
+        var systemRole = await systemRoleRepository.GetByNameAsync(request.RoleName)
+            ?? throw new NotFoundException($"System role is not found with this name: {request.RoleName}");
+
         var userRole = new SystemRoleAssignment
         {
             UserId = user.Id,
-            Role = new SystemRole
-            {
-                Name = request.RoleName,
-            },
+            RoleId = systemRole.Id,
         };
 
         var succeed = await systemRoleAssignmentRepository.AssignRoleToUserAsync(userRole);
