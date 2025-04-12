@@ -8,18 +8,22 @@ using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 
 namespace Application.Common.Services;
 
 public class JwtTokenGenerator(
         IOptions<JwtOptions> jwtOptions,
         IUserRepository userRepository,
-        ISystemRoleAssignmentRepository systemRoleAssignmentRepository)
+        ISystemRoleAssignmentRepository systemRoleAssignmentRepository,
+        IClientRoleAssignmentRepository clientRoleAssignmentRepository)
         : IJwtTokenGenerator
     {
         public async Task<string> GenerateAccessTokenAsync(User user)
         {
-            var userRoles = await systemRoleAssignmentRepository.GetRolesByUserIdAsync(user.Id);
+            var systemRoles = await systemRoleAssignmentRepository.GetRolesByUserIdAsync(user.Id);
+            var clientRoles = await clientRoleAssignmentRepository.GetRolesByUserIdAsync(user.Id);
+            var clinetRolesJson = JsonConvert.SerializeObject(clientRoles);
 
             var claims = new List<Claim>
             {
@@ -27,7 +31,8 @@ public class JwtTokenGenerator(
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
             };
 
-            claims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
+            claims.AddRange(systemRoles.Select(role => new Claim(ClaimTypes.Role, role)));
+            claims.AddRange(clientRoles.Select(role => new Claim("ClientRoles", clinetRolesJson)));
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Value.Key));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
