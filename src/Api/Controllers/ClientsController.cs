@@ -1,6 +1,7 @@
 ﻿using Application.Clients.AddClientMember;
 using Application.Clients.AssignClientRole;
 using Application.Clients.CreateClient;
+using Application.Clients.DeleteClient;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,6 +29,14 @@ public class ClientsController(ISender mediator) : ApiControllerBase(mediator)
     public async Task<IActionResult> AssignRoleAsync([FromBody] AssignClientRoleCommand command)
     {
         var result = await Mediator.Send(command);
+
+        return Ok(result);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteAsync(Guid id)
+    {
+        var result = await Mediator.Send(new DeleteClientCommand { ClientId = id });
 
         return Ok(result);
     }
