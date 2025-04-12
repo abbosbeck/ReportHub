@@ -44,7 +44,7 @@ public static class DependencyInjection
 
     private static void AddIdentity(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddIdentity<User, SystemRole>(options =>
+        services.AddIdentityCore<User>(options =>
         {
             options.Password.RequiredLength = 6;
             options.Password.RequireDigit = true;
