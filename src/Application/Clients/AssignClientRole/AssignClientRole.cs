@@ -1,4 +1,6 @@
-﻿using Application.Common.Exceptions;
+﻿using Application.Common.Attributes;
+using Application.Common.Constants;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
 
@@ -13,6 +15,7 @@ public class AssignClientRoleCommand : IRequest<bool>
     public string RoleName { get; set; }
 }
 
+[RequiresClientRole(ClientRoles.Owner)]
 public class AssignClientRoleHandler(
     IClientRepository clientRepository,
     IClientRoleAssignmentRepository clientRoleAssignmentRepository,

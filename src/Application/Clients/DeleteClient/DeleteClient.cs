@@ -1,4 +1,6 @@
-﻿using Application.Common.Exceptions;
+﻿using Application.Common.Attributes;
+using Application.Common.Constants;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces.Repositories;
 
 namespace Application.Clients.DeleteClient;
@@ -8,6 +10,7 @@ public class DeleteClientCommand : IRequest<bool>
     public Guid ClientId { get; set; }
 }
 
+[RequiresSystemRole(SystemRoles.SuperAdmin)]
 public class DeleteClientCommandHandler(
     IClientRepository clientRepository,
     IValidator<DeleteClientCommand> validator)

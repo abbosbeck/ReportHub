@@ -1,4 +1,5 @@
-﻿using Application.Common.Constants;
+﻿using Application.Common.Attributes;
+using Application.Common.Constants;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
@@ -12,6 +13,7 @@ public class AddClientMemberCommand : IRequest<bool>
     public Guid UserId { get; set; }
  }
 
+[RequiresClientRole(ClientRoles.Owner)]
 public class AddClientMemberCommandHandler(
     IClientRepository clientRepository,
     IClientRoleAssignmentRepository clientRoleAssignmentRepository,
