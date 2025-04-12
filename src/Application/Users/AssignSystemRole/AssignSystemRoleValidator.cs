@@ -2,9 +2,9 @@
 
 namespace Application.Users.AssignSystemRole;
 
-public class AssignSystemRoleCommandValidator : AbstractValidator<AssignSystemRoleCommand>
+public class AssignSystemRoleValidator : AbstractValidator<AssignSystemRoleCommand>
 {
-    public AssignSystemRoleCommandValidator()
+    public AssignSystemRoleValidator()
     {
         RuleFor(t => t.UserId)
             .NotEmpty();
