@@ -4,9 +4,9 @@ using Application.Common.Exceptions;
 using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
 
-namespace Application.Users.AssignRoleToUser;
+namespace Application.Users.AssignSystemRole;
 
-public sealed class AssignRoleToUserCommand : IRequest<bool>
+public sealed class AssignSystemRoleCommand : IRequest<bool>
 {
     public Guid UserId { get; set; }
 
@@ -14,14 +14,14 @@ public sealed class AssignRoleToUserCommand : IRequest<bool>
 }
 
 [RequiresSystemRole(SystemRoles.SuperAdmin)]
-public class AssignRoleToUserCommandHandler(
+public class AssignSystemRoleCommandHandler(
     IUserRepository userRepository,
     ISystemRoleAssignmentRepository systemRoleAssignmentRepository,
     ISystemRoleRepository systemRoleRepository,
-    IValidator<AssignRoleToUserCommand> validator)
-    : IRequestHandler<AssignRoleToUserCommand, bool>
+    IValidator<AssignSystemRoleCommand> validator)
+    : IRequestHandler<AssignSystemRoleCommand, bool>
 {
-    public async Task<bool> Handle(AssignRoleToUserCommand request, CancellationToken cancellationToken)
+    public async Task<bool> Handle(AssignSystemRoleCommand request, CancellationToken cancellationToken)
     {
         await validator.ValidateAndThrowAsync(request, cancellationToken: cancellationToken);
 

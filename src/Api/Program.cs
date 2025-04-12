@@ -4,6 +4,7 @@ using Infrastructure;
 using Infrastructure.Persistence;
 using Microsoft.OpenApi.Models;
 using Serilog;
+
 DotNetEnv.Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);

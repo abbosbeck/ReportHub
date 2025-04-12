@@ -1,10 +1,10 @@
 ﻿using Application.Common.Constants;
 
-namespace Application.Users.AssignRoleToUser;
+namespace Application.Users.AssignSystemRole;
 
-public class AssignRoleToUserCommandValidator : AbstractValidator<AssignRoleToUserCommand>
+public class AssignSystemRoleCommandValidator : AbstractValidator<AssignSystemRoleCommand>
 {
-    public AssignRoleToUserCommandValidator()
+    public AssignSystemRoleCommandValidator()
     {
         RuleFor(t => t.UserId)
             .NotEmpty();

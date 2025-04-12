@@ -1,4 +1,4 @@
-﻿using Application.Users.AssignRoleToUser;
+﻿using Application.Users.AssignSystemRole;
 using Application.Users.ConfirmUserEmail;
 using Application.Users.DeleteUser;
 using Application.Users.GetUserByEmail;
@@ -58,7 +58,7 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
     }
 
     [HttpPost("assign-role")]
-    public async Task<IActionResult> AssignRoleAsync([FromBody] AssignRoleToUserCommand command)
+    public async Task<IActionResult> AssignRoleAsync([FromBody] AssignSystemRoleCommand command)
     {
         var result = await Mediator.Send(command);
 
