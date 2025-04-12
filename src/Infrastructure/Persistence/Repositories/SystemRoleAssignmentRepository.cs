@@ -12,11 +12,14 @@ public class SystemRoleAssignmentRepository(AppDbContext context) : ISystemRoleA
         return await context.SaveChangesAsync() > 0;
     }
 
-    public async Task<List<string>> GetSystemRolesByUserIdAsync(Guid userId)
+    public async Task<List<string>> GetRolesByUserIdAsync(Guid userId)
     {
-        var roles = await context.UserRoles
-            .Where(r => r.UserId == userId)
-            .Select(r => r.Role.Name)
+        var roles = await context.UserRoles.Where(r => r.UserId == userId)
+            .Join(
+                context.Roles,
+                sr => sr.RoleId,
+                role => role.Id,
+                (sr, role) => role.Name)
             .ToListAsync();
 
         return roles;

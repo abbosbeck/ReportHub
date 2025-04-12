@@ -4,9 +4,9 @@ using Application.Common.Exceptions;
 using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
 
-namespace Application.Users.AssignRoleToUser;
+namespace Application.Users.AssignSystemRole;
 
-public sealed class AssignRoleToUserCommand : IRequest<bool>
+public sealed class AssignSystemRoleCommand : IRequest<bool>
 {
     public Guid UserId { get; set; }
 
@@ -14,26 +14,27 @@ public sealed class AssignRoleToUserCommand : IRequest<bool>
 }
 
 [RequiresSystemRole(SystemRoles.SuperAdmin)]
-public class AssignRoleToUserCommandHandler(
+public class AssignSystemRoleCommandHandler(
     IUserRepository userRepository,
     ISystemRoleAssignmentRepository systemRoleAssignmentRepository,
-    IValidator<AssignRoleToUserCommand> validator)
-    : IRequestHandler<AssignRoleToUserCommand, bool>
+    ISystemRoleRepository systemRoleRepository,
+    IValidator<AssignSystemRoleCommand> validator)
+    : IRequestHandler<AssignSystemRoleCommand, bool>
 {
-    public async Task<bool> Handle(AssignRoleToUserCommand request, CancellationToken cancellationToken)
+    public async Task<bool> Handle(AssignSystemRoleCommand request, CancellationToken cancellationToken)
     {
         await validator.ValidateAndThrowAsync(request, cancellationToken: cancellationToken);
 
         var user = await userRepository.GetByIdAsync(request.UserId)
             ?? throw new NotFoundException($"User is not found with this id: {request.UserId}");
 
+        var systemRole = await systemRoleRepository.GetByNameAsync(request.RoleName)
+            ?? throw new NotFoundException($"System role is not found with this name: {request.RoleName}");
+
         var userRole = new SystemRoleAssignment
         {
             UserId = user.Id,
-            Role = new SystemRole
-            {
-                Name = request.RoleName,
-            },
+            RoleId = systemRole.Id,
         };
 
         var succeed = await systemRoleAssignmentRepository.AssignRoleToUserAsync(userRole);

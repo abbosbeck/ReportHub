@@ -1,6 +1,8 @@
 ﻿using System.Web;
+using Application.Common.Constants;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
+using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
 using Microsoft.Extensions.Configuration;
 
@@ -24,6 +26,8 @@ public class RegisterUserCommandHandler(
         IValidator<RegisterUserCommand> validator,
         IConfiguration configuration,
         IEmailService emailService,
+        ISystemRoleAssignmentRepository systemRoleAssignmentRepository,
+        ISystemRoleRepository systemRoleRepository,
         IMapper mapper)
         : IRequestHandler<RegisterUserCommand, UserDto>
 {
@@ -40,6 +44,8 @@ public class RegisterUserCommandHandler(
             throw new UnauthorizedException(string.Join(", ", result.Errors.Select(e => e.Description)));
         }
 
+        await AssignSystemRoleAsync(user, SystemRoles.Regular);
+
         var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
         var encodedToken = HttpUtility.UrlEncode(token);
         var confirmationUrl = $"{configuration["AppUrl"]}/api/users/confirm-email?id={user.Id}&token={encodedToken}";
@@ -50,5 +56,17 @@ public class RegisterUserCommandHandler(
             $@"<h1>Welcome to ReportHub</h1>Please confirm your account by clicking <a href='{confirmationUrl}'>here</a>");
 
         return mapper.Map<UserDto>(user);
+    }
+
+    private async Task AssignSystemRoleAsync(
+        User user, string roleName)
+    {
+        var systemRole = await systemRoleRepository.GetByNameAsync(roleName);
+        var systemRoleAssignment = new SystemRoleAssignment
+        {
+            UserId = user.Id,
+            RoleId = systemRole.Id,
+        };
+        await systemRoleAssignmentRepository.AssignRoleToUserAsync(systemRoleAssignment);
     }
 }
