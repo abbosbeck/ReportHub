@@ -10,7 +10,7 @@ public class CurrentUserService(IHttpContextAccessor httpContextAccessor) : ICur
     public Guid UserId => httpContextAccessor.HttpContext?.User.GetUserId() ??
                           throw new ForbiddenException("User Context is unavailable");
 
-    public List<string> Roles => httpContextAccessor.HttpContext?.User.GetRoles() ?? new List<string> { };
+    public List<string> SystemRoles => httpContextAccessor.HttpContext?.User.GetRoles() ?? new List<string> { };
 
     public List<JwtClientRole> ClientRoles()
     {

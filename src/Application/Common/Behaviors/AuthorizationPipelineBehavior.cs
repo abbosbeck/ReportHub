@@ -22,14 +22,17 @@ public class AuthorizationPipelineBehavior<TRequest, TResponse>(
             return await next();
         }
 
-        var roles = currentUserService.Roles;
+        var systemRoles = currentUserService.SystemRoles;
+        var clientRoles = currentUserService.ClientRoles();
 
-        if (requiresSystemRoles != null && requiresSystemRoles.Intersect(roles).Any() && requiresClientRoles is null or[])
+        if (requiresSystemRoles != null && requiresSystemRoles.Intersect(systemRoles).Any() && requiresClientRoles is null or[])
         {
             return await next();
         }
 
-        if (requiresClientRoles != null && requiresClientRoles.Intersect(roles).Any() && requiresSystemRoles is null or[])
+        // 👇 This logic should be more complex.
+        // We have to check if the user has at least one of the required client roles for each client with clientId.
+        if (requiresClientRoles != null && requiresClientRoles.Intersect(systemRoles).Any() && requiresSystemRoles is null or[])
         {
             return await next();
         }

@@ -6,7 +6,7 @@ public interface ICurrentUserService
 {
     Guid UserId { get; }
 
-    List<string> Roles { get; }
+    List<string> SystemRoles { get; }
 
     List<JwtClientRole> ClientRoles();
 }
