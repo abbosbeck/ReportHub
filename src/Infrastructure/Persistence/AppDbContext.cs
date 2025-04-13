@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
@@ -12,7 +13,8 @@ public class AppDbContext : IdentityDbContext<
     SystemRoleAssignment,
     IdentityUserLogin<Guid>,
     IdentityRoleClaim<Guid>,
-    IdentityUserToken<Guid>>
+    IdentityUserToken<Guid>>,
+    IDataProtectionKeyContext
 {
     public AppDbContext(DbContextOptions options)
         : base(options)
@@ -30,6 +32,8 @@ public class AppDbContext : IdentityDbContext<
     public DbSet<Item> Items { get; set; }
 
     public DbSet<Customer> Customers { get; set; }
+
+    public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
