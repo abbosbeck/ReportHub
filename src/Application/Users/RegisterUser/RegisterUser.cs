@@ -4,6 +4,8 @@ using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 
 namespace Application.Users.RegisterUser;
@@ -28,6 +30,7 @@ public class RegisterUserCommandHandler(
         IEmailService emailService,
         ISystemRoleAssignmentRepository systemRoleAssignmentRepository,
         ISystemRoleRepository systemRoleRepository,
+        IDataProtectionProvider dataProtectorTokenProvider,
         IMapper mapper)
         : IRequestHandler<RegisterUserCommand, UserDto>
 {
@@ -46,9 +49,11 @@ public class RegisterUserCommandHandler(
 
         await AssignSystemRoleAsync(user, SystemRoles.Regular);
 
-        var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
-        var encodedToken = HttpUtility.UrlEncode(token);
-        var confirmationUrl = $"{configuration["AppUrl"]}/api/users/confirm-email?id={user.Id}&token={encodedToken}";
+        var dataProtector = dataProtectorTokenProvider.CreateProtector("EmailConfirmation");
+        var userId = user.Id.ToString();
+        var token = dataProtector.Protect(userId);
+
+        var confirmationUrl = $"{configuration["AppUrl"]}/api/users/confirm-email?token={token}";
 
         await emailService.SendEmailAsync(
             user.Email,
