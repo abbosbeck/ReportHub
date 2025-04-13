@@ -1,12 +1,13 @@
 ﻿using Application.Common.Attributes;
 using Application.Common.Constants;
 using Application.Common.Exceptions;
+using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
 
 namespace Application.Clients.AddClientMember;
 
-public class AddClientMemberCommand : IRequest<bool>
+public class AddClientMemberCommand : IRequest<bool>, IClientRequest
 {
     public Guid ClientId { get; set; }
 

@@ -1,11 +1,12 @@
 ﻿using Application.Common.Attributes;
 using Application.Common.Constants;
 using Application.Common.Exceptions;
+using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.Repositories;
 
 namespace Application.Clients.DeleteClient;
 
-public class DeleteClientCommand : IRequest<bool>
+public class DeleteClientCommand : IRequest<bool>, IClientRequest
 {
     public Guid ClientId { get; set; }
 }
