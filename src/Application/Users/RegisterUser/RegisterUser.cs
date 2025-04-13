@@ -1,11 +1,9 @@
-﻿using System.Web;
-using Application.Common.Constants;
+﻿using Application.Common.Constants;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
 using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 
 namespace Application.Users.RegisterUser;
@@ -55,10 +53,9 @@ public class RegisterUserCommandHandler(
 
         var confirmationUrl = $"{configuration["AppUrl"]}/api/users/confirm-email?token={token}";
 
-        await emailService.SendEmailAsync(
-            user.Email,
-            "Email confirmation!",
-            $@"<h1>Welcome to ReportHub</h1>Please confirm your account by clicking <a href='{confirmationUrl}'>here</a>");
+        var emailBody = EmailMessage(confirmationUrl, user.FirstName);
+
+        await emailService.SendEmailAsync(user.Email, "Email confirmation!", emailBody);
 
         return mapper.Map<UserDto>(user);
     }
@@ -73,5 +70,16 @@ public class RegisterUserCommandHandler(
             RoleId = systemRole.Id,
         };
         await systemRoleAssignmentRepository.AssignRoleToUserAsync(systemRoleAssignment);
+    }
+
+    private static string EmailMessage(string confirmationUrl, string firstName)
+    {
+        var templatePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "confirm-email.html");
+        string emailBody = File.ReadAllText(templatePath);
+
+        emailBody = emailBody.Replace("{{FirstName}}", firstName);
+        emailBody = emailBody.Replace("{{ConfirmationLink}}", confirmationUrl);
+
+        return emailBody;
     }
 }

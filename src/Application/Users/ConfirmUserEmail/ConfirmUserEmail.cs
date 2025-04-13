@@ -5,19 +5,17 @@ using Newtonsoft.Json.Linq;
 
 namespace Application.Users.ConfirmUserEmail;
 
-public sealed class ConfirmUserEmailQuery : IRequest<bool>
+public sealed class ConfirmUserEmailQuery : IRequest<string>
 {
-    public Guid UserId { get; init; }
-
     public string Token { get; init; }
 }
 
 public class ConfirmUserEmailQueryHandler(
     IDataProtectionProvider dataProtectionProvider,
     UserManager<User> userManager)
-    : IRequestHandler<ConfirmUserEmailQuery, bool>
+    : IRequestHandler<ConfirmUserEmailQuery, string>
 {
-    public async Task<bool> Handle(ConfirmUserEmailQuery request, CancellationToken cancellationToken)
+    public async Task<string> Handle(ConfirmUserEmailQuery request, CancellationToken cancellationToken)
     {
         var dataProtector = dataProtectionProvider.CreateProtector("EmailConfirmation");
 
@@ -28,6 +26,6 @@ public class ConfirmUserEmailQueryHandler(
         user.EmailConfirmed = true;
         var updatedUser = await userManager.UpdateAsync(user);
 
-        return updatedUser.Succeeded;
+        return "Welcome to ReportHub!";
     }
 }
