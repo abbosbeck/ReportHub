@@ -50,9 +50,9 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
 
     [AllowAnonymous]
     [HttpGet("confirm-email")]
-    public async Task<IActionResult> ConfirmEmailAsync([FromQuery] Guid id, [FromQuery] string token)
+    public async Task<IActionResult> ConfirmEmailAsync([FromQuery] string token)
     {
-        var result = await Mediator.Send(new ConfirmUserEmailQuery() { Token = token, UserId = id });
+        var result = await Mediator.Send(new ConfirmUserEmailQuery() { Token = token });
 
         return Ok(result);
     }

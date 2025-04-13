@@ -1,30 +1,31 @@
 ﻿using Application.Common.Exceptions;
 using Domain.Entities;
+using Microsoft.AspNetCore.DataProtection;
+using Newtonsoft.Json.Linq;
 
 namespace Application.Users.ConfirmUserEmail;
 
-public sealed class ConfirmUserEmailQuery : IRequest<bool>
+public sealed class ConfirmUserEmailQuery : IRequest<string>
 {
-    public Guid UserId { get; init; }
-
     public string Token { get; init; }
 }
 
-public class ConfirmUserEmailQueryHandler(UserManager<User> userManager)
-    : IRequestHandler<ConfirmUserEmailQuery, bool>
+public class ConfirmUserEmailQueryHandler(
+    IDataProtectionProvider dataProtectionProvider,
+    UserManager<User> userManager)
+    : IRequestHandler<ConfirmUserEmailQuery, string>
 {
-    public async Task<bool> Handle(ConfirmUserEmailQuery request, CancellationToken cancellationToken)
+    public async Task<string> Handle(ConfirmUserEmailQuery request, CancellationToken cancellationToken)
     {
-        var user = await userManager.FindByIdAsync(request.UserId.ToString())
-            ?? throw new NotFoundException($"User is not found with this id: {request.UserId}");
+        var dataProtector = dataProtectionProvider.CreateProtector("EmailConfirmation");
 
-        var result = await userManager.ConfirmEmailAsync(user, request.Token!);
+        var userId = dataProtector.Unprotect(request.Token);
+        var user = await userManager.FindByIdAsync(userId)
+            ?? throw new NotFoundException($"User is not found.");
 
-        if (!result.Succeeded)
-        {
-            throw new NotFoundException(string.Join(", ", result.Errors.Select(e => e.Description)));
-        }
+        user.EmailConfirmed = true;
+        var updatedUser = await userManager.UpdateAsync(user);
 
-        return result.Succeeded;
+        return "Welcome to ReportHub!";
     }
 }
