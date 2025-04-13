@@ -23,20 +23,36 @@ public class AuthorizationPipelineBehavior<TRequest, TResponse>(
         }
 
         var systemRoles = currentUserService.SystemRoles;
-        var clientRoles = currentUserService.ClientRoles();
+        var clientRolesWithClientIds = currentUserService.ClientRoles();
 
         if (requiresSystemRoles != null && requiresSystemRoles.Intersect(systemRoles).Any() && requiresClientRoles is null or[])
         {
             return await next();
         }
 
-        // 👇 This logic should be more complex.
-        // We have to check if the user has at least one of the required client roles for each client with clientId.
-        if (requiresClientRoles != null && requiresClientRoles.Intersect(systemRoles).Any() && requiresSystemRoles is null or[])
+        var clientId = ResolveClientId(request)
+        ?? throw new ForbiddenException("ClientId is required for client-scoped actions.");
+
+        List<string> clientRoles = clientRolesWithClientIds?
+            .Where(x => x.ClientId == clientId)
+            .Select(x => x.RoleName)
+            .ToList() ?? [];
+
+        if (requiresClientRoles != null && requiresClientRoles.Intersect(clientRoles).Any() && requiresSystemRoles is null or[])
         {
             return await next();
         }
 
         throw new ForbiddenException("You are not allowed to perform this action");
+    }
+
+    private static Guid? ResolveClientId(TRequest request)
+    {
+       if (request is IClientRequest clientRequest)
+       {
+           return clientRequest.ClientId;
+       }
+
+       return null;
     }
 }
