@@ -1,9 +1,11 @@
 ﻿using Application.Common.Configurations;
 using Application.Common.Interfaces.Authorization;
+using Application.Common.Interfaces.External;
 using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
 using Infrastructure.Authentication;
 using Infrastructure.Authentication.Extensions;
+using Infrastructure.External;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Extensions;
 using Infrastructure.Persistence.Repositories;
@@ -37,6 +39,11 @@ public static class DependencyInjection
         services.AddScoped<IClientRepository, ClientRepository>();
         services.AddScoped<IClientRoleAssignmentRepository, ClientRoleAssignmentRepository>();
         services.AddScoped<IClientRoleRepository, ClientRoleRepository>();
+        services.AddScoped<ICustomerRepository, CustomerRepository>();
+        services.AddHttpClient<ICountryApiService, CountryApiService>(httpClient =>
+        {
+            httpClient.BaseAddress = new Uri($"https://www.apicountries.com/");
+        });
 
         services.AddIdentity(configuration);
 
