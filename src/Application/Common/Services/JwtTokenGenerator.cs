@@ -24,13 +24,13 @@ public class JwtTokenGenerator(
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email!),
             };
 
             claims.AddRange(systemRoles.Select(role => new Claim(ClaimTypes.Role, role)));
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Value.Key));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var expires = DateTime.UtcNow.AddMinutes(Convert.ToDouble(jwtOptions.Value.AccessTokenExpiryMinutes));
 
             var token = new JwtSecurityToken(
@@ -38,7 +38,7 @@ public class JwtTokenGenerator(
                 audience: jwtOptions.Value.Audience,
                 claims: claims,
                 expires: expires,
-                signingCredentials: creds);
+                signingCredentials: signingCredentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
