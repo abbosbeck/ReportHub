@@ -17,8 +17,8 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
             .HasMaxLength(200)
             .IsRequired();
 
-        builder.Property(c => c.Country)
-            .HasMaxLength(200)
+        builder.Property(c => c.CountryCode)
+            .HasMaxLength(10)
             .IsRequired();
     }
 }

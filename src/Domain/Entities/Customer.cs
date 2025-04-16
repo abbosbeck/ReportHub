@@ -8,7 +8,7 @@ public class Customer : BaseAuditableEntity, ISoftDeletable
 
     public string Email { get; init; }
 
-    public string Country { get; init; }
+    public string CountryCode { get; init; }
 
     public Guid ClientId { get; set; }
 
