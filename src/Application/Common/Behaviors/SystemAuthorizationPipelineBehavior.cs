@@ -2,7 +2,6 @@
 using Application.Common.Attributes;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
-using Application.Common.Interfaces.Repositories;
 
 namespace Application.Common.Behaviors;
 
@@ -13,7 +12,10 @@ public class SystemAuthorizationPipelineBehavior<TRequest, TResponse>(
     where TRequest : IRequest<TResponse>
     where TResponse : notnull
 {
-    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+    public async Task<TResponse> Handle(
+        TRequest request,
+        RequestHandlerDelegate<TResponse> next,
+        CancellationToken cancellationToken)
     {
         var requiresSystemRoles = handler.GetType().GetCustomAttribute<RequiresSystemRoleAttribute>()?.SystemRoles;
 

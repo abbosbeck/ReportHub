@@ -1,6 +1,4 @@
-﻿using Application.Common.Configurations;
-
-namespace Application.Common.Interfaces.Authorization;
+﻿namespace Application.Common.Interfaces.Authorization;
 
 public interface ICurrentUserService
 {

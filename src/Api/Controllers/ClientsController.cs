@@ -2,6 +2,7 @@
 using Application.Clients.AssignClientRole;
 using Application.Clients.CreateClient;
 using Application.Clients.DeleteClient;
+using Application.Clients.GetClientById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,6 +14,14 @@ public class ClientsController(ISender mediator) : ApiControllerBase(mediator)
     public async Task<IActionResult> CreateAsync([FromBody]CreateClientCommand command)
     {
         var result = await Mediator.Send(command);
+
+        return Ok(result);
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetByIdAsync(Guid id)
+    {
+        var result = await Mediator.Send(new GetClientByIdQuery { ClientId = id });
 
         return Ok(result);
     }

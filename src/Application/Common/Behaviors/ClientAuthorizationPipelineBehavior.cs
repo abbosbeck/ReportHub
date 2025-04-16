@@ -14,7 +14,10 @@ public class ClientAuthorizationPipelineBehavior<TRequest, TResponse>(
     where TRequest : IRequest<TResponse>, IClientRequest
     where TResponse : notnull
 {
-    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+    public async Task<TResponse> Handle(
+        TRequest request,
+        RequestHandlerDelegate<TResponse> next,
+        CancellationToken cancellationToken)
     {
         var requiresClientRoles = handler.GetType().GetCustomAttribute<RequiresClientRoleAttribute>()?.ClientRoles;
 
@@ -23,8 +26,8 @@ public class ClientAuthorizationPipelineBehavior<TRequest, TResponse>(
             return await next();
         }
 
-        var clientRoles =
-            await clientRoleAssignmentRepository.GetRolesByUserIdAndClientIdAsync(currentUserService.UserId, request.ClientId);
+        var clientRoles = await clientRoleAssignmentRepository
+            .GetRolesByUserIdAndClientIdAsync(currentUserService.UserId, request.ClientId);
 
         if (requiresClientRoles.Intersect(clientRoles).Any())
         {
