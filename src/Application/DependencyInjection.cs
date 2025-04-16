@@ -29,7 +29,8 @@ public static class DependencyInjection
         {
             config.RegisterServicesFromAssembly(assembly);
 
-            config.AddOpenBehavior(typeof(AuthorizationPipelineBehavior<,>));
+            config.AddOpenBehavior(typeof(SystemAuthorizationPipelineBehavior<,>));
+            config.AddOpenBehavior(typeof(ClientAuthorizationPipelineBehavior<,>));
             config.AddOpenBehavior(typeof(LoggingPipelineBehavior<,>));
         });
 
