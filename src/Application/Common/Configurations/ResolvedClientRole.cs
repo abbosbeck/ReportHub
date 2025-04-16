@@ -1,6 +1,6 @@
-﻿namespace Application.Common.Services;
+﻿namespace Application.Common.Configurations;
 
-public class JwtClientRole
+public class ResolvedClientRole
 {
     public Guid ClientId { get; set; }
 

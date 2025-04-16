@@ -1,4 +1,4 @@
-﻿using Application.Common.Services;
+﻿using Application.Common.Configurations;
 
 namespace Application.Common.Interfaces.Authorization;
 
@@ -8,5 +8,5 @@ public interface ICurrentUserService
 
     List<string> SystemRoles { get; }
 
-    List<JwtClientRole> ClientRoles();
+    Task<List<ResolvedClientRole>> ClientRolesAsync();
 }
