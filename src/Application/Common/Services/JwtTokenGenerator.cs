@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Application.Common.Configurations;
 using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.Repositories;
 using Domain.Entities;

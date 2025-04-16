@@ -1,5 +1,5 @@
-﻿using Application.Common.Interfaces.Repositories;
-using Application.Common.Services;
+﻿using Application.Common.Configurations;
+using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
 
 namespace Infrastructure.Persistence.Repositories;
@@ -12,11 +12,11 @@ public class ClientRoleAssignmentRepository(AppDbContext context) : IClientRoleA
         await context.SaveChangesAsync();
     }
 
-    public async Task<List<JwtClientRole>> GetRolesByUserIdAsync(Guid userId)
+    public async Task<List<ResolvedClientRole>> GetRolesByUserIdAsync(Guid userId)
     {
         var roles = await context.ClientRoleAssignments
             .Where(r => r.UserId == userId)
-            .Select(r => new JwtClientRole
+            .Select(r => new ResolvedClientRole
             {
                 ClientId = r.ClientId,
                 RoleName = r.ClientRole.Name,

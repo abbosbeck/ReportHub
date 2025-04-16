@@ -1,6 +1,6 @@
-﻿using Application.Common.Interfaces.Authorization;
+﻿using Application.Common.Configurations;
+using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.Repositories;
-using Application.Common.Services;
 using Domain.Entities;
 using Infrastructure.Authentication;
 using Infrastructure.Authentication.Extensions;

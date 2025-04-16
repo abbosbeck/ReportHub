@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using Application.Common.Behaviors;
+using Application.Common.Configurations;
 using Application.Common.Interfaces.Authorization;
 using Application.Common.Services;
 using Domain.Entities;
