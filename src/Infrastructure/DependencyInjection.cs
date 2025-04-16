@@ -1,12 +1,13 @@
-﻿using Application.Common.Interfaces.Authorization;
+﻿using Application.Common.Configurations;
+using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.Repositories;
-using Application.Common.Services;
 using Domain.Entities;
 using Infrastructure.Authentication;
 using Infrastructure.Authentication.Extensions;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Extensions;
 using Infrastructure.Persistence.Repositories;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,6 +39,10 @@ public static class DependencyInjection
         services.AddScoped<IClientRoleRepository, ClientRoleRepository>();
 
         services.AddIdentity(configuration);
+
+        services.AddDataProtection()
+            .PersistKeysToDbContext<AppDbContext>()
+            .SetApplicationName("ReportHub");
 
         return services;
     }

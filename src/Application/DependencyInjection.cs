@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using Application.Common.Behaviors;
+using Application.Common.Configurations;
 using Application.Common.Interfaces.Authorization;
 using Application.Common.Services;
 using Domain.Entities;
@@ -28,7 +29,8 @@ public static class DependencyInjection
         {
             config.RegisterServicesFromAssembly(assembly);
 
-            config.AddOpenBehavior(typeof(AuthorizationPipelineBehavior<,>));
+            config.AddOpenBehavior(typeof(SystemAuthorizationPipelineBehavior<,>));
+            config.AddOpenBehavior(typeof(ClientAuthorizationPipelineBehavior<,>));
             config.AddOpenBehavior(typeof(LoggingPipelineBehavior<,>));
         });
 

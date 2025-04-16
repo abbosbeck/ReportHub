@@ -2,40 +2,35 @@
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using Application.Common.Constants;
+using Application.Common.Configurations;
 using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
 
 namespace Application.Common.Services;
 
 public class JwtTokenGenerator(
         IOptions<JwtOptions> jwtOptions,
         IUserRepository userRepository,
-        ISystemRoleAssignmentRepository systemRoleAssignmentRepository,
-        IClientRoleAssignmentRepository clientRoleAssignmentRepository)
+        ISystemRoleAssignmentRepository systemRoleAssignmentRepository)
         : IJwtTokenGenerator
     {
         public async Task<string> GenerateAccessTokenAsync(User user)
         {
             var systemRoles = await systemRoleAssignmentRepository.GetRolesByUserIdAsync(user.Id);
-            var clientRoles = await clientRoleAssignmentRepository.GetRolesByUserIdAsync(user.Id);
-            var clinetRolesJson = JsonConvert.SerializeObject(clientRoles);
 
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email!),
             };
 
             claims.AddRange(systemRoles.Select(role => new Claim(ClaimTypes.Role, role)));
-            claims.AddRange(clientRoles.Select(role => new Claim("ClientRoles", clinetRolesJson)));
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Value.Key));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var expires = DateTime.UtcNow.AddMinutes(Convert.ToDouble(jwtOptions.Value.AccessTokenExpiryMinutes));
 
             var token = new JwtSecurityToken(
@@ -43,7 +38,7 @@ public class JwtTokenGenerator(
                 audience: jwtOptions.Value.Audience,
                 claims: claims,
                 expires: expires,
-                signingCredentials: creds);
+                signingCredentials: signingCredentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
