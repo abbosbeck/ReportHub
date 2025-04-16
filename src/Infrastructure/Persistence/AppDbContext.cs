@@ -5,22 +5,18 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence;
 
-public class AppDbContext : IdentityDbContext<
-    User,
-    SystemRole,
-    Guid,
-    IdentityUserClaim<Guid>,
-    SystemRoleAssignment,
-    IdentityUserLogin<Guid>,
-    IdentityRoleClaim<Guid>,
-    IdentityUserToken<Guid>>,
+public class AppDbContext(DbContextOptions<AppDbContext> options)
+    : IdentityDbContext<
+        User,
+        SystemRole,
+        Guid,
+        IdentityUserClaim<Guid>,
+        SystemRoleAssignment,
+        IdentityUserLogin<Guid>,
+        IdentityRoleClaim<Guid>,
+        IdentityUserToken<Guid>>(options),
     IDataProtectionKeyContext
 {
-    public AppDbContext(DbContextOptions options)
-        : base(options)
-    {
-    }
-
     public DbSet<Client> Clients { get; set; }
 
     public DbSet<ClientRole> ClientRoles { get; set; }
