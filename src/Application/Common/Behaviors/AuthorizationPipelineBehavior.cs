@@ -23,7 +23,7 @@ public class AuthorizationPipelineBehavior<TRequest, TResponse>(
         }
 
         var systemRoles = currentUserService.SystemRoles;
-        var clientRolesWithClientIds = currentUserService.ClientRoles();
+        var clientRolesWithClientIds = await currentUserService.ClientRolesAsync();
 
         if (requiresSystemRoles != null && requiresSystemRoles.Intersect(systemRoles).Any() && requiresClientRoles is null or[])
         {

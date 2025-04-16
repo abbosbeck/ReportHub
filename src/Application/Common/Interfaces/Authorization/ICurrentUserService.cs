@@ -8,5 +8,5 @@ public interface ICurrentUserService
 
     List<string> SystemRoles { get; }
 
-    List<JwtClientRole> ClientRoles();
+    Task<List<JwtClientRole>> ClientRolesAsync();
 }
