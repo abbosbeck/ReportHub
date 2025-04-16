@@ -7,5 +7,5 @@ public interface IClientRoleAssignmentRepository
 {
     Task AddAsync(ClientRoleAssignment clientRoleAssignment);
 
-    Task<List<ResolvedClientRole>> GetRolesByUserIdAsync(Guid userId);
+    Task<List<string>> GetRolesByUserIdAndClientIdAsync(Guid userId, Guid clientId);
 }
