@@ -1,5 +1,4 @@
 ﻿using Domain.Common;
-using Domain.Enums;
 
 namespace Domain.Entities;
 
@@ -20,6 +19,8 @@ public class Item : BaseAuditableEntity, ISoftDeletable
     public Guid InvoiceId { get; init; }
 
     public Invoice Invoice { get; init; }
+
+    public ICollection<Plan> Plans { get; init; }
 
     public bool IsDeleted { get; set; }
 
