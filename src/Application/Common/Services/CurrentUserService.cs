@@ -15,11 +15,4 @@ public class CurrentUserService(
                           throw new ForbiddenException("User Context is unavailable");
 
     public List<string> SystemRoles => httpContextAccessor.HttpContext?.User.GetRoles() ?? new List<string> { };
-
-    public async Task<List<ResolvedClientRole>> ClientRolesAsync()
-    {
-        var clientIdsandRoles = await clientRoleAssignmentRepository.GetRolesByUserIdAsync(UserId);
-
-        return clientIdsandRoles;
-    }
 }
