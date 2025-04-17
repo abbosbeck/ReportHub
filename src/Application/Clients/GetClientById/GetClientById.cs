@@ -1,4 +1,6 @@
-﻿using Application.Common.Exceptions;
+﻿using Application.Common.Attributes;
+using Application.Common.Constants;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.Repositories;
 
@@ -9,6 +11,8 @@ public class GetClientByIdQuery : IRequest<ClientDto>, IClientRequest
     public Guid ClientId { get; set; }
 }
 
+[RequiresSystemRole(SystemRoles.SuperAdmin)]
+[RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin, ClientRoles.Operator)]
 public class GetClientByIdQueryHandler(IClientRepository repository,
     IMapper mapper)
     : IRequestHandler<GetClientByIdQuery, ClientDto>
