@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
 
+[Route("[controller]")]
 public class WeatherForecastController(ISender mediator) : ApiControllerBase(mediator)
 {
     [HttpGet(Name = "WeatherForecast")]
