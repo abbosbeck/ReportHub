@@ -13,7 +13,7 @@ namespace Infrastructure.Persistence.Configurations
                 .HasMaxLength(200)
                 .IsRequired();
 
-            builder.Property(i => i.Currency)
+            builder.Property(i => i.CurrencyCode)
                 .HasMaxLength(40)
                 .IsRequired();
 
