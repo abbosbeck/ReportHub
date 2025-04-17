@@ -11,7 +11,7 @@ public class Item : BaseAuditableEntity, ISoftDeletable
 
     public decimal Price { get; init; }
 
-    public string Currency { get; init; }
+    public string CurrencyCode { get; init; }
 
     public Guid ClientId { get; init; }
 
