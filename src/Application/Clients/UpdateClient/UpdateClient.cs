@@ -1,4 +1,6 @@
-﻿using Application.Common.Exceptions;
+﻿using Application.Common.Attributes;
+using Application.Common.Constants;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.Repositories;
 
@@ -11,6 +13,8 @@ public class UpdateClientCommand : IRequest<ClientDto>, IClientRequest
     public string Name { get; set; }
 }
 
+[RequiresSystemRole(SystemRoles.SuperAdmin)]
+[RequiresClientRole(ClientRoles.Owner)]
 public class UpdateClientCommandHandler(
     IClientRepository repository,
     IMapper mapper,
