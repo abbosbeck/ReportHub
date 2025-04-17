@@ -1,4 +1,6 @@
 ﻿using System.Text.Json.Serialization;
+using Application.Common.Attributes;
+using Application.Common.Constants;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.External;
@@ -20,6 +22,7 @@ public class UpdateCustomerCommand : IRequest<CustomerDto>, IClientRequest
     public Guid ClientId { get; set; }
 }
 
+[RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin)]
 public class UpdateCustomerCommandHandler(
     IMapper mapper,
     IClientRepository clientRepository,
