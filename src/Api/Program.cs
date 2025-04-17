@@ -56,7 +56,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    // await app.Services.InitialiseDatabaseAsync();
+    await app.Services.InitialiseDatabaseAsync();
 }
 
 app.UseSerilogRequestLogging();
