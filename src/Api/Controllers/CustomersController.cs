@@ -1,4 +1,5 @@
 ﻿using Application.Customers.CreateCustomer;
+using Application.Customers.DeleteCustomer;
 using Application.Customers.GetCustomerById;
 using Application.Customers.GetCustomerList;
 using Application.Customers.UpdateCustomer;
@@ -11,9 +12,7 @@ namespace Api.Controllers;
 public class CustomersController(ISender mediator) : ApiControllerBase(mediator)
 {
     [HttpPost]
-    public async Task<IActionResult> CreateAsync(
-        [FromRoute] Guid clientId,
-        [FromBody] CreateCustomerCommand command)
+    public async Task<IActionResult> CreateAsync([FromRoute] Guid clientId, [FromBody] CreateCustomerCommand command)
     {
         command.ClientId = clientId;
         var result = await Mediator.Send(command);
@@ -22,9 +21,7 @@ public class CustomersController(ISender mediator) : ApiControllerBase(mediator)
     }
 
     [HttpPut]
-    public async Task<IActionResult> UpdateAsync(
-        [FromRoute] Guid clientId,
-        [FromBody] UpdateCustomerCommand command)
+    public async Task<IActionResult> UpdateAsync([FromRoute] Guid clientId, [FromBody] UpdateCustomerCommand command)
     {
         command.ClientId = clientId;
         var result = await Mediator.Send(command);
@@ -43,7 +40,15 @@ public class CustomersController(ISender mediator) : ApiControllerBase(mediator)
     [HttpGet]
     public async Task<IActionResult> GetAllAsync([FromRoute] Guid clientId)
     {
-        var result = await Mediator.Send(new GetCustomerListQuery() { ClientId = clientId });
+        var result = await Mediator.Send(new GetCustomerListQuery { ClientId = clientId });
+
+        return Ok(result);
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> DeleteAsync([FromRoute] Guid clientId, [FromRoute] Guid id)
+    {
+        var result = await Mediator.Send(new DeleteCustomerCommand { Id = id, ClientId = clientId });
 
         return Ok(result);
     }
