@@ -43,7 +43,7 @@ public class ClientsController(ISender mediator) : ApiControllerBase(mediator)
         return Ok(result);
     }
 
-    [HttpPatch]
+    [HttpPut]
     public async Task<IActionResult> UpdateAsync([FromBody] UpdateClientCommand command)
     {
         var result = await Mediator.Send(command);
