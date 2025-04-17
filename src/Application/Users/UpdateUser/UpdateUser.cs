@@ -1,4 +1,6 @@
-﻿using Application.Common.Exceptions;
+﻿using Application.Common.Attributes;
+using Application.Common.Constants;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
 
@@ -17,6 +19,7 @@ public class UpdateUserCommand : IRequest<UserDto>
     public string Password { get; set; }
 }
 
+[RequiresSystemRole(SystemRoles.SuperAdmin)]
 public class UpdateUserCommandHandler(
     IUserRepository userRepository,
     Mapper mapper,
