@@ -1,11 +1,12 @@
 ﻿using Application.Common.Exceptions;
+using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.External;
 using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
 
 namespace Application.Customers.CreateCustomer;
 
-public class CreateCustomerCommand : IRequest<CustomerDto>
+public class CreateCustomerCommand : IRequest<CustomerDto>, IClientRequest
 {
     public string Name { get; init; }
 
@@ -13,7 +14,7 @@ public class CreateCustomerCommand : IRequest<CustomerDto>
 
     public string CountryCode { get; init; }
 
-    public Guid ClientId { get; init; }
+    public Guid ClientId { get; set; }
 }
 
 public class CreateCustomerCommandHandler(
