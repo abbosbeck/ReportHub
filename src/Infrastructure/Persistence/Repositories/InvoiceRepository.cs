@@ -1,59 +1,48 @@
 ﻿using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
 
-namespace Infrastructure.Persistence.Repositories
+namespace Infrastructure.Persistence.Repositories;
+
+public class InvoiceRepository(AppDbContext context) : IInvoiceRepository
 {
-    public class InvoiceRepository(AppDbContext context) : IInvoiceRepository
+    public async Task<Invoice> AddAsync(Invoice invoice)
     {
-        public async Task<Invoice> AddAsync(Invoice invoice)
-        {
-            await context.Invoices.AddAsync(invoice);
-            await context.SaveChangesAsync();
+        await context.Invoices.AddAsync(invoice);
+        await context.SaveChangesAsync();
 
-            return invoice;
-        }
+        return invoice;
+    }
 
-        public async Task<bool> DeleteAsync(Invoice invoice)
-        {
-            context.Remove(invoice);
+    public async Task<bool> DeleteAsync(Invoice invoice)
+    {
+        context.Remove(invoice);
 
-            return await context.SaveChangesAsync() > 0;
-        }
+        return await context.SaveChangesAsync() > 0;
+    }
 
-        public async Task<IEnumerable<Invoice>> GetAllAsync()
-        {
-            return await context.Invoices
-                 .Include(i => i.Client)
-                 .Include(i => i.Customer)
-                 .Include(i => i.Items)
-                 .ToListAsync();
-        }
+    public async Task<IEnumerable<Invoice>> GetAllAsync()
+    {
+        return await context.Invoices
+             .Include(i => i.Client)
+             .Include(i => i.Customer)
+             .Include(i => i.Items)
+             .ToListAsync();
+    }
 
-        public async Task<IEnumerable<Invoice>> GetByClientIdAsync(Guid clientId)
-        {
-            return await context.Invoices
-                .Include(i => i.Client)
-                .Include(i => i.Customer)
-                .Include(i => i.Items)
-                .Where(i => i.ClientId == clientId)
-                .ToListAsync();
-        }
+    public async Task<Invoice> GetByIdAsync(Guid invoiceId)
+    {
+        return await context.Invoices
+            .Include(i => i.Client)
+            .Include(i => i.Customer)
+            .Include(i => i.Items)
+            .FirstOrDefaultAsync(i => i.Id == invoiceId);
+    }
 
-        public async Task<Invoice> GetByIdAsync(Guid invoiceId)
-        {
-            return await context.Invoices
-                .Include(i => i.Client)
-                .Include(i => i.Customer)
-                .Include(i => i.Items)
-                .FirstOrDefaultAsync(i => i.Id == invoiceId);
-        }
+    public async Task<Invoice> UpdateAsync(Invoice invoice)
+    {
+        context.Update(invoice);
+        await context.SaveChangesAsync();
 
-        public async Task<Invoice> UpdateAsync(Invoice invoice)
-        {
-            context.Update(invoice);
-            await context.SaveChangesAsync();
-
-            return invoice;
-        }
+        return invoice;
     }
 }

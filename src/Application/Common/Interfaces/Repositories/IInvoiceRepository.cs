@@ -12,7 +12,5 @@ public interface IInvoiceRepository
 
     Task<IEnumerable<Invoice>> GetAllAsync();
 
-    Task<IEnumerable<Invoice>> GetByClientIdAsync(Guid clientId);
-
     Task<bool> DeleteAsync(Invoice invoice);
 }
