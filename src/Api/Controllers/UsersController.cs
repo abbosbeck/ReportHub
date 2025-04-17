@@ -5,6 +5,7 @@ using Application.Users.GetUserByEmail;
 using Application.Users.LoginUser;
 using Application.Users.RefreshToken;
 using Application.Users.RegisterUser;
+using Application.Users.UpdateUser;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -59,6 +60,14 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
 
     [HttpPost("assign-role")]
     public async Task<IActionResult> AssignRoleAsync([FromBody] AssignSystemRoleCommand command)
+    {
+        var result = await Mediator.Send(command);
+
+        return Ok(result);
+    }
+
+    [HttpPatch]
+    public async Task<IActionResult> UpdateAsync([FromBody] UpdateUserCommand command)
     {
         var result = await Mediator.Send(command);
 

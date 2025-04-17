@@ -22,18 +22,20 @@ public class UpdateUserCommand : IRequest<UserDto>
 [RequiresSystemRole(SystemRoles.SuperAdmin)]
 public class UpdateUserCommandHandler(
     IUserRepository userRepository,
-    Mapper mapper,
+    IMapper mapper,
     IValidator<UpdateUserCommand> validator)
     : IRequestHandler<UpdateUserCommand, UserDto>
 {
     public async Task<UserDto> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
     {
-        _ = await userRepository.GetByIdAsync(request.Id)
+        await validator.ValidateAndThrowAsync(request);
+
+        var user = await userRepository.GetByIdAsync(request.Id)
             ?? throw new NotFoundException($"User is not found with this id: {request.Id}");
 
-        var newUser = mapper.Map<User>(request);
-        var updatedUser = await userRepository.UpdateAsync(newUser);
+        mapper.Map(request, user);
+        await userRepository.UpdateAsync(user);
 
-        return mapper.Map<UserDto>(updatedUser);
+        return mapper.Map<UserDto>(user);
     }
 }
