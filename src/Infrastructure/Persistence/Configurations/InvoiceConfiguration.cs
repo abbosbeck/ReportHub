@@ -13,7 +13,7 @@ public class InvoiceConfiguration : IEntityTypeConfiguration<Invoice>
             .HasMaxLength(40)
             .IsRequired();
 
-        builder.Property(i => i.Currency)
+        builder.Property(i => i.CurrencyCode)
             .HasMaxLength(40)
             .IsRequired();
 

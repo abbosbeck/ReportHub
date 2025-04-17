@@ -1,0 +1,18 @@
+﻿using Domain.Entities;
+
+namespace Application.Common.Interfaces.Repositories;
+
+public interface IInvoiceRepository
+{
+    Task<Invoice> AddAsync(Invoice invoice);
+
+    Task<Invoice> GetByIdAsync(Guid invoiceId);
+
+    Task<Invoice> UpdateAsync(Invoice invoice);
+
+    Task<IEnumerable<Invoice>> GetAllAsync();
+
+    Task<IEnumerable<Invoice>> GetByClientIdAsync(Guid clientId);
+
+    Task<bool> DeleteAsync(Invoice invoice);
+}

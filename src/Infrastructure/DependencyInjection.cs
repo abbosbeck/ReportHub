@@ -40,6 +40,8 @@ public static class DependencyInjection
         services.AddScoped<IClientRoleAssignmentRepository, ClientRoleAssignmentRepository>();
         services.AddScoped<IClientRoleRepository, ClientRoleRepository>();
         services.AddScoped<ICustomerRepository, CustomerRepository>();
+        services.AddScoped<IInvoiceRepository, InvoiceRepository>();
+        services.AddScoped<IItemRepository, ItemRepository>();
         services.AddHttpClient<ICountryApiService, CountryApiService>(httpClient =>
         {
             httpClient.BaseAddress = new Uri($"https://www.apicountries.com/");
