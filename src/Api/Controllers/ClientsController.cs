@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
 
+[Route("[controller]")]
 public class ClientsController(ISender mediator) : ApiControllerBase(mediator)
 {
     [HttpPost("create")]

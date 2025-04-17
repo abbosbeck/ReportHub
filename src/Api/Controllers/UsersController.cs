@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
 
+[Route("[controller]")]
 public class UsersController(ISender mediator) : ApiControllerBase(mediator)
 {
     [HttpGet("{email}")]
