@@ -1,11 +1,14 @@
 ﻿using Application.Common.Exceptions;
+using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.Repositories;
 
 namespace Application.Customers.GetCustomerById;
 
-public class GetCustomerByIdQuery : IRequest<CustomerDto>
+public class GetCustomerByIdQuery : IRequest<CustomerDto>, IClientRequest
 {
     public Guid Id { get; init; }
+
+    public Guid ClientId { get; set; }
 }
 
 public class GetCustomerByIdQueryHandler(IMapper mapper, ICustomerRepository repository)

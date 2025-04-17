@@ -1,10 +1,11 @@
 ﻿using Application.Common.Exceptions;
+using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.External;
 using Application.Common.Interfaces.Repositories;
 
 namespace Application.Customers.UpdateCustomer;
 
-public class UpdateCustomerCommand : IRequest<CustomerDto>
+public class UpdateCustomerCommand : IRequest<CustomerDto>, IClientRequest
 {
     public Guid Id { get; init; }
 
@@ -14,7 +15,7 @@ public class UpdateCustomerCommand : IRequest<CustomerDto>
 
     public string CountryCode { get; init; }
 
-    public Guid ClientId { get; init; }
+    public Guid ClientId { get; set; }
 }
 
 public class UpdateCustomerCommandHandler(
