@@ -1,37 +1,49 @@
 ﻿using Application.Customers.CreateCustomer;
 using Application.Customers.GetCustomerById;
+using Application.Customers.GetCustomerList;
 using Application.Customers.UpdateCustomer;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
 
+[Route("clients/{clientId:guid}/[controller]")]
 public class CustomersController(ISender mediator) : ApiControllerBase(mediator)
 {
-    [AllowAnonymous]
     [HttpPost]
-    public async Task<IActionResult> CreateAsync([FromBody] CreateCustomerCommand command)
+    public async Task<IActionResult> CreateAsync(
+        [FromRoute] Guid clientId,
+        [FromBody] CreateCustomerCommand command)
     {
+        command.ClientId = clientId;
         var result = await Mediator.Send(command);
 
         return Ok(result);
     }
 
-    [AllowAnonymous]
-    [HttpPut]
-    public async Task<IActionResult> UpdateAsync([FromBody] UpdateCustomerCommand command)
+    [HttpPut("{clientId:guid}")]
+    public async Task<IActionResult> UpdateAsync(
+        [FromRoute] Guid clientId,
+        [FromBody] UpdateCustomerCommand command)
     {
+        command.ClientId = clientId;
         var result = await Mediator.Send(command);
 
         return Ok(result);
     }
 
-    [AllowAnonymous]
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id)
+    public async Task<IActionResult> GetByIdAsync([FromRoute] Guid clientId, [FromRoute] Guid id)
     {
-        var result = await Mediator.Send(new GetCustomerByIdQuery { Id = id });
+        var result = await Mediator.Send(new GetCustomerByIdQuery { Id = id, ClientId = clientId });
+
+        return Ok(result);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAllAsync([FromRoute] Guid clientId)
+    {
+        var result = await Mediator.Send(new GetCustomerListQuery() { ClientId = clientId });
 
         return Ok(result);
     }
