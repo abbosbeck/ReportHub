@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Http;
 namespace Application.Common.Services;
 
 public class CurrentUserService(
-    IClientRoleAssignmentRepository clientRoleAssignmentRepository,
     IHttpContextAccessor httpContextAccessor)
     : ICurrentUserService
 {
