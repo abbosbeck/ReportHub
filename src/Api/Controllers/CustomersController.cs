@@ -21,7 +21,7 @@ public class CustomersController(ISender mediator) : ApiControllerBase(mediator)
         return Ok(result);
     }
 
-    [HttpPut("{clientId:guid}")]
+    [HttpPut]
     public async Task<IActionResult> UpdateAsync(
         [FromRoute] Guid clientId,
         [FromBody] UpdateCustomerCommand command)
