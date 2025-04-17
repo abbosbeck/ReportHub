@@ -45,6 +45,11 @@ public static class DependencyInjection
             httpClient.BaseAddress = new Uri($"https://www.apicountries.com/");
         });
 
+        services.AddHttpClient<ICurrencyExchange, CurrencyExchange>(httpClient =>
+        {
+            httpClient.BaseAddress = new Uri(configuration["ExchangeRate"]);
+        });
+
         services.AddIdentity(configuration);
 
         services.AddDataProtection()
