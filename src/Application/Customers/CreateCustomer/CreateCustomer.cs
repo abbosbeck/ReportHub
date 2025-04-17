@@ -1,4 +1,5 @@
-﻿using Application.Common.Exceptions;
+﻿using System.Text.Json.Serialization;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.External;
 using Application.Common.Interfaces.Repositories;
@@ -14,6 +15,7 @@ public class CreateCustomerCommand : IRequest<CustomerDto>, IClientRequest
 
     public string CountryCode { get; init; }
 
+    [JsonIgnore]
     public Guid ClientId { get; set; }
 }
 

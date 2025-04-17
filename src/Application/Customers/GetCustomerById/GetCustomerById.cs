@@ -1,6 +1,7 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.Repositories;
+using Domain.Entities;
 
 namespace Application.Customers.GetCustomerById;
 
@@ -16,7 +17,7 @@ public class GetCustomerByIdQueryHandler(IMapper mapper, ICustomerRepository rep
 {
     public async Task<CustomerDto> Handle(GetCustomerByIdQuery request, CancellationToken cancellationToken)
     {
-        var customer = await repository.GetByIdAsync(request.Id)
+        var customer = await repository.GetAsync(customer => customer.ClientId == request.ClientId && customer.Id == request.Id)
             ?? throw new NotFoundException($"Customer is not found with this id: {request.Id}");
 
         return mapper.Map<CustomerDto>(customer);

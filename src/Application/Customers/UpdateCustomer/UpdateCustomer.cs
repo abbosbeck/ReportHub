@@ -1,4 +1,5 @@
-﻿using Application.Common.Exceptions;
+﻿using System.Text.Json.Serialization;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.External;
 using Application.Common.Interfaces.Repositories;
@@ -15,6 +16,7 @@ public class UpdateCustomerCommand : IRequest<CustomerDto>, IClientRequest
 
     public string CountryCode { get; init; }
 
+    [JsonIgnore]
     public Guid ClientId { get; set; }
 }
 
@@ -37,7 +39,9 @@ public class UpdateCustomerCommandHandler(
         _ = await clientRepository.GetByIdAsync(request.ClientId)
             ?? throw new NotFoundException($"Client is not found with this id: {request.ClientId}");
 
-        var customer = await customerRepository.GetByIdAsync(request.Id)
+        var customer =
+            await customerRepository.GetAsync(customer =>
+                customer.ClientId == request.ClientId && customer.Id == request.Id)
             ?? throw new NotFoundException($"Customer is not found with this id: {request.Id}");
 
         mapper.Map(request, customer);
