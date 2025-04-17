@@ -1,8 +1,8 @@
 ﻿namespace Application.Clients.AssignClientRole;
 
-public class AssignClientRoleValidator : AbstractValidator<AssignClientRoleCommand>
+public class AssignClientRoleCommandValidator : AbstractValidator<AssignClientRoleCommand>
 {
-    public AssignClientRoleValidator()
+    public AssignClientRoleCommandValidator()
     {
         RuleFor(c => c.RoleName)
             .NotEmpty()

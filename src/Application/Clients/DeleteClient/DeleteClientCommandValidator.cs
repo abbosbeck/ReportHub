@@ -1,8 +1,8 @@
 ﻿namespace Application.Clients.DeleteClient;
 
-public class DeleteClientValidator : AbstractValidator<DeleteClientCommand>
+public class DeleteClientCommandValidator : AbstractValidator<DeleteClientCommand>
 {
-    public DeleteClientValidator()
+    public DeleteClientCommandValidator()
     {
             RuleFor(c => c.ClientId)
                 .NotEmpty()

@@ -1,14 +1,14 @@
-﻿namespace Application.Clients.UpdateClient;
+﻿namespace Application.Clients.CreateClient;
 
-public class ClientValidator : AbstractValidator<UpdateClientCommand>
+public class CreateClientCommandValidator : AbstractValidator<CreateClientCommand>
 {
-    public ClientValidator()
+    public CreateClientCommandValidator()
     {
         RuleFor(c => c.Name)
             .NotEmpty()
             .MaximumLength(64);
 
-        RuleFor(c => c.ClientId)
+        RuleFor(c => c.OwnerId)
             .NotEmpty()
             .Must(BeAValidGuid);
     }
