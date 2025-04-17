@@ -6,22 +6,27 @@ using Application.Common.Interfaces.Repositories;
 
 namespace Application.Common.Behaviors;
 
-public class ClientAuthorizationPipelineBehavior<TRequest, TResponse>(
-    IClientRoleAssignmentRepository clientRoleAssignmentRepository,
+public class AuthorizationPipelineBehavior<TRequest, TResponse>(
     ICurrentUserService currentUserService,
+    IClientRoleAssignmentRepository clientRoleAssignmentRepository,
     IRequestHandler<TRequest, TResponse> handler)
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>, IClientRequest
     where TResponse : notnull
 {
-    public async Task<TResponse> Handle(
-        TRequest request,
-        RequestHandlerDelegate<TResponse> next,
-        CancellationToken cancellationToken)
+    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
+        var requiresSystemRoles = handler.GetType().GetCustomAttribute<RequiresSystemRoleAttribute>()?.SystemRoles;
         var requiresClientRoles = handler.GetType().GetCustomAttribute<RequiresClientRoleAttribute>()?.ClientRoles;
 
-        if (requiresClientRoles is null or[])
+        if (requiresSystemRoles is null or[] && requiresClientRoles is null or[])
+        {
+            return await next();
+        }
+
+        var systemRoles = currentUserService.SystemRoles;
+
+        if (requiresSystemRoles != null && requiresSystemRoles.Intersect(systemRoles).Any())
         {
             return await next();
         }
@@ -29,7 +34,7 @@ public class ClientAuthorizationPipelineBehavior<TRequest, TResponse>(
         var clientRoles = await clientRoleAssignmentRepository
             .GetRolesByUserIdAndClientIdAsync(currentUserService.UserId, request.ClientId);
 
-        if (requiresClientRoles.Intersect(clientRoles).Any())
+        if (requiresClientRoles != null && requiresClientRoles.Intersect(clientRoles).Any())
         {
             return await next();
         }

@@ -16,6 +16,7 @@ public class AssignClientRoleCommand : IRequest<bool>, IClientRequest
     public string RoleName { get; set; }
 }
 
+[RequiresSystemRole(SystemRoles.SuperAdmin)]
 [RequiresClientRole(ClientRoles.Owner)]
 public class AssignClientRoleHandler(
     IClientRepository clientRepository,

@@ -1,8 +1,8 @@
 ﻿namespace Application.Clients.AddClientMember;
 
-public class AddClientMemberValidator : AbstractValidator<AddClientMemberCommand>
+public class AddClientMemberCommandValidator : AbstractValidator<AddClientMemberCommand>
 {
-    public AddClientMemberValidator()
+    public AddClientMemberCommandValidator()
     {
         RuleFor(c => c.ClientId)
             .NotEmpty()

@@ -2,9 +2,9 @@
 
 namespace Application.Clients.CreateClient;
 
-public class CreateClientProfile : Profile
+public class ClientProfile : Profile
 {
-    public CreateClientProfile()
+    public ClientProfile()
     {
         CreateMap<Client, ClientDto>();
     }

@@ -3,6 +3,7 @@ using Application.Clients.AssignClientRole;
 using Application.Clients.CreateClient;
 using Application.Clients.DeleteClient;
 using Application.Clients.GetClientById;
+using Application.Clients.UpdateClient;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -36,6 +37,14 @@ public class ClientsController(ISender mediator) : ApiControllerBase(mediator)
 
     [HttpPost("assign-role")]
     public async Task<IActionResult> AssignRoleAsync([FromBody] AssignClientRoleCommand command)
+    {
+        var result = await Mediator.Send(command);
+
+        return Ok(result);
+    }
+
+    [HttpPatch]
+    public async Task<IActionResult> UpdateAsync([FromBody] UpdateClientCommand command)
     {
         var result = await Mediator.Send(command);
 
