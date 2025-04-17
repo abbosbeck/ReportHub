@@ -11,7 +11,7 @@ public class AuthorizationPipelineBehavior<TRequest, TResponse>(
     IClientRoleAssignmentRepository clientRoleAssignmentRepository,
     IRequestHandler<TRequest, TResponse> handler)
     : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : IRequest<TResponse>, IClientRequest
+    where TRequest : IRequest<TResponse>
     where TResponse : notnull
 {
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
@@ -31,8 +31,7 @@ public class AuthorizationPipelineBehavior<TRequest, TResponse>(
             return await next();
         }
 
-        var clientRoles = await clientRoleAssignmentRepository
-            .GetRolesByUserIdAndClientIdAsync(currentUserService.UserId, request.ClientId);
+        var clientRoles = await GetClientRoles(request);
 
         if (requiresClientRoles != null && requiresClientRoles.Intersect(clientRoles).Any())
         {
@@ -40,5 +39,16 @@ public class AuthorizationPipelineBehavior<TRequest, TResponse>(
         }
 
         throw new ForbiddenException("You are not allowed to perform this action");
+    }
+
+    private async Task<List<string>> GetClientRoles(TRequest request)
+    {
+        if (request is IClientRequest clientRequest)
+        {
+            return await clientRoleAssignmentRepository
+                .GetRolesByUserIdAndClientIdAsync(currentUserService.UserId, clientRequest.ClientId);
+        }
+
+        return [];
     }
 }
