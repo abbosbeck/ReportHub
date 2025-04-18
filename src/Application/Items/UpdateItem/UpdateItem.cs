@@ -1,4 +1,5 @@
-﻿using Application.Common.Attributes;
+﻿using System.Text.Json.Serialization;
+using Application.Common.Attributes;
 using Application.Common.Constants;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
@@ -19,9 +20,10 @@ public class UpdateItemCommand : IRequest<ItemDto>, IClientRequest
 
     public string CurrencyCode { get; init; }
 
-    public Guid ClientId { get; set; }
-
     public Guid InvoiceId { get; init; }
+
+    [JsonIgnore]
+    public Guid ClientId { get; set; }
 }
 
 [RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin)]

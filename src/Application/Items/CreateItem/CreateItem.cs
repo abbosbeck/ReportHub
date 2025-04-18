@@ -1,4 +1,5 @@
-﻿using Application.Common.Attributes;
+﻿using System.Text.Json.Serialization;
+using Application.Common.Attributes;
 using Application.Common.Constants;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
@@ -17,9 +18,10 @@ public class CreateItemCommand : IRequest<ItemDto>, IClientRequest
 
     public string CurrencyCode { get; init; }
 
-    public Guid ClientId { get; set; }
-
     public Guid InvoiceId { get; init; }
+
+    [JsonIgnore]
+    public Guid ClientId { get; set; }
 }
 
 [RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin)]
@@ -31,7 +33,7 @@ public class CreateItemCommandHandler(
 {
     public async Task<ItemDto> Handle(CreateItemCommand request, CancellationToken cancellationToken)
     {
-        await validator.ValidateAndThrowAsync(request);
+        await validator.ValidateAndThrowAsync(request, cancellationToken);
 
         var newItem = mapper.Map<Item>(request);
         var createdItem = await repository.AddAsync(newItem)

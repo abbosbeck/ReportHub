@@ -1,4 +1,5 @@
-﻿using Application.Common.Attributes;
+﻿using System.Text.Json.Serialization;
+using Application.Common.Attributes;
 using Application.Common.Constants;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
@@ -10,6 +11,7 @@ public class DeleteItemCommand : IRequest<bool>, IClientRequest
 {
     public Guid ItemId { get; set; }
 
+    [JsonIgnore]
     public Guid ClientId { get; set; }
 }
 
