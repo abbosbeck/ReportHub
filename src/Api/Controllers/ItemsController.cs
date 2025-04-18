@@ -21,10 +21,9 @@ public class ItemsController(ISender mediator) : ApiControllerBase(mediator)
     }
 
     [HttpPut]
-    public async Task<IActionResult> UpdateAsync([FromRoute] Guid clientId, [FromBody] UpdateItemCommand command)
+    public async Task<IActionResult> UpdateAsync([FromRoute] Guid clientId, [FromBody] UpdateItemRequest request)
     {
-        command.ClientId = clientId;
-        var result = await Mediator.Send(command);
+        var result = await Mediator.Send(new UpdateItemCommand(clientId, request));
 
         return Ok(result);
     }
