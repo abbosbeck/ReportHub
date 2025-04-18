@@ -46,7 +46,7 @@ public class ItemsController(ISender mediator) : ApiControllerBase(mediator)
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteAsync([FromRoute] Guid clientId, [FromRoute] Guid id)
     {
-        var result = await Mediator.Send(new DeleteItemCommand { ItemId = id, ClientId = clientId });
+        var result = await Mediator.Send(new DeleteItemCommand(id, clientId));
 
         return Ok(result);
     }
