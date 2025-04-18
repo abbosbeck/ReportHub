@@ -1,6 +1,6 @@
 ﻿namespace Application.Customers.UpdateCustomer;
 
-public class UpdateCustomerCommandValidator : AbstractValidator<UpdateCustomerCommand>
+public class UpdateCustomerCommandValidator : AbstractValidator<UpdateCustomerRequest>
 {
     public UpdateCustomerCommandValidator()
     {
