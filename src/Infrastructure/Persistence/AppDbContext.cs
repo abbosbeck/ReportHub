@@ -1,11 +1,14 @@
-﻿using Domain.Entities;
+﻿using Application.Common.Interfaces.Authorization;
+using Domain.Entities;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence;
 
-public class AppDbContext(DbContextOptions<AppDbContext> options)
+public class AppDbContext(
+    DbContextOptions<AppDbContext> options,
+    IClientIdProvider clientProvider)
     : IdentityDbContext<
         User,
         SystemRole,
@@ -36,6 +39,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
         base.OnModelCreating(builder);
 
         builder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+
+        builder.Entity<Customer>(entity => entity
+            .HasQueryFilter(c => c.ClientId == clientProvider.ClientId));
 
         IgnoreUnusedIdentityTables(builder);
 
