@@ -1,4 +1,6 @@
-﻿using Application.Common.Exceptions;
+﻿using Application.Common.Attributes;
+using Application.Common.Constants;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.Repositories;
 
@@ -11,6 +13,7 @@ public class GetItemByIdQuery : IRequest<ItemDto>, IClientRequest
     public Guid ItemId { get; set; }
 }
 
+[RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin, ClientRoles.Operator)]
 public class GetItemByIdQueryHandler(
     IItemRepository repository,
     IMapper mapper)
