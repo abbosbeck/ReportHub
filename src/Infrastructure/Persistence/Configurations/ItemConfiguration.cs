@@ -1,13 +1,15 @@
-﻿using Domain.Entities;
+﻿using Application.Common.Interfaces.Authorization;
+using Domain.Entities;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Persistence.Configurations
 {
-    public class ItemConfiguration : IEntityTypeConfiguration<Item>
+    public class ItemConfiguration(IClientRequest clientRequest) : IEntityTypeConfiguration<Item>
     {
         public void Configure(EntityTypeBuilder<Item> builder)
         {
             builder.HasQueryFilter(i => !i.IsDeleted);
+            builder.HasQueryFilter(i => i.ClientId == clientRequest.ClientId);
 
             builder.Property(i => i.Name)
                 .HasMaxLength(200)
