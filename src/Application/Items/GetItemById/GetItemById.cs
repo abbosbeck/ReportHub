@@ -1,4 +1,5 @@
-﻿using Application.Common.Attributes;
+﻿using System.Text.Json.Serialization;
+using Application.Common.Attributes;
 using Application.Common.Constants;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
@@ -8,9 +9,10 @@ namespace Application.Items.GetItemById;
 
 public class GetItemByIdQuery : IRequest<ItemDto>, IClientRequest
 {
-    public Guid ClientId { get; set; }
-
     public Guid ItemId { get; set; }
+
+    [JsonIgnore]
+    public Guid ClientId { get; set; }
 }
 
 [RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin, ClientRoles.Operator)]

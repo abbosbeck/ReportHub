@@ -1,4 +1,5 @@
-﻿using Application.Common.Attributes;
+﻿using System.Text.Json.Serialization;
+using Application.Common.Attributes;
 using Application.Common.Constants;
 using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.Repositories;
@@ -8,6 +9,7 @@ namespace Application.Items.GetItemsList;
 
 public class GetItemListQuery : IRequest<List<ItemDto>>, IClientRequest
 {
+    [JsonIgnore]
     public Guid ClientId { get; set; }
 }
 
