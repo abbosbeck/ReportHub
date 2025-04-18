@@ -12,16 +12,16 @@ namespace Api.Controllers;
 [Route("[controller]")]
 public class ClientsController(ISender mediator) : ApiControllerBase(mediator)
 {
-    [HttpPost("create")]
-    public async Task<IActionResult> CreateAsync([FromBody]CreateClientCommand command)
+    [HttpPost]
+    public async Task<IActionResult> CreateAsync([FromBody] CreateClientCommand command)
     {
         var result = await Mediator.Send(command);
 
         return Ok(result);
     }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetByIdAsync(Guid id)
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id)
     {
         var result = await Mediator.Send(new GetClientByIdQuery { ClientId = id });
 
@@ -52,8 +52,8 @@ public class ClientsController(ISender mediator) : ApiControllerBase(mediator)
         return Ok(result);
     }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteAsync(Guid id)
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
     {
         var result = await Mediator.Send(new DeleteClientCommand { ClientId = id });
 
