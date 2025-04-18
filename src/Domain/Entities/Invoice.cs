@@ -13,7 +13,7 @@ public class Invoice : BaseAuditableEntity, ISoftDeletable
 
     public decimal Amount { get; set; } // Should be calculated in business logic
 
-    public string CurrencyCode { get; init; }
+    public string CurrencyCode { get; set; }
 
     public ICollection<Item> Items { get; set; }
 
