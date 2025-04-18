@@ -1,5 +1,4 @@
 ﻿using System.Net.Http.Json;
-using Application.Common.Exceptions;
 using Application.Common.Interfaces.External;
 
 namespace Infrastructure.External;
@@ -23,7 +22,7 @@ public class CurrencyExchange(HttpClient httpClient) : ICurrencyExchange
         return result;
     }
 
-    public async Task<decimal> ExchangeCurrency(string source, string destination, decimal amount, DateTime time)
+    public async Task<decimal> ExchangeCurrencyAsync(string source, string destination, decimal amount, DateTime time)
     {
         var currency = await GetHistoricalExchangeRates(source, time, amount);
         var exchangedCurrency = currency.ConversionAmounts[destination];

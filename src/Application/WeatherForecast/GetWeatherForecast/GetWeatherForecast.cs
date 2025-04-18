@@ -17,7 +17,7 @@ public class GetWeatherForecastRequestHandler(
 
     public async Task<IEnumerable<WeatherForecast>> Handle(GetWeatherForecastRequest request, CancellationToken cancellationToken)
     {
-        var currency = await currencyExchange.ExchangeCurrency("USD", "UZS", 100, DateTime.Now);
+        var currency = await currencyExchange.ExchangeCurrencyAsync("USD", "UZS", 100, DateTime.Now);
 
         Console.WriteLine(currency);
 
