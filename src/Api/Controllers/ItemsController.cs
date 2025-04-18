@@ -11,7 +11,7 @@ namespace Api.Controllers;
 [Route("clients/{clientId:guid}/[controller]")]
 public class ItemsController(ISender mediator) : ApiControllerBase(mediator)
 {
-    [HttpPost("Create")]
+    [HttpPost]
     public async Task<IActionResult> CreateAsync([FromRoute] Guid clientId, [FromBody] CreateItemCommand command)
     {
         command.ClientId = clientId;
