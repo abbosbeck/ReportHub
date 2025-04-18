@@ -1,24 +1,54 @@
 ﻿using Application.Items.CreateItem;
+using Application.Items.DeleteItem;
+using Application.Items.GetItemById;
 using Application.Items.GetItemsList;
+using Application.Items.UpdateItem;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
 
+[Route("clients/{clientId:guid}/[controller]")]
 public class ItemsController(ISender mediator) : ApiControllerBase(mediator)
 {
     [HttpPost("Create")]
-    public async Task<IActionResult> CreateAsync([FromBody] CreateItemCommand command)
+    public async Task<IActionResult> CreateAsync([FromRoute] Guid clientId, [FromBody] CreateItemCommand command)
     {
+        command.ClientId = clientId;
         var result = await Mediator.Send(command);
 
         return Ok(result);
     }
 
-    [HttpGet("GetAll")]
-    public async Task<IActionResult> GetAllAsync(Guid clientId)
+    [HttpPut]
+    public async Task<IActionResult> UpdateAsync([FromRoute] Guid clientId, [FromBody] UpdateItemCommand command)
+    {
+        command.ClientId = clientId;
+        var result = await Mediator.Send(command);
+
+        return Ok(result);
+    }
+
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetByIdAsync([FromRoute] Guid clientId, [FromRoute] Guid id)
+    {
+        var result = await Mediator.Send(new GetItemByIdQuery { ItemId = id, ClientId = clientId });
+
+        return Ok(result);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAllAsync([FromRoute] Guid clientId)
     {
         var result = await Mediator.Send(new GetItemListQuery { ClientId = clientId });
+
+        return Ok(result);
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> DeleteAsync([FromRoute] Guid clientId, [FromRoute] Guid id)
+    {
+        var result = await Mediator.Send(new DeleteItemCommand { ItemId = id, ClientId = clientId });
 
         return Ok(result);
     }
