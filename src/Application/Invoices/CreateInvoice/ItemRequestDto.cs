@@ -1,6 +1,6 @@
 ﻿namespace Application.Invoices;
 
-public class ItemInputDto
+public class ItemRequestDto
 {
     public string Name { get; set; }
 

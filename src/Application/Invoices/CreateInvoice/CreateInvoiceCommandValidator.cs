@@ -1,13 +1,12 @@
 ﻿namespace Application.Invoices;
 
-public class CreateInvoiceCommandValidator : AbstractValidator<CreateInvoiceCommand>
+public class CreateInvoiceCommandValidator : AbstractValidator<CreateInvoiceRequest>
 {
     public CreateInvoiceCommandValidator()
     {
         RuleFor(x => x.InvoiceNumber).NotEmpty();
         RuleFor(x => x.IssueDate).NotEmpty();
         RuleFor(x => x.DueDate).NotEmpty().GreaterThan(x => x.IssueDate);
-        RuleFor(x => x.ClientId).NotEmpty();
         RuleFor(x => x.CustomerId).NotEmpty();
         RuleFor(x => x.PaymentStatus).IsInEnum();
         RuleForEach(x => x.Items).ChildRules(item =>
