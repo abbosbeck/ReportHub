@@ -13,6 +13,12 @@ public class ItemRepository(AppDbContext context) : IItemRepository
         return item;
     }
 
+    public async Task AddBulkAsync(ICollection<Item> items)
+    {
+        context.Items.AddRange(items);
+        await context.SaveChangesAsync();
+    }
+
     public async Task<bool> DeleteAsync(Item item)
     {
         context.Remove(item);
