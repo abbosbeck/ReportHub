@@ -9,7 +9,6 @@ namespace Application.Items.GetItemsList;
 
 public class GetItemListQuery : IRequest<List<ItemDto>>, IClientRequest
 {
-    [JsonIgnore]
     public Guid ClientId { get; set; }
 }
 

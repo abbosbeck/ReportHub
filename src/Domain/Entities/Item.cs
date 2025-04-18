@@ -12,7 +12,7 @@ public class Item : BaseAuditableEntity, ISoftDeletable
 
     public string CurrencyCode { get; init; }
 
-    public Guid ClientId { get; init; }
+    public Guid ClientId { get; set; }
 
     public Client Client { get; init; }
 

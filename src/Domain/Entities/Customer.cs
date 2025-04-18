@@ -10,7 +10,7 @@ public class Customer : BaseAuditableEntity, ISoftDeletable
 
     public string CountryCode { get; init; }
 
-    public Guid ClientId { get; init; }
+    public Guid ClientId { get; set; }
 
     public Client Client { get; init; }
 
