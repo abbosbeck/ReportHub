@@ -6,7 +6,7 @@ public class ItemProfile : Profile
 {
     public ItemProfile()
     {
-        CreateMap<UpdateItemCommand, Item>();
+        CreateMap<UpdateItemRequest, Item>();
         CreateMap<Item, ItemDto>();
     }
 }

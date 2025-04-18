@@ -1,6 +1,6 @@
 ﻿namespace Application.Items.CreateItem;
 
-public class CreateItemCommandValidator : AbstractValidator<CreateItemCommand>
+public class CreateItemCommandValidator : AbstractValidator<CreateItemRequest>
 {
     public CreateItemCommandValidator()
     {
@@ -15,10 +15,6 @@ public class CreateItemCommandValidator : AbstractValidator<CreateItemCommand>
         RuleFor(c => c.CurrencyCode)
             .NotEmpty()
             .MaximumLength(3);
-
-        RuleFor(c => c.ClientId)
-            .NotEmpty()
-            .Must(BeAValidGuid);
 
         RuleFor(c => c.InvoiceId)
             .NotEmpty()

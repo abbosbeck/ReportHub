@@ -12,19 +12,17 @@ namespace Api.Controllers;
 public class CustomersController(ISender mediator) : ApiControllerBase(mediator)
 {
     [HttpPost]
-    public async Task<IActionResult> CreateAsync([FromRoute] Guid clientId, [FromBody] CreateCustomerCommand command)
+    public async Task<IActionResult> CreateAsync([FromRoute] Guid clientId, [FromBody] CreateCustomerRequest request)
     {
-        command.ClientId = clientId;
-        var result = await Mediator.Send(command);
+        var result = await Mediator.Send(new CreateCustomerCommand(clientId, request));
 
         return Ok(result);
     }
 
     [HttpPut]
-    public async Task<IActionResult> UpdateAsync([FromRoute] Guid clientId, [FromBody] UpdateCustomerCommand command)
+    public async Task<IActionResult> UpdateAsync([FromRoute] Guid clientId, [FromBody] UpdateCustomerRequest request)
     {
-        command.ClientId = clientId;
-        var result = await Mediator.Send(command);
+        var result = await Mediator.Send(new UpdateCustomerCommand(clientId, request));
 
         return Ok(result);
     }

@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using Application.Common.Attributes;
+﻿using Application.Common.Attributes;
 using Application.Common.Constants;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
@@ -10,15 +9,14 @@ namespace Application.Customers.UpdateCustomer;
 
 public class UpdateCustomerCommand : IRequest<CustomerDto>, IClientRequest
 {
-    public Guid Id { get; init; }
+    public UpdateCustomerCommand(Guid clientId, UpdateCustomerRequest request)
+    {
+        ClientId = clientId;
+        Customer = request;
+    }
 
-    public string Name { get; init; }
+    public UpdateCustomerRequest Customer { get; set; }
 
-    public string Email { get; init; }
-
-    public string CountryCode { get; init; }
-
-    [JsonIgnore]
     public Guid ClientId { get; set; }
 }
 
@@ -28,15 +26,15 @@ public class UpdateCustomerCommandHandler(
     IClientRepository clientRepository,
     ICountryApiService countryApiService,
     ICustomerRepository customerRepository,
-    IValidator<UpdateCustomerCommand> validator)
+    IValidator<UpdateCustomerRequest> validator)
     : IRequestHandler<UpdateCustomerCommand, CustomerDto>
 {
     public async Task<CustomerDto> Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
     {
-        await validator.ValidateAndThrowAsync(request, cancellationToken: cancellationToken);
+        await validator.ValidateAndThrowAsync(request.Customer, cancellationToken: cancellationToken);
 
-        _ = await countryApiService.GetByCode(request.CountryCode)
-            ?? throw new NotFoundException($"Country is not found with this code: {request.CountryCode}" +
+        _ = await countryApiService.GetByCode(request.Customer.CountryCode)
+            ?? throw new NotFoundException($"Country is not found with this code: {request.Customer.CountryCode}" +
                                            $"Look at this https://www.iban.com/country-codes");
 
         _ = await clientRepository.GetByIdAsync(request.ClientId)
@@ -44,10 +42,11 @@ public class UpdateCustomerCommandHandler(
 
         var customer =
             await customerRepository.GetAsync(customer =>
-                customer.ClientId == request.ClientId && customer.Id == request.Id)
-            ?? throw new NotFoundException($"Customer is not found with this id: {request.Id}");
+                customer.ClientId == request.ClientId && customer.Id == request.Customer.Id)
+            ?? throw new NotFoundException($"Customer is not found with this id: {request.Customer.Id}");
 
-        mapper.Map(request, customer);
+        mapper.Map(request.Customer, customer);
+        customer.ClientId = request.ClientId;
 
         await customerRepository.UpdateAsync(customer);
 

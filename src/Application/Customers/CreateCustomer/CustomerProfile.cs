@@ -7,6 +7,6 @@ public class CustomerProfile : Profile
     public CustomerProfile()
     {
         CreateMap<Customer, CustomerDto>();
-        CreateMap<CreateCustomerCommand, Customer>();
+        CreateMap<CreateCustomerRequest, Customer>();
     }
 }
