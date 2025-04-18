@@ -1,4 +1,6 @@
-﻿using Application.Common.Interfaces.Authorization;
+﻿using Application.Common.Attributes;
+using Application.Common.Constants;
+using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +11,7 @@ public class GetItemListQuery : IRequest<List<ItemDto>>, IClientRequest
     public Guid ClientId { get; set; }
 }
 
+[RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin, ClientRoles.Operator)]
 public class GetItemListQueryHandler(
     IItemRepository repository,
     IMapper mapper)
