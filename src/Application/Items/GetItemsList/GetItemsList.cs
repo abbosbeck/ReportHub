@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using Application.Common.Attributes;
+﻿using Application.Common.Attributes;
 using Application.Common.Constants;
 using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.Repositories;
@@ -7,15 +6,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Items.GetItemsList;
 
-public class GetItemListQuery : IRequest<List<ItemDto>>, IClientRequest
+public class GetItemListQuery(Guid clientId) : IRequest<List<ItemDto>>, IClientRequest
 {
-    public Guid ClientId { get; set; }
+    public Guid ClientId { get; set; } = clientId;
 }
 
 [RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin, ClientRoles.Operator)]
-public class GetItemListQueryHandler(
-    IItemRepository repository,
-    IMapper mapper)
+public class GetItemListQueryHandler(IItemRepository repository, IMapper mapper)
     : IRequestHandler<GetItemListQuery, List<ItemDto>>
 {
     public async Task<List<ItemDto>> Handle(GetItemListQuery request, CancellationToken cancellationToken)
