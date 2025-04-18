@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using Application.Common.Attributes;
+﻿using Application.Common.Attributes;
 using Application.Common.Constants;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
