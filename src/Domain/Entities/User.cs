@@ -19,6 +19,8 @@ public class User : IdentityUser<Guid>, ISoftDeletable, IBaseEntity, IAuditableE
 
     public DateTime? DeletedOn { get; set; }
 
+    public string DeletedBy { get; set; }
+
     public DateTime CreatedOn { get; set; }
 
     public string CreatedBy { get; set; }

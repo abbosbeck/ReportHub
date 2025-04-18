@@ -11,7 +11,7 @@ public static class ClaimsPrincipalExtensions
 
         return Guid.TryParse(userId, out var parsedUserId)
             ? parsedUserId
-            : throw new ForbiddenException("User id is unavailable");
+            : Guid.Empty;
     }
 
     public static List<string> GetRoles(this ClaimsPrincipal principal)

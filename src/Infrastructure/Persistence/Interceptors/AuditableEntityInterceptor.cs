@@ -1,8 +1,9 @@
-﻿using Domain.Common;
+﻿using Application.Common.Interfaces.Authorization;
+using Domain.Common;
 
 namespace Infrastructure.Persistence.Interceptors;
 
-public class AuditableEntityInterceptor : SaveChangesInterceptor
+public class AuditableEntityInterceptor(ICurrentUserService currentUserService) : SaveChangesInterceptor
 {
     public override InterceptionResult<int> SavingChanges(
         DbContextEventData eventData,
@@ -23,23 +24,24 @@ public class AuditableEntityInterceptor : SaveChangesInterceptor
         return base.SavingChangesAsync(eventData, result, cancellationToken);
     }
 
-    private static void UpdateEntities(DbContext context)
+    private void UpdateEntities(DbContext context)
     {
         if (context == null)
         {
             return;
         }
 
-        foreach (var entry in context.ChangeTracker.Entries<BaseAuditableEntity>())
+        foreach (var entry in context.ChangeTracker.Entries<IAuditableEntity>())
         {
             if (entry.State == EntityState.Added)
             {
                 entry.Entity.CreatedOn = DateTime.UtcNow;
+                entry.Entity.CreatedBy = currentUserService.UserId.ToString();
             }
-
-            if (entry.State == EntityState.Added || entry.State == EntityState.Modified)
+            else if (entry.State == EntityState.Modified)
             {
                 entry.Entity.LastModifiedOn = DateTime.UtcNow;
+                entry.Entity.LastModifiedBy = currentUserService.UserId.ToString();
             }
         }
     }

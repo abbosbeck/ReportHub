@@ -8,8 +8,7 @@ public class CurrentUserService(
     IHttpContextAccessor httpContextAccessor)
     : ICurrentUserService
 {
-    public Guid UserId => httpContextAccessor.HttpContext?.User.GetUserId() ??
-                          throw new ForbiddenException("User Context is unavailable");
+    public Guid UserId => httpContextAccessor.HttpContext?.User.GetUserId() ?? Guid.Empty;
 
     public List<string> SystemRoles => httpContextAccessor.HttpContext?.User.GetRoles() ?? new List<string> { };
 }
