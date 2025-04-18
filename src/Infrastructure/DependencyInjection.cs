@@ -1,6 +1,8 @@
 ﻿using Application.Common.Configurations;
 using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.External;
+using Application.Common.Interfaces.External.Countries;
+using Application.Common.Interfaces.External.CurrencyExchange;
 using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
 using Infrastructure.Authentication;
@@ -41,12 +43,12 @@ public static class DependencyInjection
         services.AddScoped<IClientRoleRepository, ClientRoleRepository>();
         services.AddScoped<ICustomerRepository, CustomerRepository>();
         services.AddScoped<IItemRepository, ItemRepository>();
-        services.AddHttpClient<ICountryApiService, CountryApiService>(httpClient =>
+        services.AddHttpClient<ICountryService, CountryService>(httpClient =>
         {
             httpClient.BaseAddress = new Uri($"https://www.apicountries.com/");
         });
 
-        services.AddHttpClient<ICurrencyExchange, CurrencyExchange>(httpClient =>
+        services.AddHttpClient<ICurrencyExchangeService, CurrencyExchangeService>(httpClient =>
         {
             httpClient.BaseAddress = new Uri(configuration["ExchangeRate"]);
         });

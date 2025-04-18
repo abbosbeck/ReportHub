@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Application.Common.Interfaces.External;
+namespace Application.Common.Interfaces.External.CurrencyExchange;
 
 public class HistoricalExchangeRatesDto
 {
