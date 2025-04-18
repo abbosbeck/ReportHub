@@ -12,10 +12,9 @@ namespace Api.Controllers;
 public class ItemsController(ISender mediator) : ApiControllerBase(mediator)
 {
     [HttpPost]
-    public async Task<IActionResult> CreateAsync([FromRoute] Guid clientId, [FromBody] CreateItemCommand command)
+    public async Task<IActionResult> CreateAsync([FromRoute] Guid clientId, [FromBody] CreateItemRequest request)
     {
-        command.ClientId = clientId;
-        var result = await Mediator.Send(command);
+        var result = await Mediator.Send(new CreateItemCommand(clientId, request));
 
         return Ok(result);
     }

@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using Application.Common.Attributes;
+﻿using Application.Common.Attributes;
 using Application.Common.Constants;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
@@ -10,17 +9,14 @@ namespace Application.Items.CreateItem;
 
 public class CreateItemCommand : IRequest<ItemDto>, IClientRequest
 {
-    public string Name { get; init; }
+    public CreateItemCommand(Guid clientId, CreateItemRequest item)
+    {
+        ClientId = clientId;
+        Item = item;
+    }
 
-    public string Description { get; init; }
+    public CreateItemRequest Item { get; set; }
 
-    public decimal Price { get; init; }
-
-    public string CurrencyCode { get; init; }
-
-    public Guid InvoiceId { get; init; }
-
-    [JsonIgnore]
     public Guid ClientId { get; set; }
 }
 
@@ -35,7 +31,9 @@ public class CreateItemCommandHandler(
     {
         await validator.ValidateAndThrowAsync(request, cancellationToken);
 
-        var newItem = mapper.Map<Item>(request);
+        var newItem = mapper.Map<Item>(request.Item);
+        newItem.ClientId = request.ClientId;
+
         var createdItem = await repository.AddAsync(newItem)
             ?? throw new BadRequestException("Item creation failed!");
 
