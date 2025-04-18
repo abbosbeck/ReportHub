@@ -16,7 +16,7 @@ namespace Api.Controllers;
 public class UsersController(ISender mediator) : ApiControllerBase(mediator)
 {
     [HttpGet("{email}")]
-    public async Task<IActionResult> GetByEmailAsync(string email)
+    public async Task<IActionResult> GetByEmailAsync([FromRoute] string email)
     {
         var result = await Mediator.Send(new GetUserByEmailQuery { Email = email });
 
@@ -34,7 +34,7 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
 
     [AllowAnonymous]
     [HttpPost("login")]
-    public async Task<IActionResult> LoginAsync(LoginUserCommand request)
+    public async Task<IActionResult> LoginAsync([FromBody] LoginUserCommand request)
     {
         var result = await Mediator.Send(request);
 
@@ -43,7 +43,7 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
 
     [AllowAnonymous]
     [HttpPost("refresh-token")]
-    public async Task<IActionResult> RefreshTokenAsync(RefreshTokenCommand refreshToken)
+    public async Task<IActionResult> RefreshTokenAsync([FromBody] RefreshTokenCommand refreshToken)
     {
         var result = await Mediator.Send(refreshToken);
 
@@ -76,7 +76,7 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
     }
 
     [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> DeleteAsync(Guid id)
+    public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
     {
         var result = await Mediator.Send(new DeleteUserCommand { UserId = id });
 
