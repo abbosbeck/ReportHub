@@ -18,7 +18,7 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
     [HttpGet("{email}")]
     public async Task<IActionResult> GetByEmailAsync(string email)
     {
-        var result = await Mediator.Send(new GetUserByEmailQuery() { Email = email });
+        var result = await Mediator.Send(new GetUserByEmailQuery { Email = email });
 
         return Ok(result);
     }
@@ -54,7 +54,7 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
     [HttpGet("confirm-email")]
     public async Task<IActionResult> ConfirmEmailAsync([FromQuery] string token)
     {
-        var result = await Mediator.Send(new ConfirmUserEmailQuery() { Token = token });
+        var result = await Mediator.Send(new ConfirmUserEmailQuery { Token = token });
 
         return Ok(result);
     }
@@ -75,7 +75,7 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
         return Ok(result);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteAsync(Guid id)
     {
         var result = await Mediator.Send(new DeleteUserCommand { UserId = id });
