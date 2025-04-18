@@ -13,14 +13,13 @@ public class GetClientByIdQuery : IRequest<ClientDto>, IClientRequest
 
 [RequiresSystemRole(SystemRoles.SuperAdmin)]
 [RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin, ClientRoles.Operator)]
-public class GetClientByIdQueryHandler(IClientRepository repository,
-    IMapper mapper)
+public class GetClientByIdQueryHandler(IMapper mapper, IClientRepository repository)
     : IRequestHandler<GetClientByIdQuery, ClientDto>
 {
     public async Task<ClientDto> Handle(GetClientByIdQuery request, CancellationToken cancellationToken)
     {
         var client = await repository.GetByIdAsync(request.ClientId)
-            ?? throw new NotFoundException($"User is not found with this id: {request.ClientId}");
+            ?? throw new NotFoundException($"Client is not found with this id: {request.ClientId}");
 
         return mapper.Map<ClientDto>(client);
     }
