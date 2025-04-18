@@ -24,12 +24,12 @@ public class CreateItemCommand : IRequest<ItemDto>, IClientRequest
 public class CreateItemCommandHandler(
     IItemRepository repository,
     IMapper mapper,
-    IValidator<CreateItemCommand> validator)
+    IValidator<CreateItemRequest> validator)
     : IRequestHandler<CreateItemCommand, ItemDto>
 {
     public async Task<ItemDto> Handle(CreateItemCommand request, CancellationToken cancellationToken)
     {
-        await validator.ValidateAndThrowAsync(request, cancellationToken);
+        await validator.ValidateAndThrowAsync(request.Item, cancellationToken);
 
         var newItem = mapper.Map<Item>(request.Item);
         newItem.ClientId = request.ClientId;

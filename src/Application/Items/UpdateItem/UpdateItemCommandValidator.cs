@@ -1,6 +1,6 @@
 ﻿namespace Application.Items.UpdateItem;
 
-public class UpdateItemCommandValidator : AbstractValidator<UpdateItemCommand>
+public class UpdateItemCommandValidator : AbstractValidator<UpdateItemRequest>
 {
     public UpdateItemCommandValidator()
     {
@@ -15,10 +15,6 @@ public class UpdateItemCommandValidator : AbstractValidator<UpdateItemCommand>
         RuleFor(c => c.CurrencyCode)
             .NotEmpty()
             .MaximumLength(3);
-
-        RuleFor(c => c.ClientId)
-            .NotEmpty()
-            .Must(BeAValidGuid);
 
         RuleFor(c => c.InvoiceId)
             .NotEmpty()

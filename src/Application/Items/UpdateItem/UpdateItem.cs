@@ -24,12 +24,12 @@ public class UpdateItemCommand : IRequest<ItemDto>, IClientRequest
 public class UpdateItemCommandHandler(
     IItemRepository repository,
     IMapper mapper,
-    IValidator<UpdateItemCommand> validator)
+    IValidator<UpdateItemRequest> validator)
     : IRequestHandler<UpdateItemCommand, ItemDto>
 {
     public async Task<ItemDto> Handle(UpdateItemCommand request, CancellationToken cancellationToken)
     {
-        await validator.ValidateAndThrowAsync(request, cancellationToken);
+        await validator.ValidateAndThrowAsync(request.Item, cancellationToken);
 
         _ = await repository.GetByIdAsync(request.Item.Id)
             ?? throw new NotFoundException($"Item is not found with this id: {request.Item.Id}");

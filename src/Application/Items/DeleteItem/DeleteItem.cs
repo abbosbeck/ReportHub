@@ -11,7 +11,6 @@ public class DeleteItemCommand : IRequest<bool>, IClientRequest
 {
     public Guid ItemId { get; set; }
 
-    [JsonIgnore]
     public Guid ClientId { get; set; }
 }
 
