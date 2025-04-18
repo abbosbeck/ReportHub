@@ -4,6 +4,8 @@ namespace Application.Common.Interfaces.Repositories;
 
 public interface IItemRepository
 {
+    IQueryable<Item> GetAll();
+
     Task<Item> GetByIdAsync(Guid itemId);
 
     Task<Item> AddAsync(Item item);

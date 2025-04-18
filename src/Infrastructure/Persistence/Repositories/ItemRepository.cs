@@ -20,6 +20,11 @@ public class ItemRepository(AppDbContext context) : IItemRepository
         return await context.SaveChangesAsync() > 0;
     }
 
+    public IQueryable<Item> GetAll()
+    {
+        return context.Items.AsQueryable();
+    }
+
     public async Task<Item> GetByIdAsync(Guid itemId)
     {
         return await context.Items.FindAsync(itemId);
