@@ -11,7 +11,6 @@ public class GetItemByIdQuery : IRequest<ItemDto>, IClientRequest
 {
     public Guid ItemId { get; set; }
 
-    [JsonIgnore]
     public Guid ClientId { get; set; }
 }
 

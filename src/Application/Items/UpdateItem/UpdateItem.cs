@@ -35,7 +35,7 @@ public class UpdateItemCommandHandler(
 {
     public async Task<ItemDto> Handle(UpdateItemCommand request, CancellationToken cancellationToken)
     {
-        await validator.ValidateAndThrowAsync(request);
+        await validator.ValidateAndThrowAsync(request, cancellationToken);
 
         _ = await repository.GetByIdAsync(request.Id)
             ?? throw new NotFoundException($"Item is not found with this id: {request.Id}");
