@@ -7,13 +7,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
 {
-    public class InvoiceController(ISender mediator) : ApiControllerBase(mediator)
+    [Route("clients/{clientId:guid}/[controller]")]
+    public class InvoicesController(ISender mediator) : ApiControllerBase(mediator)
     {
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromBody] CreateInvoiceCommand command)
+        public async Task<IActionResult> CreateAsync([FromRoute] Guid clientId, [FromBody] CreateInvoiceRequest request)
         {
-            var result = await Mediator.Send(command);
+            var result = await Mediator.Send(new CreateInvoiceCommand(clientId, request));
 
             return Ok(result);
         }
