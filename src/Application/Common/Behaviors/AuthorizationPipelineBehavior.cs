@@ -8,6 +8,7 @@ namespace Application.Common.Behaviors;
 
 public class AuthorizationPipelineBehavior<TRequest, TResponse>(
     ICurrentUserService currentUserService,
+    IClientIdProvider clientIdProvider,
     IClientRoleAssignmentRepository clientRoleAssignmentRepository,
     IRequestHandler<TRequest, TResponse> handler)
     : IPipelineBehavior<TRequest, TResponse>
@@ -45,6 +46,7 @@ public class AuthorizationPipelineBehavior<TRequest, TResponse>(
     {
         if (request is IClientRequest clientRequest)
         {
+            clientIdProvider.ClientId = clientRequest.ClientId;
             return await clientRoleAssignmentRepository
                 .GetRolesByUserIdAndClientIdAsync(currentUserService.UserId, clientRequest.ClientId);
         }

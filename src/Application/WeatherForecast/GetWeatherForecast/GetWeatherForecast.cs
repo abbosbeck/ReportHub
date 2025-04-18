@@ -1,10 +1,13 @@
-﻿namespace Application.WeatherForecast.GetWeatherForecast;
+﻿using Application.Common.Interfaces.External;
+
+namespace Application.WeatherForecast.GetWeatherForecast;
 
 public class GetWeatherForecastRequest : IRequest<IEnumerable<WeatherForecast>>
 {
 }
 
-public class GetWeatherForecastRequestHandler
+public class GetWeatherForecastRequestHandler(
+    ICurrencyExchange currencyExchange)
     : IRequestHandler<GetWeatherForecastRequest, IEnumerable<WeatherForecast>>
 {
     private static readonly string[] Summaries =
@@ -14,6 +17,10 @@ public class GetWeatherForecastRequestHandler
 
     public async Task<IEnumerable<WeatherForecast>> Handle(GetWeatherForecastRequest request, CancellationToken cancellationToken)
     {
+        var currency = await currencyExchange.ExchangeCurrencyAsync("USD", "UZS", 100, DateTime.Now);
+
+        Console.WriteLine(currency);
+
         var result = Enumerable.Range(1, 5).Select(index => new WeatherForecast
         {
             Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),

@@ -9,7 +9,7 @@ public class InvoiceProfile : Profile
         CreateMap<Invoice, InvoiceDto>()
             .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items));
         CreateMap<Item, ItemDto>();
-        CreateMap<CreateInvoiceCommand, Invoice>();
-        CreateMap<ItemInputDto, Item>();
+        CreateMap<CreateInvoiceRequest, Invoice>();
+        CreateMap<ItemRequestDto, Item>();
     }
 }

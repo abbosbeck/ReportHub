@@ -10,6 +10,6 @@ public class InvoiceProfile : Profile
             .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items));
         CreateMap<Item, ItemDto>();
         CreateMap<UpdateInvoiceCommand, Invoice>();
-        CreateMap<ItemInputDto, Item>();
+        CreateMap<ItemRequestDto, Item>();
     }
 }

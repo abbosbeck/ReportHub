@@ -24,7 +24,7 @@ public class UpdateInvoiceCommand : IRequest<InvoiceDto>
 
     public InvoicePaymentStatus PaymentStatus { get; set; }
 
-    public List<ItemInputDto> Items { get; set; }
+    public List<ItemRequestDto> Items { get; set; }
 }
 
 public class UpdateInvoiceCommandHandler(

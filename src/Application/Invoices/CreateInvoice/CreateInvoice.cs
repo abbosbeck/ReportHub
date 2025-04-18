@@ -1,63 +1,63 @@
 ﻿using Application.Common.Exceptions;
+using Application.Common.Interfaces.Authorization;
+using Application.Common.Interfaces.External;
 using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
-using Domain.Enums;
 
 namespace Application.Invoices;
 
-public class CreateInvoiceCommand : IRequest<InvoiceDto>
+public class CreateInvoiceCommand : IRequest<InvoiceDto>, IClientRequest
 {
-    public string InvoiceNumber { get; set; }
+    public CreateInvoiceCommand(Guid clientId, CreateInvoiceRequest request)
+    {
+        ClientId = clientId;
+        Invoice = request;
+    }
 
-    public DateTime IssueDate { get; set; }
-
-    public DateTime DueDate { get; set; }
+    public CreateInvoiceRequest Invoice { get; set; }
 
     public Guid ClientId { get; set; }
-
-    public Guid CustomerId { get; set; }
-
-    public InvoicePaymentStatus PaymentStatus { get; set; }
-
-    public List<ItemInputDto> Items { get; set; }
 }
 
 public class AddInvoiceCommandHandler(
-    IInvoiceRepository repository,
+    IInvoiceRepository invoiceRepository,
+    IItemRepository itemRepository,
+    ICustomerRepository customerRepository,
+    ICurrencyExchange currencyExchange,
     IMapper mapper,
-    IValidator<CreateInvoiceCommand> validator
+    IValidator<CreateInvoiceRequest> validator
     ) : IRequestHandler<CreateInvoiceCommand, InvoiceDto>
 {
     public async Task<InvoiceDto> Handle(CreateInvoiceCommand request, CancellationToken cancellationToken)
     {
-        await validator.ValidateAndThrowAsync(request, cancellationToken);
+        //await validator.ValidateAndThrowAsync(request.Invoice, cancellationToken);
 
-        var existingInvoices = await repository.GetAllAsync();
-        if (existingInvoices.Any(i => i.InvoiceNumber == request.InvoiceNumber))
+        var existInvoice = await invoiceRepository.GetByInvoiceNumberAsync(request.Invoice.InvoiceNumber);
+        if(existInvoice != null)
         {
-            throw new ConflictException("An invoice with this number already exists.");
+            throw new ConflictException($"There is already an invoice with this invoice number: {request.Invoice.InvoiceNumber}");
         }
 
-        var invoice = mapper.Map<Invoice>(request);
-        invoice.Items = [];
+        var invoice = mapper.Map<Invoice>(request.Invoice);
 
-        if (request.Items != null)
+        var customer = await customerRepository.GetAsync(c => c.Id == invoice.CustomerId)
+            ?? throw new NotFoundException($"Customer is not found with this id: {invoice.CustomerId}");
+
+        foreach (var itemDto in request.Invoice.Items)
         {
-            foreach (var itemDto in request.Items)
-            {
-                var item = mapper.Map<Item>(itemDto);
-                invoice.Items.Add(item);
-            }
+            var item = mapper.Map<Item>(itemDto);
+            var exchangedPrice = await currencyExchange
+                .ExchangeCurrencyAsync(item.CurrencyCode, customer.CountryCode, item.Price, invoice.IssueDate);
+
+            invoice.Items.Add(item);
+            invoice.Amount += exchangedPrice;
         }
 
-        await repository.AddAsync(invoice);
-        var newInvoice = await repository.GetByIdAsync(invoice.Id);
+        invoice.CurrencyCode = customer.CountryCode;
+        await invoiceRepository.AddAsync(invoice);
 
-        if (newInvoice == null)
-        {
-            throw new NotFoundException("Failed to retrieve the newly created invoice.");
-        }
+        await itemRepository.AddBulkAsync(invoice.Items);
 
-        return mapper.Map<InvoiceDto>(newInvoice);
+        return mapper.Map<InvoiceDto>(invoice);
     }
 }

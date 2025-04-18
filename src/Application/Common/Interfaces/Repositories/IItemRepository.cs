@@ -4,9 +4,13 @@ namespace Application.Common.Interfaces.Repositories;
 
 public interface IItemRepository
 {
-    Task<Item> GetByIdAsync(Guid id);
+    IQueryable<Item> GetAll();
+
+    Task<Item> GetByIdAsync(Guid itemId);
 
     Task<Item> AddAsync(Item item);
+
+    Task AddBulkAsync(ICollection<Item> items);
 
     Task<Item> UpdateAsync(Item item);
 

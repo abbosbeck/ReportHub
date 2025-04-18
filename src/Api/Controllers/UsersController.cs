@@ -16,9 +16,9 @@ namespace Api.Controllers;
 public class UsersController(ISender mediator) : ApiControllerBase(mediator)
 {
     [HttpGet("{email}")]
-    public async Task<IActionResult> GetByEmailAsync(string email)
+    public async Task<IActionResult> GetByEmailAsync([FromRoute] string email)
     {
-        var result = await Mediator.Send(new GetUserByEmailQuery() { Email = email });
+        var result = await Mediator.Send(new GetUserByEmailQuery { Email = email });
 
         return Ok(result);
     }
@@ -34,7 +34,7 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
 
     [AllowAnonymous]
     [HttpPost("login")]
-    public async Task<IActionResult> LoginAsync(LoginUserCommand request)
+    public async Task<IActionResult> LoginAsync([FromBody] LoginUserCommand request)
     {
         var result = await Mediator.Send(request);
 
@@ -43,7 +43,7 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
 
     [AllowAnonymous]
     [HttpPost("refresh-token")]
-    public async Task<IActionResult> RefreshTokenAsync(RefreshTokenCommand refreshToken)
+    public async Task<IActionResult> RefreshTokenAsync([FromBody] RefreshTokenCommand refreshToken)
     {
         var result = await Mediator.Send(refreshToken);
 
@@ -54,7 +54,7 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
     [HttpGet("confirm-email")]
     public async Task<IActionResult> ConfirmEmailAsync([FromQuery] string token)
     {
-        var result = await Mediator.Send(new ConfirmUserEmailQuery() { Token = token });
+        var result = await Mediator.Send(new ConfirmUserEmailQuery { Token = token });
 
         return Ok(result);
     }
@@ -75,8 +75,8 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
         return Ok(result);
     }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteAsync(Guid id)
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
     {
         var result = await Mediator.Send(new DeleteUserCommand { UserId = id });
 
