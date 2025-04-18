@@ -1,4 +1,6 @@
-﻿using Application.Common.Exceptions;
+﻿using Application.Common.Attributes;
+using Application.Common.Constants;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
@@ -20,6 +22,7 @@ public class CreateItemCommand : IRequest<ItemDto>, IClientRequest
     public Guid InvoiceId { get; init; }
 }
 
+[RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin)]
 public class CreateItemCommandHandler(
     IItemRepository repository,
     IMapper mapper,
