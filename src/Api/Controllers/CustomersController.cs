@@ -30,7 +30,7 @@ public class CustomersController(ISender mediator) : ApiControllerBase(mediator)
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetByIdAsync([FromRoute] Guid clientId, [FromRoute] Guid id)
     {
-        var result = await Mediator.Send(new GetCustomerByIdQuery { Id = id, ClientId = clientId });
+        var result = await Mediator.Send(new GetCustomerByIdQuery(id, clientId));
 
         return Ok(result);
     }
