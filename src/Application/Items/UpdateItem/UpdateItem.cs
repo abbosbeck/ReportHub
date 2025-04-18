@@ -1,4 +1,6 @@
-﻿using Application.Common.Exceptions;
+﻿using Application.Common.Attributes;
+using Application.Common.Constants;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
@@ -8,6 +10,7 @@ namespace Application.Items.UpdateItem;
 public class UpdateItemCommand : IRequest<ItemDto>, IClientRequest
 {
     public Guid Id { get; set; }
+
     public string Name { get; init; }
 
     public string Description { get; init; }
@@ -21,6 +24,7 @@ public class UpdateItemCommand : IRequest<ItemDto>, IClientRequest
     public Guid InvoiceId { get; init; }
 }
 
+[RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin)]
 public class UpdateItemCommandHandler(
     IItemRepository repository,
     IMapper mapper,
