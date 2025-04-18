@@ -7,23 +7,17 @@ using Domain.Entities;
 
 namespace Application.Items.UpdateItem;
 
-public class UpdateItemCommand : IRequest<ItemDto>, IClientRequest
+public class UpdateItemCommand(Guid clientId, UpdateItemRequest item) : IRequest<ItemDto>, IClientRequest
 {
-    public UpdateItemCommand(Guid clientId, UpdateItemRequest item)
-    {
-        Item = item;
-        ClientId = clientId;
-    }
+    public UpdateItemRequest Item { get; set; } = item;
 
-    public UpdateItemRequest Item { get; set; }
-
-    public Guid ClientId { get; set; }
+    public Guid ClientId { get; set; } = clientId;
 }
 
 [RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin)]
 public class UpdateItemCommandHandler(
-    IItemRepository repository,
     IMapper mapper,
+    IItemRepository repository,
     IValidator<UpdateItemRequest> validator)
     : IRequestHandler<UpdateItemCommand, ItemDto>
 {
@@ -34,11 +28,11 @@ public class UpdateItemCommandHandler(
         _ = await repository.GetByIdAsync(request.Item.Id)
             ?? throw new NotFoundException($"Item is not found with this id: {request.Item.Id}");
 
-        var newItem = mapper.Map<Item>(request.Item);
-        newItem.ClientId = request.ClientId;
+        var item = mapper.Map<Item>(request.Item);
+        item.ClientId = request.ClientId;
 
-        var updatedItem = await repository.UpdateAsync(newItem);
+        await repository.UpdateAsync(item);
 
-        return mapper.Map<ItemDto>(updatedItem);
+        return mapper.Map<ItemDto>(item);
     }
 }
