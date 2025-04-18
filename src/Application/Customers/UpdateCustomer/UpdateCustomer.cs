@@ -2,30 +2,24 @@
 using Application.Common.Constants;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
-using Application.Common.Interfaces.External;
 using Application.Common.Interfaces.External.Countries;
 using Application.Common.Interfaces.Repositories;
 
 namespace Application.Customers.UpdateCustomer;
 
-public class UpdateCustomerCommand : IRequest<CustomerDto>, IClientRequest
+public class UpdateCustomerCommand(Guid clientId, UpdateCustomerRequest request)
+    : IRequest<CustomerDto>, IClientRequest
 {
-    public UpdateCustomerCommand(Guid clientId, UpdateCustomerRequest request)
-    {
-        ClientId = clientId;
-        Customer = request;
-    }
+    public UpdateCustomerRequest Customer { get; set; } = request;
 
-    public UpdateCustomerRequest Customer { get; set; }
-
-    public Guid ClientId { get; set; }
+    public Guid ClientId { get; set; } = clientId;
 }
 
 [RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin)]
 public class UpdateCustomerCommandHandler(
     IMapper mapper,
-    IClientRepository clientRepository,
     ICountryService countryService,
+    IClientRepository clientRepository,
     ICustomerRepository customerRepository,
     IValidator<UpdateCustomerRequest> validator)
     : IRequestHandler<UpdateCustomerCommand, CustomerDto>
@@ -35,7 +29,7 @@ public class UpdateCustomerCommandHandler(
         await validator.ValidateAndThrowAsync(request.Customer, cancellationToken: cancellationToken);
 
         _ = await countryService.GetByCode(request.Customer.CountryCode)
-            ?? throw new NotFoundException($"Country is not found with this code: {request.Customer.CountryCode}" +
+            ?? throw new NotFoundException($"Country is not found with this code: {request.Customer.CountryCode}. " +
                                            $"Look at this https://www.iban.com/country-codes");
 
         _ = await clientRepository.GetByIdAsync(request.ClientId)
