@@ -7,6 +7,7 @@ public class AddClientMemberCommandValidator : AbstractValidator<AddClientMember
         RuleFor(c => c.ClientId)
             .NotEmpty()
             .Must(BeAValidGuid);
+
         RuleFor(c => c.UserId)
             .NotEmpty()
             .Must(BeAValidGuid);

@@ -1,29 +1,22 @@
 ﻿using Application.Common.Attributes;
 using Application.Common.Constants;
-using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
 
 namespace Application.Items.CreateItem;
 
-public class CreateItemCommand : IRequest<ItemDto>, IClientRequest
+public class CreateItemCommand(Guid clientId, CreateItemRequest item) : IRequest<ItemDto>, IClientRequest
 {
-    public CreateItemCommand(Guid clientId, CreateItemRequest item)
-    {
-        ClientId = clientId;
-        Item = item;
-    }
+    public CreateItemRequest Item { get; set; } = item;
 
-    public CreateItemRequest Item { get; set; }
-
-    public Guid ClientId { get; set; }
+    public Guid ClientId { get; set; } = clientId;
 }
 
 [RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin)]
 public class CreateItemCommandHandler(
-    IItemRepository repository,
     IMapper mapper,
+    IItemRepository repository,
     IValidator<CreateItemRequest> validator)
     : IRequestHandler<CreateItemCommand, ItemDto>
 {
@@ -31,12 +24,11 @@ public class CreateItemCommandHandler(
     {
         await validator.ValidateAndThrowAsync(request.Item, cancellationToken);
 
-        var newItem = mapper.Map<Item>(request.Item);
-        newItem.ClientId = request.ClientId;
+        var item = mapper.Map<Item>(request.Item);
+        item.ClientId = request.ClientId;
 
-        var createdItem = await repository.AddAsync(newItem)
-            ?? throw new BadRequestException("Item creation failed!");
+        await repository.AddAsync(item);
 
-        return mapper.Map<ItemDto>(createdItem);
+        return mapper.Map<ItemDto>(item);
     }
 }

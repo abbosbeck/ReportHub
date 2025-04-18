@@ -1,9 +1,9 @@
 ﻿using System.Net.Http.Json;
-using Application.Common.Interfaces.External;
+using Application.Common.Interfaces.External.Countries;
 
 namespace Infrastructure.External;
 
-public class CountryApiService(HttpClient httpClient) : ICountryApiService
+public class CountryService(HttpClient httpClient) : ICountryService
 {
     public async Task<CountryDto> GetByCode(string countryCode)
     {

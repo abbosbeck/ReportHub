@@ -15,12 +15,12 @@ public class CreateClientCommand : IRequest<ClientDto>
 
 [RequiresSystemRole(SystemRoles.SuperAdmin)]
 public class CreateClientCommandHandler(
-    IClientRepository clientRepository,
-    IClientRoleAssignmentRepository clientRoleAssignmentRepository,
-    IClientRoleRepository clientRoleRepository,
+    IMapper mapper,
     IUserRepository userRepository,
+    IClientRepository clientRepository,
     IValidator<CreateClientCommand> validator,
-    IMapper mapper)
+    IClientRoleRepository clientRoleRepository,
+    IClientRoleAssignmentRepository clientRoleAssignmentRepository)
     : IRequestHandler<CreateClientCommand, ClientDto>
 {
     public async Task<ClientDto> Handle(CreateClientCommand request, CancellationToken cancellationToken)
@@ -30,17 +30,14 @@ public class CreateClientCommandHandler(
         var owner = await userRepository.GetByIdAsync(request.OwnerId)
             ?? throw new NotFoundException($"User is not found with this id: {request.OwnerId}");
 
-        var client = await clientRepository.AddAsync(new Client() { Name = request.Name });
+        var client = await clientRepository.AddAsync(new Client { Name = request.Name });
 
         await AssignClientRoleAsync(client, owner.Id, ClientRoles.Owner);
 
-        var clientDto = mapper.Map<ClientDto>(client);
-
-        return clientDto;
+        return mapper.Map<ClientDto>(client);
     }
 
-    private async Task AssignClientRoleAsync(
-        Client client, Guid ownerId, string roleName)
+    private async Task AssignClientRoleAsync(Client client, Guid ownerId, string roleName)
     {
         var clientRole = await clientRoleRepository.GetByNameAsync(roleName)
             ?? throw new NotFoundException("Role not found!");
@@ -51,6 +48,7 @@ public class CreateClientCommandHandler(
             ClientRoleId = clientRole.Id,
             UserId = ownerId,
         };
+
         await clientRoleAssignmentRepository.AddAsync(clientRoleAssignment);
     }
 }

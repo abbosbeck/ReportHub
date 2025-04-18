@@ -1,9 +1,9 @@
 ﻿using System.Net.Http.Json;
-using Application.Common.Interfaces.External;
+using Application.Common.Interfaces.External.CurrencyExchange;
 
 namespace Infrastructure.External;
 
-public class CurrencyExchange(HttpClient httpClient) : ICurrencyExchange
+public class CurrencyExchangeService(HttpClient httpClient) : ICurrencyExchangeService
 {
     public async Task<HistoricalExchangeRatesDto> GetHistoricalExchangeRatesAsync(string currency, DateTime time, decimal amount)
     {

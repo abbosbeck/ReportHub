@@ -1,4 +1,6 @@
 ﻿using Application.Common.Interfaces.External;
+using Application.Common.Interfaces.External.Countries;
+using Application.Common.Interfaces.External.CurrencyExchange;
 
 namespace Application.WeatherForecast.GetWeatherForecast;
 
@@ -7,7 +9,7 @@ public class GetWeatherForecastRequest : IRequest<IEnumerable<WeatherForecast>>
 }
 
 public class GetWeatherForecastRequestHandler(
-    ICurrencyExchange currencyExchange)
+    ICurrencyExchangeService currencyExchangeService)
     : IRequestHandler<GetWeatherForecastRequest, IEnumerable<WeatherForecast>>
 {
     private static readonly string[] Summaries =
@@ -17,7 +19,7 @@ public class GetWeatherForecastRequestHandler(
 
     public async Task<IEnumerable<WeatherForecast>> Handle(GetWeatherForecastRequest request, CancellationToken cancellationToken)
     {
-        var currency = await currencyExchange.ExchangeCurrencyAsync("USD", "UZS", 100, DateTime.Now);
+        var currency = await currencyExchangeService.ExchangeCurrencyAsync("USD", "UZS", 100, DateTime.Now);
 
         Console.WriteLine(currency);
 

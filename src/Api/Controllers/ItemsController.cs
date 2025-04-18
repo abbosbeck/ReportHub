@@ -30,7 +30,7 @@ public class ItemsController(ISender mediator) : ApiControllerBase(mediator)
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetByIdAsync([FromRoute] Guid clientId, [FromRoute] Guid id)
     {
-        var result = await Mediator.Send(new GetItemByIdQuery { ItemId = id, ClientId = clientId });
+        var result = await Mediator.Send(new GetItemByIdQuery(id, clientId));
 
         return Ok(result);
     }
@@ -38,7 +38,7 @@ public class ItemsController(ISender mediator) : ApiControllerBase(mediator)
     [HttpGet]
     public async Task<IActionResult> GetAllAsync([FromRoute] Guid clientId)
     {
-        var result = await Mediator.Send(new GetItemListQuery { ClientId = clientId });
+        var result = await Mediator.Send(new GetItemListQuery(clientId));
 
         return Ok(result);
     }
@@ -46,7 +46,7 @@ public class ItemsController(ISender mediator) : ApiControllerBase(mediator)
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteAsync([FromRoute] Guid clientId, [FromRoute] Guid id)
     {
-        var result = await Mediator.Send(new DeleteItemCommand { ItemId = id, ClientId = clientId });
+        var result = await Mediator.Send(new DeleteItemCommand(id, clientId));
 
         return Ok(result);
     }

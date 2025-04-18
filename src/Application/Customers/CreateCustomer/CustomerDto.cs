@@ -10,5 +10,5 @@ public class CustomerDto
 
     public string CountryCode { get; init; }
 
-    public Guid ClientId { get; set; }
+    public Guid ClientId { get; init; }
 }

@@ -6,9 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Customers.GetCustomerList;
 
-public class GetCustomerListQuery : IRequest<List<CustomerDto>>, IClientRequest
+public class GetCustomerListQuery(Guid clientId) : IRequest<List<CustomerDto>>, IClientRequest
 {
-    public Guid ClientId { get; set; }
+    public Guid ClientId { get; set; } = clientId;
 }
 
 [RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin, ClientRoles.Operator)]

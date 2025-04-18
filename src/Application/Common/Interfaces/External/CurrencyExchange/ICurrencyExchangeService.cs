@@ -1,6 +1,6 @@
-﻿namespace Application.Common.Interfaces.External;
+﻿namespace Application.Common.Interfaces.External.CurrencyExchange;
 
-public interface ICurrencyExchange
+public interface ICurrencyExchangeService
 {
     Task<HistoricalExchangeRatesDto> GetHistoricalExchangeRatesAsync(string currency, DateTime time, decimal amount);
 

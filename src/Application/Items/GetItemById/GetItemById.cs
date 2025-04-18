@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using Application.Common.Attributes;
+﻿using Application.Common.Attributes;
 using Application.Common.Constants;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
@@ -7,17 +6,15 @@ using Application.Common.Interfaces.Repositories;
 
 namespace Application.Items.GetItemById;
 
-public class GetItemByIdQuery : IRequest<ItemDto>, IClientRequest
+public class GetItemByIdQuery(Guid itemId, Guid clientId) : IRequest<ItemDto>, IClientRequest
 {
-    public Guid ItemId { get; set; }
+    public Guid ItemId { get; init; } = itemId;
 
-    public Guid ClientId { get; set; }
+    public Guid ClientId { get; set; } = clientId;
 }
 
 [RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin, ClientRoles.Operator)]
-public class GetItemByIdQueryHandler(
-    IItemRepository repository,
-    IMapper mapper)
+public class GetItemByIdQueryHandler(IMapper mapper, IItemRepository repository)
     : IRequestHandler<GetItemByIdQuery, ItemDto>
 {
     public async Task<ItemDto> Handle(GetItemByIdQuery request, CancellationToken cancellationToken)

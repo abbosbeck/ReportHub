@@ -6,11 +6,11 @@ using Application.Common.Interfaces.Repositories;
 
 namespace Application.Customers.DeleteCustomer;
 
-public class DeleteCustomerCommand : IRequest<bool>, IClientRequest
+public class DeleteCustomerCommand(Guid id, Guid clientId) : IRequest<bool>, IClientRequest
 {
-    public Guid Id { get; init; }
+    public Guid Id { get; init; } = id;
 
-    public Guid ClientId { get; set; }
+    public Guid ClientId { get; set; } = clientId;
 }
 
 [RequiresClientRole(ClientRoles.Owner)]

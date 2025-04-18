@@ -7,10 +7,10 @@ using Application.Common.Interfaces.Repositories;
 namespace Application.Common.Behaviors;
 
 public class AuthorizationPipelineBehavior<TRequest, TResponse>(
-    ICurrentUserService currentUserService,
     IClientIdProvider clientIdProvider,
-    IClientRoleAssignmentRepository clientRoleAssignmentRepository,
-    IRequestHandler<TRequest, TResponse> handler)
+    ICurrentUserService currentUserService,
+    IRequestHandler<TRequest, TResponse> handler,
+    IClientRoleAssignmentRepository clientRoleAssignmentRepository)
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
     where TResponse : notnull
@@ -44,13 +44,14 @@ public class AuthorizationPipelineBehavior<TRequest, TResponse>(
 
     private async Task<List<string>> GetClientRoles(TRequest request)
     {
-        if (request is IClientRequest clientRequest)
+        if (request is not IClientRequest clientRequest)
         {
-            clientIdProvider.ClientId = clientRequest.ClientId;
-            return await clientRoleAssignmentRepository
-                .GetRolesByUserIdAndClientIdAsync(currentUserService.UserId, clientRequest.ClientId);
+            return new List<string>();
         }
 
-        return [];
+        clientIdProvider.ClientId = clientRequest.ClientId;
+
+        return await clientRoleAssignmentRepository
+            .GetRolesByUserIdAndClientIdAsync(currentUserService.UserId, clientRequest.ClientId);
     }
 }

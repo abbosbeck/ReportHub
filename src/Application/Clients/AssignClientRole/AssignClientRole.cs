@@ -16,14 +16,14 @@ public class AssignClientRoleCommand : IRequest<bool>, IClientRequest
     public string RoleName { get; set; }
 }
 
-[RequiresSystemRole(SystemRoles.SuperAdmin)]
 [RequiresClientRole(ClientRoles.Owner)]
+[RequiresSystemRole(SystemRoles.SuperAdmin)]
 public class AssignClientRoleHandler(
-    IClientRepository clientRepository,
-    IClientRoleAssignmentRepository clientRoleAssignmentRepository,
-    IClientRoleRepository clientRoleRepository,
     IUserRepository userRepository,
-    IValidator<AssignClientRoleCommand> validator)
+    IClientRepository clientRepository,
+    IClientRoleRepository clientRoleRepository,
+    IValidator<AssignClientRoleCommand> validator,
+    IClientRoleAssignmentRepository clientRoleAssignmentRepository)
     : IRequestHandler<AssignClientRoleCommand, bool>
 {
     public async Task<bool> Handle(AssignClientRoleCommand request, CancellationToken cancellationToken)
@@ -32,8 +32,10 @@ public class AssignClientRoleHandler(
 
         var client = await clientRepository.GetByIdAsync(request.ClientId)
             ?? throw new NotFoundException($"Client is not found with this id: {request.ClientId}");
+
         var user = await userRepository.GetByIdAsync(request.UserId)
             ?? throw new NotFoundException($"User is not found with this id: {request.UserId}");
+
         var clientRole = await clientRoleRepository.GetByNameAsync(request.RoleName)
             ?? throw new NotFoundException($"Client role is not found with this name: {request.RoleName}");
 

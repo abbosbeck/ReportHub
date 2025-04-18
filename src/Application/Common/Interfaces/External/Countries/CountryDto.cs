@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Application.Common.Interfaces.External;
+namespace Application.Common.Interfaces.External.Countries;
 
 public class CountryDto
 {
