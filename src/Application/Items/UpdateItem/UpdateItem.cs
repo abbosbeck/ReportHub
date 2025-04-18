@@ -5,10 +5,12 @@ using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
 
-namespace Application.Items.CreateItem;
+namespace Application.Items.UpdateItem;
 
-public class CreateItemCommand : IRequest<ItemDto>, IClientRequest
+public class UpdateItemCommand : IRequest<ItemDto>, IClientRequest
 {
+    public Guid Id { get; set; }
+
     public string Name { get; init; }
 
     public string Description { get; init; }
@@ -23,20 +25,22 @@ public class CreateItemCommand : IRequest<ItemDto>, IClientRequest
 }
 
 [RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin)]
-public class CreateItemCommandHandler(
+public class UpdateItemCommandHandler(
     IItemRepository repository,
     IMapper mapper,
-    IValidator<CreateItemCommand> validator)
-    : IRequestHandler<CreateItemCommand, ItemDto>
+    IValidator<UpdateItemCommand> validator)
+    : IRequestHandler<UpdateItemCommand, ItemDto>
 {
-    public async Task<ItemDto> Handle(CreateItemCommand request, CancellationToken cancellationToken)
+    public async Task<ItemDto> Handle(UpdateItemCommand request, CancellationToken cancellationToken)
     {
         await validator.ValidateAndThrowAsync(request);
 
-        var newItem = mapper.Map<Item>(request);
-        var createdItem = await repository.AddAsync(newItem)
-            ?? throw new BadRequestException("Item creation failed!");
+        _ = await repository.GetByIdAsync(request.Id)
+            ?? throw new NotFoundException($"Item is not found with this id: {request.Id}");
 
-        return mapper.Map<ItemDto>(createdItem);
+        var newItem = mapper.Map<Item>(request);
+        var updatedItem = await repository.UpdateAsync(newItem);
+
+        return mapper.Map<ItemDto>(updatedItem);
     }
 }
