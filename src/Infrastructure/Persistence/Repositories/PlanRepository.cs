@@ -14,6 +14,6 @@ public class PlanRepository(AppDbContext context) : IPlanRepository
 
     public async Task<Plan> GetByIdAsync(Guid id)
     {
-        return await context.Plan.FindAsync(id);
+        return await context.Set<Plan>().FindAsync(id);
     }
 }
