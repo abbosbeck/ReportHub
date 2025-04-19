@@ -8,5 +8,6 @@ public class InvoiceProfile : Profile
     {
         CreateMap<Invoice, InvoiceDto>()
             .ForMember(i => i.Items, opt => opt.MapFrom(src => src.Items));
+        CreateMap<Item, ItemDto>();
     }
 }

@@ -12,14 +12,20 @@ public class GetInvoiceQuery : IRequest<InvoiceDto>, IClientRequest
 }
 
 public class GetInvoiceQueryHandler(
-    IInvoiceRepository repository,
+    IInvoiceRepository invoiceRepository,
+    IItemRepository itemRepository,
     IMapper mapper)
     : IRequestHandler<GetInvoiceQuery, InvoiceDto>
 {
     public async Task<InvoiceDto> Handle(GetInvoiceQuery request, CancellationToken cancellationToken)
     {
-        var invoice = await repository.GetByIdAsync(request.Id)
+        var invoice = await invoiceRepository.GetByIdAsync(request.Id)
             ?? throw new NotFoundException($"Invoice is not found with this id: {request.Id}");
+
+        var items = await itemRepository.GetByInvoiceIdAsync(invoice.Id)
+            ?? throw new NotFoundException($"There is no item this invoice id: {request.Id}");
+
+        invoice.Items = items;
 
         return mapper.Map<InvoiceDto>(invoice);
     }
