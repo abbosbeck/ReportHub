@@ -4,11 +4,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
-[Route("api/[controller]")]
+
+[Route("clients/{clientId:guid}/[controller]")]
 [ApiController]
 public class PlansController(ISender mediator) : ApiControllerBase(mediator)
 {
-    [HttpPost("{clientId:guid}")]
+    [HttpPost]
     [AllowAnonymous]
     public async Task<IActionResult> CreateAsync([FromRoute] Guid clientId, [FromBody] CreatePlanRequest request)
     {
