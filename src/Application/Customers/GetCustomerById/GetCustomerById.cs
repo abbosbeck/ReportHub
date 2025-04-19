@@ -7,11 +7,11 @@ using Domain.Entities;
 
 namespace Application.Customers.GetCustomerById;
 
-public class GetCustomerByIdQuery : IRequest<CustomerDto>, IClientRequest
+public class GetCustomerByIdQuery(Guid id, Guid clientId) : IRequest<CustomerDto>, IClientRequest
 {
-    public Guid Id { get; init; }
+    public Guid Id { get; init; } = id;
 
-    public Guid ClientId { get; set; }
+    public Guid ClientId { get; set; } = clientId;
 }
 
 [RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin, ClientRoles.Operator)]

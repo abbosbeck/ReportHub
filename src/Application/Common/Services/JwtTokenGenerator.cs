@@ -12,8 +12,8 @@ using Microsoft.IdentityModel.Tokens;
 namespace Application.Common.Services;
 
 public class JwtTokenGenerator(
-        IOptions<JwtOptions> jwtOptions,
         IUserRepository userRepository,
+        IOptions<JwtOptions> jwtOptions,
         ISystemRoleAssignmentRepository systemRoleAssignmentRepository)
         : IJwtTokenGenerator
     {
@@ -23,8 +23,8 @@ public class JwtTokenGenerator(
 
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email!),
+                new (JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new (JwtRegisteredClaimNames.Email, user.Email!),
             };
 
             claims.AddRange(systemRoles.Select(role => new Claim(ClaimTypes.Role, role)));

@@ -1,8 +1,9 @@
-﻿using Domain.Common;
+﻿using Application.Common.Interfaces.Authorization;
+using Domain.Common;
 
 namespace Infrastructure.Persistence.Interceptors;
 
-public class SoftDeletableInterceptor : SaveChangesInterceptor
+public class SoftDeletableInterceptor(ICurrentUserService currentUserService) : SaveChangesInterceptor
 {
     public override InterceptionResult<int> SavingChanges(
         DbContextEventData eventData,
@@ -23,7 +24,7 @@ public class SoftDeletableInterceptor : SaveChangesInterceptor
         return base.SavingChangesAsync(eventData, result, cancellationToken);
     }
 
-    private static void DeleteEntities(DbContext context)
+    private void DeleteEntities(DbContext context)
     {
         if (context == null)
         {
@@ -32,12 +33,15 @@ public class SoftDeletableInterceptor : SaveChangesInterceptor
 
         foreach (var entry in context.ChangeTracker.Entries<ISoftDeletable>())
         {
-            if (entry.State == EntityState.Deleted)
+            if (entry.State != EntityState.Deleted)
             {
-                entry.State = EntityState.Modified;
-                entry.Entity.IsDeleted = true;
-                entry.Entity.DeletedOn = DateTime.UtcNow;
+                continue;
             }
+
+            entry.State = EntityState.Modified;
+            entry.Entity.IsDeleted = true;
+            entry.Entity.DeletedOn = DateTime.UtcNow;
+            entry.Entity.DeletedBy = currentUserService.UserId.ToString();
         }
     }
 }

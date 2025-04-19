@@ -13,28 +13,25 @@ public class UpdateClientCommand : IRequest<ClientDto>, IClientRequest
     public string Name { get; set; }
 }
 
-[RequiresSystemRole(SystemRoles.SuperAdmin)]
 [RequiresClientRole(ClientRoles.Owner)]
+[RequiresSystemRole(SystemRoles.SuperAdmin)]
 public class UpdateClientCommandHandler(
-    IClientRepository repository,
     IMapper mapper,
-    ICurrentUserService currentUser,
+    IClientRepository repository,
     IValidator<UpdateClientCommand> validator)
     : IRequestHandler<UpdateClientCommand, ClientDto>
 {
     public async Task<ClientDto> Handle(UpdateClientCommand request, CancellationToken cancellationToken)
     {
-        await validator.ValidateAndThrowAsync(request);
+        await validator.ValidateAndThrowAsync(request, cancellationToken: cancellationToken);
 
         var client = await repository.GetByIdAsync(request.ClientId)
             ?? throw new NotFoundException($"Client is not found with this id: {request.ClientId}");
 
         client.Name = request.Name;
-        client.LastModifiedOn = DateTime.UtcNow;
-        client.LastModifiedBy = currentUser.UserId.ToString();
 
-        var updatedClient = await repository.UpdateAsync(client);
+        await repository.UpdateAsync(client);
 
-        return mapper.Map<ClientDto>(updatedClient);
+        return mapper.Map<ClientDto>(client);
     }
 }

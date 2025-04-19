@@ -6,11 +6,11 @@ using Application.Common.Interfaces.Repositories;
 
 namespace Application.Items.DeleteItem;
 
-public class DeleteItemCommand : IRequest<bool>, IClientRequest
+public class DeleteItemCommand(Guid itemId, Guid clientId) : IRequest<bool>, IClientRequest
 {
-    public Guid ItemId { get; set; }
+    public Guid ItemId { get; init; } = itemId;
 
-    public Guid ClientId { get; set; }
+    public Guid ClientId { get; set; } = clientId;
 }
 
 [RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin)]
