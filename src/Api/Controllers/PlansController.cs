@@ -1,6 +1,7 @@
 ﻿using Application.Plans.CreatePlan;
 using Application.Plans.DeletePlan;
 using Application.Plans.GetPlanById;
+using Application.Plans.UpdatePlan;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +17,15 @@ public class PlansController(ISender mediator) : ApiControllerBase(mediator)
     public async Task<IActionResult> CreateAsync([FromRoute] Guid clientId, [FromBody] CreatePlanRequest request)
     {
         var result = await Mediator.Send(new CreatePlanCommand(clientId, request));
+
+        return Ok(result);
+    }
+
+    [HttpPut]
+    [AllowAnonymous]
+    public async Task<IActionResult> UpdateAsync([FromRoute] Guid clientId, [FromBody] UpdatePlanRequest request)
+    {
+        var result = await Mediator.Send(new UpdatePlanCommand(clientId, request));
 
         return Ok(result);
     }
