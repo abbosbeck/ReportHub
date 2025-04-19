@@ -35,6 +35,11 @@ public class UpdateInvoiceCommandHandler(
         var invoice = await invoiceRepository.GetByIdAsync(request.Invoice.Id)
             ?? throw new NotFoundException($"Invoice is not found with this id: {request.Invoice.Id}");
 
+        if (request.Invoice.DueDate <= invoice.IssueDate)
+        {
+            throw new BadRequestException("Due Date should be greater than Issue Date");
+        }
+
         var customer = await customerRepository.GetByIdAsync(invoice.CustomerId)
             ?? throw new NotFoundException($"Customer is not found wirt this id: {invoice.CustomerId}");
 
