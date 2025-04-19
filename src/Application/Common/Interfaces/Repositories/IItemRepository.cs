@@ -10,6 +10,10 @@ public interface IItemRepository
 
     Task<Item> AddAsync(Item item);
 
+    Task AddBulkAsync(ICollection<Item> items);
+
+    Task<List<Item>> GetByInvoiceIdAsync(Guid id);
+
     Task<Item> UpdateAsync(Item item);
 
     Task<bool> DeleteAsync(Item item);

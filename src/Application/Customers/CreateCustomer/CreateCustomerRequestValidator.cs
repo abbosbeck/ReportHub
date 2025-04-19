@@ -1,8 +1,10 @@
-﻿namespace Application.Customers.UpdateCustomer;
+﻿using Domain.Entities;
 
-public class UpdateCustomerCommandValidator : AbstractValidator<UpdateCustomerRequest>
+namespace Application.Customers.CreateCustomer;
+
+public class CreateCustomerRequestValidator : AbstractValidator<CreateCustomerRequest>
 {
-    public UpdateCustomerCommandValidator()
+    public CreateCustomerRequestValidator()
     {
         RuleFor(customer => customer.CountryCode).NotEmpty().MaximumLength(10);
 

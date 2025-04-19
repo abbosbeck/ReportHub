@@ -11,15 +11,17 @@ public class Invoice : BaseAuditableEntity, ISoftDeletable
 
     public DateTime DueDate { get; init; }
 
-    public decimal Amount { get; init; } 
+    public decimal Amount { get; set; }
 
-    public string Currency { get; init; }
+    public string CurrencyCode { get; set; }
 
-    public Guid ClientId { get; init; }
+    public ICollection<Item> Items { get; set; }
+
+    public Guid ClientId { get; set; }
 
     public Client Client { get; init; }
 
-    public Guid CustomerId { get; init; }
+    public Guid CustomerId { get; set; }
 
     public Customer Customer { get; init; }
 

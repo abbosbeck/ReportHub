@@ -40,8 +40,7 @@ public class AppDbContext(
 
         builder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
 
-        builder.Entity<Customer>(entity => entity
-            .HasQueryFilter(c => c.ClientId == clientProvider.ClientId));
+        ClientQueryFilter(builder);
 
         IgnoreUnusedIdentityTables(builder);
 
@@ -54,5 +53,20 @@ public class AppDbContext(
         builder.Ignore<IdentityRoleClaim<Guid>>();
         builder.Ignore<IdentityUserToken<Guid>>();
         builder.Ignore<IdentityUserLogin<Guid>>();
+    }
+
+    private void ClientQueryFilter(ModelBuilder builder)
+    {
+        builder.Entity<Client>(entity => entity
+            .HasQueryFilter(c => c.Id == clientProvider.ClientId));
+
+        builder.Entity<Customer>(entity => entity
+            .HasQueryFilter(c => c.ClientId == clientProvider.ClientId));
+
+        builder.Entity<Invoice>(entity => entity
+            .HasQueryFilter(c => c.ClientId == clientProvider.ClientId));
+
+        builder.Entity<Item>(entity => entity
+            .HasQueryFilter(c => c.ClientId == clientProvider.ClientId));
     }
 }

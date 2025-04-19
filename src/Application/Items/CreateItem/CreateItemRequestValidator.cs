@@ -1,8 +1,8 @@
 ﻿namespace Application.Items.CreateItem;
 
-public class CreateItemCommandValidator : AbstractValidator<CreateItemRequest>
+public class CreateItemRequestValidator : AbstractValidator<CreateItemRequest>
 {
-    public CreateItemCommandValidator()
+    public CreateItemRequestValidator()
     {
         RuleFor(c => c.Name)
             .NotEmpty()

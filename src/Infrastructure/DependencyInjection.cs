@@ -42,6 +42,7 @@ public static class DependencyInjection
         services.AddScoped<IClientRoleAssignmentRepository, ClientRoleAssignmentRepository>();
         services.AddScoped<IClientRoleRepository, ClientRoleRepository>();
         services.AddScoped<ICustomerRepository, CustomerRepository>();
+        services.AddScoped<IInvoiceRepository, InvoiceRepository>();
         services.AddScoped<IItemRepository, ItemRepository>();
         services.AddHttpClient<ICountryService, CountryService>(httpClient =>
         {

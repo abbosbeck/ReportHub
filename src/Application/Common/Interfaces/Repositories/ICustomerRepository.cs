@@ -13,5 +13,7 @@ public interface ICustomerRepository
 
     Task<Customer> GetAsync(Expression<Func<Customer, bool>> expression);
 
+    Task<Customer> GetByIdAsync(Guid id);
+
     IQueryable<Customer> GetAll(Expression<Func<Customer, bool>> expression = null);
 }
