@@ -1,6 +1,7 @@
 ﻿using Application.Plans.CreatePlan;
 using Application.Plans.DeletePlan;
 using Application.Plans.GetPlanById;
+using Application.Plans.GetPlansList;
 using Application.Plans.UpdatePlan;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -31,6 +32,14 @@ public class PlansController(ISender mediator) : ApiControllerBase(mediator)
     public async Task<IActionResult> GetByIdAsync([FromRoute] Guid clientId, [FromRoute] Guid id)
     {
         var result = await Mediator.Send(new GetPlanByIdQuery { ClientId = clientId, Id = id });
+
+        return Ok(result);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetListAsync([FromRoute] Guid clientId)
+    {
+        var result = await Mediator.Send(new GetPlansListQuery { ClientId = clientId });
 
         return Ok(result);
     }
