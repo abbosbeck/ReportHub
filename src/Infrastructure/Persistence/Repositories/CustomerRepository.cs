@@ -38,4 +38,9 @@ public class CustomerRepository(AppDbContext context) : ICustomerRepository
     {
         return expression is null ? context.Customers : context.Customers.Where(expression);
     }
+
+    public async Task<Customer> GetByIdAsync(Guid id)
+    {
+        return await context.Customers.FirstOrDefaultAsync(c => c.Id == id);
+    }
 }
