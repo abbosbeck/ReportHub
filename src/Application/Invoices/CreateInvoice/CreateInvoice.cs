@@ -1,4 +1,6 @@
-﻿using Application.Common.Exceptions;
+﻿using Application.Common.Attributes;
+using Application.Common.Constants;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.External.CurrencyExchange;
 using Application.Common.Interfaces.Repositories;
@@ -19,7 +21,7 @@ public class CreateInvoiceCommand : IRequest<InvoiceDto>, IClientRequest
     public Guid ClientId { get; set; }
 }
 
-public class AddInvoiceCommandHandler(
+public class CreateInvoiceCommandHandler(
     IInvoiceRepository invoiceRepository,
     IItemRepository itemRepository,
     ICustomerRepository customerRepository,
