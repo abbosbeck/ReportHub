@@ -13,6 +13,7 @@ public class GetInvoiceByIdQuery : IRequest<InvoiceDto>, IClientRequest
     public Guid ClientId { get; set; }
 }
 
+[RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin, ClientRoles.Operator)]
 public class GetInvoiceByIdQueryHandler(
     IInvoiceRepository invoiceRepository,
     IItemRepository itemRepository,
