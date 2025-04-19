@@ -51,7 +51,7 @@ public class RegisterUserCommandHandler(
         var userId = user.Id.ToString();
         var token = dataProtector.Protect(userId);
 
-        var confirmationUrl = $"{configuration["AppUrl"]}/api/users/confirm-email?token={token}";
+        var confirmationUrl = $"{configuration["AppUrl"]}/users/confirm-email?token={token}";
 
         var emailBody = EmailMessage(confirmationUrl, user.FirstName);
 
