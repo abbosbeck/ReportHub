@@ -11,9 +11,7 @@ public interface ICustomerRepository
 
     Task<Customer> UpdateAsync(Customer customer);
 
-    Task<Customer> GetAsync(Expression<Func<Customer, bool>> expression);
-
     Task<Customer> GetByIdAsync(Guid id);
 
-    IQueryable<Customer> GetAll(Expression<Func<Customer, bool>> expression = null);
+    IQueryable<Customer> GetAll();
 }

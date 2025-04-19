@@ -29,18 +29,13 @@ public class CustomerRepository(AppDbContext context) : ICustomerRepository
         return customer;
     }
 
-    public async Task<Customer> GetAsync(Expression<Func<Customer, bool>> expression)
+    public IQueryable<Customer> GetAll()
     {
-        return await context.Customers.FirstOrDefaultAsync(expression);
-    }
-
-    public IQueryable<Customer> GetAll(Expression<Func<Customer, bool>> expression = null)
-    {
-        return expression is null ? context.Customers : context.Customers.Where(expression);
+        return context.Customers;
     }
 
     public async Task<Customer> GetByIdAsync(Guid id)
     {
-        return await context.Customers.FirstOrDefaultAsync(c => c.Id == id);
+        return await context.Customers.FindAsync(id);
     }
 }
