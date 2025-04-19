@@ -14,7 +14,7 @@ public class CreatePlanCommand(Guid clientId, CreatePlanRequest request) : IRequ
     public Guid ClientId { get; set; } = clientId;
 }
 
-//[RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin)]
+[RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin)]
 public class CreatePlanCommandHandler(
     IItemRepository itemRepository,
     IPlanRepository planRepository,

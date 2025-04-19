@@ -7,6 +7,5 @@ public class PlanProfile : Profile
     public PlanProfile()
     {
         CreateMap<CreatePlanRequest, Plan>();
-        CreateMap<Plan, PlanDto>();
     }
 }
