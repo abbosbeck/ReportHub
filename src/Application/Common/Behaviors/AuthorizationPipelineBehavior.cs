@@ -2,12 +2,15 @@
 using Application.Common.Attributes;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
+using Application.Common.Interfaces.Repositories;
 
 namespace Application.Common.Behaviors;
 
 public class AuthorizationPipelineBehavior<TRequest, TResponse>(
+    IClientIdProvider clientIdProvider,
     ICurrentUserService currentUserService,
-    IRequestHandler<TRequest, TResponse> handler)
+    IRequestHandler<TRequest, TResponse> handler,
+    IClientRoleAssignmentRepository clientRoleAssignmentRepository)
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
     where TResponse : notnull
@@ -17,28 +20,20 @@ public class AuthorizationPipelineBehavior<TRequest, TResponse>(
         var requiresSystemRoles = handler.GetType().GetCustomAttribute<RequiresSystemRoleAttribute>()?.SystemRoles;
         var requiresClientRoles = handler.GetType().GetCustomAttribute<RequiresClientRoleAttribute>()?.ClientRoles;
 
+        var systemRoles = currentUserService.SystemRoles;
+        var clientRoles = await GetClientRoles(request);
+
         if (requiresSystemRoles is null or[] && requiresClientRoles is null or[])
         {
             return await next();
         }
 
-        var systemRoles = currentUserService.SystemRoles;
-        var clientRolesWithClientIds = currentUserService.ClientRoles();
-
-        if (requiresSystemRoles != null && requiresSystemRoles.Intersect(systemRoles).Any() && requiresClientRoles is null or[])
+        if (requiresSystemRoles != null && requiresSystemRoles.Intersect(systemRoles).Any())
         {
             return await next();
         }
 
-        var clientId = ResolveClientId(request)
-        ?? throw new ForbiddenException("ClientId is required for client-scoped actions.");
-
-        List<string> clientRoles = clientRolesWithClientIds?
-            .Where(x => x.ClientId == clientId)
-            .Select(x => x.RoleName)
-            .ToList() ?? [];
-
-        if (requiresClientRoles != null && requiresClientRoles.Intersect(clientRoles).Any() && requiresSystemRoles is null or[])
+        if (requiresClientRoles != null && requiresClientRoles.Intersect(clientRoles).Any())
         {
             return await next();
         }
@@ -46,13 +41,16 @@ public class AuthorizationPipelineBehavior<TRequest, TResponse>(
         throw new ForbiddenException("You are not allowed to perform this action");
     }
 
-    private static Guid? ResolveClientId(TRequest request)
+    private async Task<List<string>> GetClientRoles(TRequest request)
     {
-       if (request is IClientRequest clientRequest)
-       {
-           return clientRequest.ClientId;
-       }
+        if (request is not IClientRequest clientRequest)
+        {
+            return new List<string>();
+        }
 
-       return null;
+        clientIdProvider.ClientId = clientRequest.ClientId;
+
+        return await clientRoleAssignmentRepository
+            .GetRolesByUserIdAndClientIdAsync(currentUserService.UserId, clientRequest.ClientId);
     }
 }

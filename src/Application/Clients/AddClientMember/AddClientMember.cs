@@ -14,13 +14,14 @@ public class AddClientMemberCommand : IRequest<bool>, IClientRequest
     public Guid UserId { get; set; }
  }
 
-[RequiresClientRole(ClientRoles.Owner)]
+[RequiresSystemRole(SystemRoles.SuperAdmin)]
+[RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin)]
 public class AddClientMemberCommandHandler(
-    IClientRepository clientRepository,
-    IClientRoleAssignmentRepository clientRoleAssignmentRepository,
-    IClientRoleRepository clientRoleRepository,
     IUserRepository userRepository,
-    IValidator<AddClientMemberCommand> validator)
+    IClientRepository clientRepository,
+    IClientRoleRepository clientRoleRepository,
+    IValidator<AddClientMemberCommand> validator,
+    IClientRoleAssignmentRepository clientRoleAssignmentRepository)
     : IRequestHandler<AddClientMemberCommand, bool>
 {
     public async Task<bool> Handle(AddClientMemberCommand request, CancellationToken cancellationToken)

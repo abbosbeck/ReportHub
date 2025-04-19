@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using Application.Common.Behaviors;
+using Application.Common.Configurations;
 using Application.Common.Interfaces.Authorization;
 using Application.Common.Services;
 using Domain.Entities;
@@ -35,6 +36,8 @@ public static class DependencyInjection
         services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddHttpContextAccessor();
+
+        services.AddScoped<IClientIdProvider, ClientIdProvider>();
 
         return services;
     }

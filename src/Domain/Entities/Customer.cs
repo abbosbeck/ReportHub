@@ -8,7 +8,7 @@ public class Customer : BaseAuditableEntity, ISoftDeletable
 
     public string Email { get; init; }
 
-    public string Country { get; init; }
+    public string CountryCode { get; init; }
 
     public Guid ClientId { get; set; }
 
@@ -17,4 +17,6 @@ public class Customer : BaseAuditableEntity, ISoftDeletable
     public bool IsDeleted { get; set; }
 
     public DateTime? DeletedOn { get; set; }
+
+    public string DeletedBy { get; set; }
 }

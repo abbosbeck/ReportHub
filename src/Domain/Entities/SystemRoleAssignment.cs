@@ -15,6 +15,8 @@ public class SystemRoleAssignment : IdentityUserRole<Guid>, IBaseEntity, ISoftDe
 
     public DateTime? DeletedOn { get; set; }
 
+    public string DeletedBy { get; set; }
+
     public DateTime CreatedOn { get; set; }
 
     public string CreatedBy { get; set; }

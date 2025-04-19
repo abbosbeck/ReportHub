@@ -24,10 +24,8 @@ public class DeleteClientCommandHandler(
         var client = await clientRepository.GetByIdAsync(request.ClientId)
             ?? throw new NotFoundException($"Client is not found with this id: {request.ClientId}");
 
-        client.IsDeleted = true;
-        client.DeletedOn = DateTime.UtcNow;
-        await clientRepository.UpdateAsync(client);
+        var result = await clientRepository.DeleteAsync(client);
 
-        return true;
+        return result;
     }
 }

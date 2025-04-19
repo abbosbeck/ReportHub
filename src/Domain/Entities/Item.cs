@@ -10,13 +10,13 @@ public class Item : BaseAuditableEntity, ISoftDeletable
 
     public decimal Price { get; init; }
 
-    public string Currency { get; init; }
+    public string CurrencyCode { get; init; }
 
-    public Guid ClientId { get; init; }
+    public Guid ClientId { get; set; }
 
     public Client Client { get; init; }
 
-    public Guid InvoiceId { get; init; }
+    public Guid InvoiceId { get; set; }
 
     public Invoice Invoice { get; init; }
 
@@ -25,4 +25,6 @@ public class Item : BaseAuditableEntity, ISoftDeletable
     public bool IsDeleted { get; set; }
 
     public DateTime? DeletedOn { get; set; }
+
+    public string DeletedBy { get; set; }
 }

@@ -1,9 +1,7 @@
 ﻿namespace Domain.Common;
 
-public abstract class BaseAuditableEntity : IBaseEntity, IAuditableEntity
+public abstract class BaseAuditableEntity : BaseEntity, IAuditableEntity
 {
-    public Guid Id { get; set; }
-
     public DateTime CreatedOn { get; set; }
 
     public string CreatedBy { get; set; }

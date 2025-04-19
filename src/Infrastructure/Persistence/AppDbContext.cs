@@ -1,26 +1,25 @@
-﻿using Domain.Entities;
+﻿using Application.Common.Interfaces.Authorization;
+using Domain.Entities;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence;
 
-public class AppDbContext : IdentityDbContext<
-    User,
-    SystemRole,
-    Guid,
-    IdentityUserClaim<Guid>,
-    SystemRoleAssignment,
-    IdentityUserLogin<Guid>,
-    IdentityRoleClaim<Guid>,
-    IdentityUserToken<Guid>>,
+public class AppDbContext(
+    DbContextOptions<AppDbContext> options,
+    IClientIdProvider clientProvider)
+    : IdentityDbContext<
+        User,
+        SystemRole,
+        Guid,
+        IdentityUserClaim<Guid>,
+        SystemRoleAssignment,
+        IdentityUserLogin<Guid>,
+        IdentityRoleClaim<Guid>,
+        IdentityUserToken<Guid>>(options),
     IDataProtectionKeyContext
 {
-    public AppDbContext(DbContextOptions options)
-        : base(options)
-    {
-    }
-
     public DbSet<Client> Clients { get; set; }
 
     public DbSet<ClientRole> ClientRoles { get; set; }
@@ -41,6 +40,8 @@ public class AppDbContext : IdentityDbContext<
 
         builder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
 
+        ClientQueryFilter(builder);
+
         IgnoreUnusedIdentityTables(builder);
 
         builder.Entity<SystemRole>().ToTable("SystemRoles");
@@ -52,5 +53,20 @@ public class AppDbContext : IdentityDbContext<
         builder.Ignore<IdentityRoleClaim<Guid>>();
         builder.Ignore<IdentityUserToken<Guid>>();
         builder.Ignore<IdentityUserLogin<Guid>>();
+    }
+
+    private void ClientQueryFilter(ModelBuilder builder)
+    {
+        builder.Entity<Client>(entity => entity
+            .HasQueryFilter(c => c.Id == clientProvider.ClientId));
+
+        builder.Entity<Customer>(entity => entity
+            .HasQueryFilter(c => c.ClientId == clientProvider.ClientId));
+
+        builder.Entity<Invoice>(entity => entity
+            .HasQueryFilter(c => c.ClientId == clientProvider.ClientId));
+
+        builder.Entity<Item>(entity => entity
+            .HasQueryFilter(c => c.ClientId == clientProvider.ClientId));
     }
 }
