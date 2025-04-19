@@ -25,8 +25,8 @@ public class AddInvoiceCommandHandler(
     ICustomerRepository customerRepository,
     ICurrencyExchangeService currencyExchange,
     IMapper mapper,
-    IValidator<CreateInvoiceRequest> validator
-    ) : IRequestHandler<CreateInvoiceCommand, InvoiceDto>
+    IValidator<CreateInvoiceRequest> validator)
+    : IRequestHandler<CreateInvoiceCommand, InvoiceDto>
 {
     public async Task<InvoiceDto> Handle(CreateInvoiceCommand request, CancellationToken cancellationToken)
     {

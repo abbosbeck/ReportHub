@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.Invoices.CreateInvoice;
+using Domain.Entities;
 
 namespace Application.Invoices.UpdateInvoice;
 
@@ -9,7 +10,9 @@ public class InvoiceProfile : Profile
         CreateMap<Invoice, InvoiceDto>()
             .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items));
         CreateMap<Item, ItemDto>();
-        CreateMap<UpdateInvoiceCommand, Invoice>();
+        // CreateMap<UpdateInvoiceRequest, Invoice>();
+        CreateMap<UpdateInvoiceRequest, Invoice>()
+            .ForMember(i => i.Items, opt => opt.Ignore());
         CreateMap<ItemRequestDto, Item>();
     }
 }

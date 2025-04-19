@@ -1,53 +1,65 @@
 ﻿using Application.Common.Exceptions;
+using Application.Common.Interfaces.Authorization;
+using Application.Common.Interfaces.External.CurrencyExchange;
 using Application.Common.Interfaces.Repositories;
-using Domain.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Domain.Entities;
 
 namespace Application.Invoices.UpdateInvoice;
 
-public class UpdateInvoiceCommand : IRequest<InvoiceDto>
+public class UpdateInvoiceCommand : IRequest<InvoiceDto>, IClientRequest
 {
-    public Guid Id { get; set; }
-    public string InvoiceNumber { get; set; }
+    public UpdateInvoiceCommand(Guid clientId, UpdateInvoiceRequest request)
+    {
+        ClientId = clientId;
+        Invoice = request;
+    }
 
-    public DateTime IssueDate { get; set; }
-
-    public DateTime DueDate { get; set; }
+    public UpdateInvoiceRequest Invoice { get; set; }
 
     public Guid ClientId { get; set; }
-
-    public Guid CustomerId { get; set; }
-
-    public InvoicePaymentStatus PaymentStatus { get; set; }
-
-    public List<ItemRequestDto> Items { get; set; }
 }
 
 public class UpdateInvoiceCommandHandler(
-    IInvoiceRepository repository,
-    IValidator<UpdateInvoiceCommand> validator,
+    IInvoiceRepository invoiceRepository,
+    ICustomerRepository customerRepository,
+    IItemRepository itemRepository,
+    ICurrencyExchangeService currencyExchange,
+    IValidator<UpdateInvoiceRequest> validator,
     IMapper mapper)
     : IRequestHandler<UpdateInvoiceCommand, InvoiceDto>
 {
     public async Task<InvoiceDto> Handle(UpdateInvoiceCommand request, CancellationToken cancellationToken)
     {
-        await validator.ValidateAndThrowAsync(request, cancellationToken);
+        await validator.ValidateAndThrowAsync(request.Invoice, cancellationToken);
 
-        _ = await repository.GetByIdAsync(request.ClientId)
-            ?? throw new NotFoundException($"Client is not found with this id: {request.ClientId}");
+        var invoice = await invoiceRepository.GetByIdAsync(request.Invoice.Id)
+            ?? throw new NotFoundException($"Invoice is not found with this id: {request.Invoice.Id}");
 
-        _ = await repository.GetByIdAsync(request.CustomerId)
-            ?? throw new NotFoundException($"Customer is not found wirt this id: {request.CustomerId}");
+        var customer = await customerRepository.GetByIdAsync(invoice.CustomerId)
+            ?? throw new NotFoundException($"Customer is not found wirt this id: {invoice.CustomerId}");
 
-        var invoice = await repository.GetByIdAsync(request.Id);
+        mapper.Map(request.Invoice, invoice);
 
-        mapper.Map(request, invoice);
+        foreach (var itemDto in request.Invoice.Items)
+        {
+            var item = mapper.Map<Item>(itemDto);
+            var exchangedPrice = await currencyExchange
+                .ExchangeCurrencyAsync(item.CurrencyCode, customer.CountryCode, item.Price, invoice.IssueDate);
+            invoice.Amount += exchangedPrice;
+        }
 
-        await repository.UpdateAsync(invoice);
+        await invoiceRepository.UpdateAsync(invoice);
+
+        var itemsList = new List<Item>();
+        foreach (var itemDto in request.Invoice.Items)
+        {
+            var item = mapper.Map<Item>(itemDto);
+            item.InvoiceId = invoice.Id;
+            item.ClientId = request.ClientId;
+            itemsList.Add(item);
+        }
+
+        await itemRepository.AddBulkAsync(itemsList);
 
         return mapper.Map<InvoiceDto>(invoice);
     }
