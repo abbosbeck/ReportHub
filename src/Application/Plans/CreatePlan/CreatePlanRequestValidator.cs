@@ -1,7 +1,7 @@
 ﻿namespace Application.Plans.CreatePlan;
-public class CreatePlanValidator : AbstractValidator<CreatePlanCommand>
+public class CreatePlanRequestValidator : AbstractValidator<CreatePlanRequest>
 {
-    public CreatePlanValidator()
+    public CreatePlanRequestValidator()
     {
         RuleFor(p => p.Title)
             .NotEmpty()
