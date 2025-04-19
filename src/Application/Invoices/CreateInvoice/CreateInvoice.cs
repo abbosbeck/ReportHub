@@ -8,17 +8,12 @@ using Domain.Entities;
 
 namespace Application.Invoices.CreateInvoice;
 
-public class CreateInvoiceCommand : IRequest<InvoiceDto>, IClientRequest
+public class CreateInvoiceCommand(Guid clientId, CreateInvoiceRequest request)
+    : IRequest<InvoiceDto>, IClientRequest
 {
-    public CreateInvoiceCommand(Guid clientId, CreateInvoiceRequest request)
-    {
-        ClientId = clientId;
-        Invoice = request;
-    }
+    public CreateInvoiceRequest Invoice { get; set; } = request;
 
-    public CreateInvoiceRequest Invoice { get; set; }
-
-    public Guid ClientId { get; set; }
+    public Guid ClientId { get; set; } = clientId;
 }
 
 [RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin, ClientRoles.Operator)]

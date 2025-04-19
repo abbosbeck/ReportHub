@@ -8,17 +8,12 @@ using Domain.Entities;
 
 namespace Application.Invoices.UpdateInvoice;
 
-public class UpdateInvoiceCommand : IRequest<InvoiceDto>, IClientRequest
+public class UpdateInvoiceCommand(Guid clientId, UpdateInvoiceRequest request)
+    : IRequest<InvoiceDto>, IClientRequest
 {
-    public UpdateInvoiceCommand(Guid clientId, UpdateInvoiceRequest request)
-    {
-        ClientId = clientId;
-        Invoice = request;
-    }
+    public UpdateInvoiceRequest Invoice { get; set; } = request;
 
-    public UpdateInvoiceRequest Invoice { get; set; }
-
-    public Guid ClientId { get; set; }
+    public Guid ClientId { get; set; } = clientId;
 }
 
 [RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin)]
