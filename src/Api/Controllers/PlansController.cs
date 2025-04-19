@@ -3,7 +3,6 @@ using Application.Plans.DeletePlan;
 using Application.Plans.GetPlanById;
 using Application.Plans.UpdatePlan;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
@@ -13,7 +12,6 @@ namespace Api.Controllers;
 public class PlansController(ISender mediator) : ApiControllerBase(mediator)
 {
     [HttpPost]
-    [AllowAnonymous]
     public async Task<IActionResult> CreateAsync([FromRoute] Guid clientId, [FromBody] CreatePlanRequest request)
     {
         var result = await Mediator.Send(new CreatePlanCommand(clientId, request));
@@ -22,7 +20,6 @@ public class PlansController(ISender mediator) : ApiControllerBase(mediator)
     }
 
     [HttpPut]
-    [AllowAnonymous]
     public async Task<IActionResult> UpdateAsync([FromRoute] Guid clientId, [FromBody] UpdatePlanRequest request)
     {
         var result = await Mediator.Send(new UpdatePlanCommand(clientId, request));
@@ -31,7 +28,6 @@ public class PlansController(ISender mediator) : ApiControllerBase(mediator)
     }
 
     [HttpGet("{id:guid}")]
-    [AllowAnonymous]
     public async Task<IActionResult> GetByIdAsync([FromRoute] Guid clientId, [FromRoute] Guid id)
     {
         var result = await Mediator.Send(new GetPlanByIdQuery { ClientId = clientId, Id = id });
@@ -40,7 +36,6 @@ public class PlansController(ISender mediator) : ApiControllerBase(mediator)
     }
 
     [HttpDelete("{id:guid}")]
-    [AllowAnonymous]
     public async Task<IActionResult> DeleteAsync([FromRoute] Guid clientId, [FromRoute] Guid id)
     {
         var result = await Mediator.Send(new DeletePlanCommand { ClientId = clientId, Id = id });

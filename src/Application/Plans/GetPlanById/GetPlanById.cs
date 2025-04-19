@@ -1,4 +1,6 @@
-﻿using Application.Common.Exceptions;
+﻿using Application.Common.Attributes;
+using Application.Common.Constants;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
@@ -12,6 +14,7 @@ public class GetPlanByIdQuery : IRequest<PlanDto>, IClientRequest
     public Guid ClientId { get; set; }
 }
 
+[RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin)]
 public class GetPlanByIdQueryHandler(
     IPlanRepository planRepository,
     IPlanItemRepository planItemRepository,
