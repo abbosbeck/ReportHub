@@ -36,6 +36,13 @@ public class ItemRepository(AppDbContext context) : IItemRepository
         return await context.Items.FindAsync(itemId);
     }
 
+    public async Task<List<Item>> GetByInvoiceIdAsync(Guid id)
+    {
+        return await context.Items
+            .Where(i => i.InvoiceId == id)
+            .ToListAsync();
+    }
+
     public async Task<Item> UpdateAsync(Item item)
     {
         context.Update(item);
