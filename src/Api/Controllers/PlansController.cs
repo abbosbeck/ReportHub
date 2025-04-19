@@ -1,4 +1,5 @@
 ﻿using Application.Plans.CreatePlan;
+using Application.Plans.DeletePlan;
 using Application.Plans.GetPlanById;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -24,6 +25,15 @@ public class PlansController(ISender mediator) : ApiControllerBase(mediator)
     public async Task<IActionResult> GetByIdAsync([FromRoute] Guid clientId, [FromRoute] Guid id)
     {
         var result = await Mediator.Send(new GetPlanByIdQuery { ClientId = clientId, Id = id });
+
+        return Ok(result);
+    }
+
+    [HttpDelete("{id:guid}")]
+    [AllowAnonymous]
+    public async Task<IActionResult> DeleteAsync([FromRoute] Guid clientId, [FromRoute] Guid id)
+    {
+        var result = await Mediator.Send(new DeletePlanCommand { ClientId = clientId, Id = id });
 
         return Ok(result);
     }
