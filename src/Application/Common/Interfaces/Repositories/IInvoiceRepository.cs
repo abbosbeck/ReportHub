@@ -12,7 +12,7 @@ public interface IInvoiceRepository
 
     Task<Invoice> UpdateAsync(Invoice invoice);
 
-    Task<IEnumerable<Invoice>> GetAllAsync();
+    IQueryable<Invoice> GetAll();
 
     Task<bool> DeleteAsync(Invoice invoice);
 }
