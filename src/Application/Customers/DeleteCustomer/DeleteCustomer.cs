@@ -19,8 +19,7 @@ public class DeleteCustomerCommandHandler(ICustomerRepository repository)
 {
     public async Task<bool> Handle(DeleteCustomerCommand request, CancellationToken cancellationToken)
     {
-        var customer = await repository.GetAsync(
-               customer => customer.ClientId == request.ClientId && customer.Id == request.Id)
+        var customer = await repository.GetByIdAsync(request.Id)
            ?? throw new NotFoundException($"Customer is not found with this id: {request.Id}");
 
         var result = await repository.DeleteAsync(customer);
