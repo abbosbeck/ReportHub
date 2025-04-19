@@ -2,7 +2,7 @@
 using Domain.Entities;
 
 namespace Infrastructure.Persistence.Repositories;
-public class PlanRepository (AppDbContext context) : IPlanRepository
+public class PlanRepository(AppDbContext context) : IPlanRepository
 {
     public async Task<Plan> AddAsync(Plan plan)
     {
