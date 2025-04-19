@@ -4,7 +4,11 @@ public class DeleteInvoiceCommandValidator : AbstractValidator<DeleteInvoiceComm
 {
     public DeleteInvoiceCommandValidator()
     {
-        RuleFor(I => I.Id)
+        RuleFor(i => i.Id)
+            .NotEmpty()
+            .Must(BeValidGuid);
+
+        RuleFor(i => i.ClientId)
             .NotEmpty()
             .Must(BeValidGuid);
     }
