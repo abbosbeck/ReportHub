@@ -20,19 +20,18 @@ public class AuthorizationPipelineBehavior<TRequest, TResponse>(
         var requiresSystemRoles = handler.GetType().GetCustomAttribute<RequiresSystemRoleAttribute>()?.SystemRoles;
         var requiresClientRoles = handler.GetType().GetCustomAttribute<RequiresClientRoleAttribute>()?.ClientRoles;
 
+        var systemRoles = currentUserService.SystemRoles;
+        var clientRoles = await GetClientRoles(request);
+
         if (requiresSystemRoles is null or[] && requiresClientRoles is null or[])
         {
             return await next();
         }
 
-        var systemRoles = currentUserService.SystemRoles;
-
         if (requiresSystemRoles != null && requiresSystemRoles.Intersect(systemRoles).Any())
         {
             return await next();
         }
-
-        var clientRoles = await GetClientRoles(request);
 
         if (requiresClientRoles != null && requiresClientRoles.Intersect(clientRoles).Any())
         {

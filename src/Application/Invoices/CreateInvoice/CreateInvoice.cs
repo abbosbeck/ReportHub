@@ -1,6 +1,6 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
-using Application.Common.Interfaces.External;
+using Application.Common.Interfaces.External.CurrencyExchange;
 using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
 
@@ -23,7 +23,7 @@ public class AddInvoiceCommandHandler(
     IInvoiceRepository invoiceRepository,
     IItemRepository itemRepository,
     ICustomerRepository customerRepository,
-    ICurrencyExchange currencyExchange,
+    ICurrencyExchangeService currencyExchange,
     IMapper mapper,
     IValidator<CreateInvoiceRequest> validator
     ) : IRequestHandler<CreateInvoiceCommand, InvoiceDto>
