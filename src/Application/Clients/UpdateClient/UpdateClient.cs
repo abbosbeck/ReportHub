@@ -13,8 +13,8 @@ public class UpdateClientCommand : IRequest<ClientDto>, IClientRequest
     public string Name { get; set; }
 }
 
-[RequiresClientRole(ClientRoles.Owner)]
 [RequiresSystemRole(SystemRoles.SuperAdmin)]
+[RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin)]
 public class UpdateClientCommandHandler(
     IMapper mapper,
     IClientRepository repository,
