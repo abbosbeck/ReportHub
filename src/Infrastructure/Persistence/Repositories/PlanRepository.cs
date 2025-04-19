@@ -23,4 +23,12 @@ public class PlanRepository(AppDbContext context) : IPlanRepository
 
         return await context.SaveChangesAsync() > 0;
     }
+
+    public async Task<Plan> UpdateAsync(Plan plan)
+    {
+        context.Set<Plan>().Update(plan);
+        await context.SaveChangesAsync();
+
+        return plan;
+    }
 }

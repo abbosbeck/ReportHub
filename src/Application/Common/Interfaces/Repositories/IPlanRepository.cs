@@ -8,4 +8,6 @@ public interface IPlanRepository
     Task<Plan> GetByIdAsync(Guid id);
 
     Task<bool> RemoveAsync(Plan plan);
+    
+    Task<Plan> UpdateAsync(Plan plan);
 }
