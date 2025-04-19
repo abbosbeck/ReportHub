@@ -1,8 +1,8 @@
 ﻿namespace Application.Invoices.CreateInvoice;
 
-public class CreateInvoiceCommandValidator : AbstractValidator<CreateInvoiceRequest>
+public class CreateInvoiceRequestValidator : AbstractValidator<CreateInvoiceRequest>
 {
-    public CreateInvoiceCommandValidator()
+    public CreateInvoiceRequestValidator()
     {
         RuleFor(x => x.InvoiceNumber).NotEmpty();
         RuleFor(x => x.IssueDate).NotEmpty();

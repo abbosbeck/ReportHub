@@ -9,10 +9,12 @@ public class InvoiceProfile : Profile
     {
         CreateMap<Invoice, InvoiceDto>()
             .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items));
+
         CreateMap<Item, ItemDto>();
-        // CreateMap<UpdateInvoiceRequest, Invoice>();
+
         CreateMap<UpdateInvoiceRequest, Invoice>()
             .ForMember(i => i.Items, opt => opt.Ignore());
+
         CreateMap<ItemRequestDto, Item>();
     }
 }

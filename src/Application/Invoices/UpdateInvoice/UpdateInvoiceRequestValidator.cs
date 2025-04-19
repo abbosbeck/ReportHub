@@ -1,8 +1,8 @@
 ﻿namespace Application.Invoices.UpdateInvoice;
 
-public class UpdateInvoiceCommandValidator : AbstractValidator<UpdateInvoiceRequest>
+public class UpdateInvoiceRequestValidator : AbstractValidator<UpdateInvoiceRequest>
 {
-    public UpdateInvoiceCommandValidator()
+    public UpdateInvoiceRequestValidator()
     {
         RuleFor(x => x.Id).NotEmpty();
         RuleFor(x => x.DueDate);
