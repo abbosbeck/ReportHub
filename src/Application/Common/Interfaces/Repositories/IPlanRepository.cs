@@ -5,6 +5,8 @@ public interface IPlanRepository
 {
     Task<Plan> AddAsync(Plan plan);
 
+    IQueryable<Plan> GetAll();
+
     Task<Plan> GetByIdAsync(Guid id);
 
     Task<bool> RemoveAsync(Plan plan);

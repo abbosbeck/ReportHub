@@ -12,6 +12,11 @@ public class PlanRepository(AppDbContext context) : IPlanRepository
         return plan;
     }
 
+    public IQueryable<Plan> GetAll()
+    {
+        return (IQueryable<Plan>)context.Set<Plan>();
+    }
+
     public async Task<Plan> GetByIdAsync(Guid id)
     {
         return await context.Set<Plan>().FindAsync(id);
