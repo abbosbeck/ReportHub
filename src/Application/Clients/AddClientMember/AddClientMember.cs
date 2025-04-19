@@ -14,8 +14,8 @@ public class AddClientMemberCommand : IRequest<bool>, IClientRequest
     public Guid UserId { get; set; }
  }
 
-[RequiresClientRole(ClientRoles.Owner)]
 [RequiresSystemRole(SystemRoles.SuperAdmin)]
+[RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin)]
 public class AddClientMemberCommandHandler(
     IUserRepository userRepository,
     IClientRepository clientRepository,

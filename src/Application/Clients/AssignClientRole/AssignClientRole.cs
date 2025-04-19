@@ -16,14 +16,15 @@ public class AssignClientRoleCommand : IRequest<bool>, IClientRequest
     public string RoleName { get; set; }
 }
 
-[RequiresClientRole(ClientRoles.Owner)]
 [RequiresSystemRole(SystemRoles.SuperAdmin)]
+[RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin)]
 public class AssignClientRoleHandler(
     IUserRepository userRepository,
     IClientRepository clientRepository,
+    ICurrentUserService currentUser,
     IClientRoleRepository clientRoleRepository,
-    IValidator<AssignClientRoleCommand> validator,
-    IClientRoleAssignmentRepository clientRoleAssignmentRepository)
+    IClientRoleAssignmentRepository clientRoleAssignmentRepository,
+    IValidator<AssignClientRoleCommand> validator)
     : IRequestHandler<AssignClientRoleCommand, bool>
 {
     public async Task<bool> Handle(AssignClientRoleCommand request, CancellationToken cancellationToken)
@@ -38,6 +39,12 @@ public class AssignClientRoleHandler(
 
         var clientRole = await clientRoleRepository.GetByNameAsync(request.RoleName)
             ?? throw new NotFoundException($"Client role is not found with this name: {request.RoleName}");
+
+        var rolesList = await clientRoleAssignmentRepository.GetRolesByUserIdAndClientIdAsync(currentUser.UserId, client.Id);
+        if (!(rolesList.Contains(ClientRoles.Owner) && request.RoleName == ClientRoles.Owner))
+        {
+            throw new ForbiddenException($"You cannot assign {ClientRoles.Owner} role!");
+        }
 
         var clientRoleAssignment = new ClientRoleAssignment
         {
