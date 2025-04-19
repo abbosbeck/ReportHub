@@ -69,5 +69,8 @@ public class AppDbContext(
 
         builder.Entity<Item>(entity => entity
             .HasQueryFilter(c => c.ClientId == clientProvider.ClientId));
+
+        builder.Entity<Plan>(entity => entity
+            .HasQueryFilter(c => c.ClientId == clientProvider.ClientId));
     }
 }

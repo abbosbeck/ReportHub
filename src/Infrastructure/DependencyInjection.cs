@@ -45,6 +45,7 @@ public static class DependencyInjection
         services.AddScoped<IInvoiceRepository, InvoiceRepository>();
         services.AddScoped<IItemRepository, ItemRepository>();
         services.AddScoped<IPlanRepository, PlanRepository>();
+        services.AddScoped<IPlanItemRepository, PlanItemRepository>();
         services.AddHttpClient<ICountryService, CountryService>(httpClient =>
         {
             httpClient.BaseAddress = new Uri($"https://www.apicountries.com/");

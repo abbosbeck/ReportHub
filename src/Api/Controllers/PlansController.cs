@@ -1,16 +1,53 @@
 ﻿using Application.Plans.CreatePlan;
+using Application.Plans.DeletePlan;
+using Application.Plans.GetPlanById;
+using Application.Plans.GetPlansList;
+using Application.Plans.UpdatePlan;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
-[Route("api/[controller]")]
+
+[Route("clients/{clientId:guid}/[controller]")]
 [ApiController]
 public class PlansController(ISender mediator) : ApiControllerBase(mediator)
 {
-    [HttpPost("create")]
-    public async Task<IActionResult> CreateAsync([FromBody] CreatePlanCommand command)
+    [HttpPost]
+    public async Task<IActionResult> CreateAsync([FromRoute] Guid clientId, [FromBody] CreatePlanRequest request)
     {
-        var result = await Mediator.Send(command);
+        var result = await Mediator.Send(new CreatePlanCommand(clientId, request));
+
+        return Ok(result);
+    }
+
+    [HttpPut]
+    public async Task<IActionResult> UpdateAsync([FromRoute] Guid clientId, [FromBody] UpdatePlanRequest request)
+    {
+        var result = await Mediator.Send(new UpdatePlanCommand(clientId, request));
+
+        return Ok(result);
+    }
+
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetByIdAsync([FromRoute] Guid clientId, [FromRoute] Guid id)
+    {
+        var result = await Mediator.Send(new GetPlanByIdQuery { ClientId = clientId, Id = id });
+
+        return Ok(result);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetListAsync([FromRoute] Guid clientId)
+    {
+        var result = await Mediator.Send(new GetPlansListQuery { ClientId = clientId });
+
+        return Ok(result);
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> DeleteAsync([FromRoute] Guid clientId, [FromRoute] Guid id)
+    {
+        var result = await Mediator.Send(new DeletePlanCommand { ClientId = clientId, Id = id });
 
         return Ok(result);
     }
