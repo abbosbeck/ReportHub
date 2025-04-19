@@ -55,14 +55,16 @@ public class AddInvoiceCommandHandler(
         invoice.ClientId = request.ClientId;
         await invoiceRepository.AddAsync(invoice);
 
+        var itemsList = new List<Item>();
         foreach (var itemDto in request.Invoice.Items)
         {
             var item = mapper.Map<Item>(itemDto);
             item.InvoiceId = invoice.Id;
             item.ClientId = request.ClientId;
+            itemsList.Add(item);
         }
 
-        await itemRepository.AddBulkAsync(invoice.Items);
+        await itemRepository.AddBulkAsync(itemsList);
 
         return mapper.Map<InvoiceDto>(invoice);
     }
