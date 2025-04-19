@@ -11,7 +11,7 @@ public class Invoice : BaseAuditableEntity, ISoftDeletable
 
     public DateTime DueDate { get; init; }
 
-    public decimal Amount { get; set; } // Should be calculated in business logic
+    public decimal Amount { get; set; }
 
     public string CurrencyCode { get; set; }
 

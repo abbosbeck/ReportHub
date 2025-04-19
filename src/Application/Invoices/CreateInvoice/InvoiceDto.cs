@@ -14,7 +14,7 @@ public class InvoiceDto
 
     public decimal Amount { get; set; }
 
-    public string Currency { get; set; }
+    public string CurrencyCode { get; set; }
 
     public Guid ClientId { get; set; }
 
