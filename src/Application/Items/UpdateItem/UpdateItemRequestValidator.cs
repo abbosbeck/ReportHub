@@ -1,8 +1,8 @@
 ﻿namespace Application.Items.UpdateItem;
 
-public class UpdateItemCommandValidator : AbstractValidator<UpdateItemRequest>
+public class UpdateItemRequestValidator : AbstractValidator<UpdateItemRequest>
 {
-    public UpdateItemCommandValidator()
+    public UpdateItemRequestValidator()
     {
         RuleFor(c => c.Name)
             .NotEmpty()
