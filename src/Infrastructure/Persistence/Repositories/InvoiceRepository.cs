@@ -22,31 +22,25 @@ public class InvoiceRepository(AppDbContext context) : IInvoiceRepository
 
     public async Task<IEnumerable<Invoice>> GetAllAsync()
     {
-        return await context.Invoices
-             .Include(i => i.Client)
-             .Include(i => i.Customer)
-             .Include(i => i.Items)
-             .ToListAsync();
+        return await context.Invoices.ToListAsync();
     }
 
     public async Task<Invoice> GetByIdAsync(Guid invoiceId)
     {
         return await context.Invoices
-            .Include(i => i.Client)
-            .Include(i => i.Customer)
             .Include(i => i.Items)
             .FirstOrDefaultAsync(i => i.Id == invoiceId);
     }
 
-        public async Task<Invoice> GetByInvoiceNumberAsync(string number)
-        {
-            return await context.Invoices.FirstOrDefaultAsync(i => i.InvoiceNumber == number);
-        }
+    public async Task<Invoice> GetByInvoiceNumberAsync(string number)
+    {
+        return await context.Invoices.FirstOrDefaultAsync(i => i.InvoiceNumber == number);
+    }
 
-        public async Task<Invoice> UpdateAsync(Invoice invoice)
-        {
-            context.Update(invoice);
-            await context.SaveChangesAsync();
+    public async Task<Invoice> UpdateAsync(Invoice invoice)
+    {
+        context.Update(invoice);
+        await context.SaveChangesAsync();
 
         return invoice;
     }
