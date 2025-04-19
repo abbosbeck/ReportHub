@@ -13,16 +13,16 @@ public class InvoiceRepository(AppDbContext context) : IInvoiceRepository
         return invoice;
     }
 
+    public IQueryable<Invoice> GetAll()
+    {
+        return context.Invoices.Include(invoice => invoice.Items);
+    }
+
     public async Task<bool> DeleteAsync(Invoice invoice)
     {
         context.Remove(invoice);
 
         return await context.SaveChangesAsync() > 0;
-    }
-
-    public async Task<IEnumerable<Invoice>> GetAllAsync()
-    {
-        return await context.Invoices.ToListAsync();
     }
 
     public async Task<Invoice> GetByIdAsync(Guid invoiceId)

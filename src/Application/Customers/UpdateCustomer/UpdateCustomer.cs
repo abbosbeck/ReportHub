@@ -36,8 +36,7 @@ public class UpdateCustomerCommandHandler(
             ?? throw new NotFoundException($"Client is not found with this id: {request.ClientId}");
 
         var customer =
-            await customerRepository.GetAsync(customer =>
-                customer.ClientId == request.ClientId && customer.Id == request.Customer.Id)
+            await customerRepository.GetByIdAsync(request.Customer.Id)
             ?? throw new NotFoundException($"Customer is not found with this id: {request.Customer.Id}");
 
         mapper.Map(request.Customer, customer);

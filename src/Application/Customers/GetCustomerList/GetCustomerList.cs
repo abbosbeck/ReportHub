@@ -18,7 +18,7 @@ public class GetCustomerListQueryHandler(IMapper mapper, ICustomerRepository rep
     public async Task<List<CustomerDto>> Handle(GetCustomerListQuery request, CancellationToken cancellationToken)
     {
         var customers = await repository
-            .GetAll(customer => customer.ClientId == request.ClientId)
+            .GetAll()
             .ToListAsync(cancellationToken: cancellationToken);
 
         return mapper.Map<List<CustomerDto>>(customers);

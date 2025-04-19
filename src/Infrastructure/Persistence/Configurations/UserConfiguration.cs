@@ -9,8 +9,6 @@ internal class UserConfiguration : IEntityTypeConfiguration<User>
     {
         builder.ToTable("Users");
 
-        builder.HasQueryFilter(u => !u.IsDeleted);
-
         builder.Property(u => u.FirstName)
             .HasMaxLength(200)
             .IsRequired();

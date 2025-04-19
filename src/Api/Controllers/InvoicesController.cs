@@ -1,6 +1,7 @@
 ﻿using Application.Invoices;
 using Application.Invoices.CreateInvoice;
 using Application.Invoices.GetInvoiceById;
+using Application.Invoices.GetInvoicesList;
 using Application.Invoices.UpdateInvoice;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -30,6 +31,14 @@ namespace Api.Controllers
         public async Task<IActionResult> GetByIdAsync([FromRoute] Guid clientId, [FromRoute] Guid id)
         {
             var result = await Mediator.Send(new GetInvoiceByIdQuery { Id = id, ClientId = clientId });
+
+            return Ok(result);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllAsync([FromRoute] Guid clientId)
+        {
+            var result = await Mediator.Send(new GetInvoicesListQuery(clientId));
 
             return Ok(result);
         }

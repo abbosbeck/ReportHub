@@ -1,5 +1,4 @@
-﻿using Application.Common.Exceptions;
-using Application.Common.Interfaces.Authorization;
+﻿using Application.Common.Interfaces.Authorization;
 using Microsoft.AspNetCore.Http;
 
 namespace Application.Common.Services;

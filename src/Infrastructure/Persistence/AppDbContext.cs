@@ -1,5 +1,6 @@
 ﻿using Application.Common.Interfaces.Authorization;
 using Domain.Entities;
+using Infrastructure.Persistence.Extensions;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -44,7 +45,7 @@ public class AppDbContext(
 
         IgnoreUnusedIdentityTables(builder);
 
-        builder.Entity<SystemRole>().ToTable("SystemRoles");
+        builder.ApplySoftDeleteQueryFilter();
     }
 
     private static void IgnoreUnusedIdentityTables(ModelBuilder builder)
