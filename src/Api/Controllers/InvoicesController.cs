@@ -22,9 +22,9 @@ namespace Api.Controllers
 
         [AllowAnonymous]
         [HttpPut]
-        public async Task<IActionResult> UpdateAsync([FromBody] UpdateInvoiceCommand command)
+        public async Task<IActionResult> UpdateAsync([FromRoute] Guid clientId, [FromBody] UpdateInvoiceRequest request)
         {
-            var result = await Mediator.Send(command);
+            var result = await Mediator.Send(new UpdateInvoiceCommand(clientId, request));
 
             return Ok(result);
         }
