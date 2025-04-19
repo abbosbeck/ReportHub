@@ -4,7 +4,7 @@ using Application.Common.Interfaces.External.CurrencyExchange;
 using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
 
-namespace Application.Invoices;
+namespace Application.Invoices.CreateInvoice;
 
 public class CreateInvoiceCommand : IRequest<InvoiceDto>, IClientRequest
 {

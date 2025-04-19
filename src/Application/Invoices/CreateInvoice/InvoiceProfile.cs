@@ -1,6 +1,6 @@
 ﻿using Domain.Entities;
 
-namespace Application.Invoices;
+namespace Application.Invoices.CreateInvoice;
 
 public class InvoiceProfile : Profile
 {

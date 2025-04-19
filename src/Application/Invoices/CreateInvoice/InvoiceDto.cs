@@ -1,6 +1,6 @@
 ﻿using Domain.Enums;
 
-namespace Application.Invoices;
+namespace Application.Invoices.CreateInvoice;
 
 public class InvoiceDto
 {

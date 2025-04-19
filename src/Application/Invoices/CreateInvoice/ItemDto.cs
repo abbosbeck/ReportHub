@@ -1,4 +1,4 @@
-﻿namespace Application.Invoices;
+﻿namespace Application.Invoices.CreateInvoice;
 
 public class ItemDto
 {
