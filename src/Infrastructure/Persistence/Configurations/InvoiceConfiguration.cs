@@ -1,16 +1,12 @@
-﻿using Application.Common.Interfaces.Authorization;
-using Domain.Entities;
+﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Persistence.Configurations;
 
-public class InvoiceConfiguration(IClientRequest clientRequest) : IEntityTypeConfiguration<Invoice>
+public class InvoiceConfiguration : IEntityTypeConfiguration<Invoice>
 {
     public void Configure(EntityTypeBuilder<Invoice> builder)
     {
-        builder.HasQueryFilter(i => !i.IsDeleted);
-        builder.HasQueryFilter(i => i.ClientId == clientRequest.ClientId);
-
         builder.Property(i => i.InvoiceNumber)
             .HasMaxLength(40)
             .IsRequired();
