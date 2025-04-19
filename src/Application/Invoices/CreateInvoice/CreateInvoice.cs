@@ -30,17 +30,17 @@ public class AddInvoiceCommandHandler(
 {
     public async Task<InvoiceDto> Handle(CreateInvoiceCommand request, CancellationToken cancellationToken)
     {
-        //await validator.ValidateAndThrowAsync(request.Invoice, cancellationToken);
+        await validator.ValidateAndThrowAsync(request.Invoice, cancellationToken);
 
         var existInvoice = await invoiceRepository.GetByInvoiceNumberAsync(request.Invoice.InvoiceNumber);
-        if(existInvoice != null)
+        if (existInvoice != null)
         {
             throw new ConflictException($"There is already an invoice with this invoice number: {request.Invoice.InvoiceNumber}");
         }
 
         var invoice = mapper.Map<Invoice>(request.Invoice);
 
-        var customer = await customerRepository.GetAsync(c => c.Id == invoice.CustomerId)
+        var customer = await customerRepository.GetByIdAsync(invoice.CustomerId)
             ?? throw new NotFoundException($"Customer is not found with this id: {invoice.CustomerId}");
 
         foreach (var itemDto in request.Invoice.Items)
@@ -48,13 +48,19 @@ public class AddInvoiceCommandHandler(
             var item = mapper.Map<Item>(itemDto);
             var exchangedPrice = await currencyExchange
                 .ExchangeCurrencyAsync(item.CurrencyCode, customer.CountryCode, item.Price, invoice.IssueDate);
-
-            invoice.Items.Add(item);
             invoice.Amount += exchangedPrice;
         }
 
         invoice.CurrencyCode = customer.CountryCode;
+        invoice.ClientId = request.ClientId;
         await invoiceRepository.AddAsync(invoice);
+
+        foreach (var itemDto in request.Invoice.Items)
+        {
+            var item = mapper.Map<Item>(itemDto);
+            item.InvoiceId = invoice.Id;
+            item.ClientId = request.ClientId;
+        }
 
         await itemRepository.AddBulkAsync(invoice.Items);
 
