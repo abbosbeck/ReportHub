@@ -1,7 +1,6 @@
 ﻿using Application.Common.Exceptions;
 using Domain.Entities;
 using Microsoft.AspNetCore.DataProtection;
-using Newtonsoft.Json.Linq;
 
 namespace Application.Users.ConfirmUserEmail;
 
@@ -24,7 +23,7 @@ public class ConfirmUserEmailQueryHandler(
             ?? throw new NotFoundException($"User is not found.");
 
         user.EmailConfirmed = true;
-        var updatedUser = await userManager.UpdateAsync(user);
+        await userManager.UpdateAsync(user);
 
         return "Welcome to ReportHub!";
     }
