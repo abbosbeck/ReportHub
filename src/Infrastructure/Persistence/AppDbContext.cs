@@ -40,8 +40,8 @@ public class AppDbContext(
 
         builder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
 
-        /*builder.Entity<Customer>(entity => entity
-            .HasQueryFilter(c => c.ClientId == clientProvider.ClientId));*/
+        builder.Entity<Customer>(entity => entity
+            .HasQueryFilter(c => c.ClientId == clientProvider.ClientId));
 
         IgnoreUnusedIdentityTables(builder);
 
