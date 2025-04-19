@@ -38,9 +38,9 @@ namespace Api.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAsync(Guid id)
+        public async Task<IActionResult> DeleteAsync([FromRoute] Guid clientId, [FromRoute] Guid id)
         {
-            var result = await Mediator.Send(new DeleteInvoiceCommand { Id = id });
+            var result = await Mediator.Send(new DeleteInvoiceCommand { Id = id, ClientId = clientId });
 
             return Ok(result);
         }

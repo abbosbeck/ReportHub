@@ -1,16 +1,17 @@
 ﻿using Application.Common.Exceptions;
+using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.Repositories;
 
 namespace Application.Invoices;
 
-public class DeleteInvoiceCommand : IRequest<bool>
+public class DeleteInvoiceCommand : IRequest<bool>, IClientRequest
 {
     public Guid Id { get; set; }
+
+    public Guid ClientId { get; set; }
 }
 
-public class DeleteInvoiceCommandHandler(
-    IInvoiceRepository repository
-    )
+public class DeleteInvoiceCommandHandler(IInvoiceRepository repository)
     : IRequestHandler<DeleteInvoiceCommand, bool>
 {
     public async Task<bool> Handle(DeleteInvoiceCommand request, CancellationToken cancellationToken)
