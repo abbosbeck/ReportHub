@@ -1,4 +1,6 @@
-﻿using Application.Common.Exceptions;
+﻿using Application.Common.Attributes;
+using Application.Common.Constants;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.Repositories;
 
@@ -11,6 +13,7 @@ public class DeleteInvoiceCommand : IRequest<bool>, IClientRequest
     public Guid ClientId { get; set; }
 }
 
+[RequiresClientRole(ClientRoles.Owner)]
 public class DeleteInvoiceCommandHandler(IInvoiceRepository repository)
     : IRequestHandler<DeleteInvoiceCommand, bool>
 {
