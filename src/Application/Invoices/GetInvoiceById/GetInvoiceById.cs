@@ -1,23 +1,25 @@
-﻿using Application.Common.Exceptions;
+﻿using Application.Common.Attributes;
+using Application.Common.Constants;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.Repositories;
 
 namespace Application.Invoices.GetInvoiceById;
 
-public class GetInvoiceQuery : IRequest<InvoiceDto>, IClientRequest
+public class GetInvoiceByIdQuery : IRequest<InvoiceDto>, IClientRequest
 {
     public Guid Id { get; set; }
 
     public Guid ClientId { get; set; }
 }
 
-public class GetInvoiceQueryHandler(
+public class GetInvoiceByIdQueryHandler(
     IInvoiceRepository invoiceRepository,
     IItemRepository itemRepository,
     IMapper mapper)
-    : IRequestHandler<GetInvoiceQuery, InvoiceDto>
+    : IRequestHandler<GetInvoiceByIdQuery, InvoiceDto>
 {
-    public async Task<InvoiceDto> Handle(GetInvoiceQuery request, CancellationToken cancellationToken)
+    public async Task<InvoiceDto> Handle(GetInvoiceByIdQuery request, CancellationToken cancellationToken)
     {
         var invoice = await invoiceRepository.GetByIdAsync(request.Id)
             ?? throw new NotFoundException($"Invoice is not found with this id: {request.Id}");

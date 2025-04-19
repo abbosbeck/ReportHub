@@ -33,7 +33,7 @@ namespace Api.Controllers
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetByIdAsync([FromRoute] Guid clientId, [FromRoute] Guid id)
         {
-            var result = await Mediator.Send(new GetInvoiceQuery { Id = id, ClientId = clientId });
+            var result = await Mediator.Send(new GetInvoiceByIdQuery { Id = id, ClientId = clientId });
 
             return Ok(result);
         }
