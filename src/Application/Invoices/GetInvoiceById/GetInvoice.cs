@@ -2,19 +2,21 @@
 using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.Repositories;
 
-namespace Application.Invoices.GetInvoice;
+namespace Application.Invoices.GetInvoiceById;
 
-public class GetInvoiceCommand : IRequest<InvoiceDto>
+public class GetInvoiceQuery : IRequest<InvoiceDto>, IClientRequest
 {
     public Guid Id { get; set; }
+
+    public Guid ClientId { get; set; }
 }
 
-public class GetInvoiceCommandHandler(
+public class GetInvoiceQueryHandler(
     IInvoiceRepository repository,
     IMapper mapper)
-    : IRequestHandler<GetInvoiceCommand, InvoiceDto>
+    : IRequestHandler<GetInvoiceQuery, InvoiceDto>
 {
-    public async Task<InvoiceDto> Handle(GetInvoiceCommand request, CancellationToken cancellationToken)
+    public async Task<InvoiceDto> Handle(GetInvoiceQuery request, CancellationToken cancellationToken)
     {
         var invoice = await repository.GetByIdAsync(request.Id)
             ?? throw new NotFoundException($"Invoice is not found with this id: {request.Id}");

@@ -1,5 +1,6 @@
 ﻿using Application.Invoices;
-using Application.Invoices.GetInvoice;
+using Application.Invoices.CreateInvoice;
+using Application.Invoices.GetInvoiceById;
 using Application.Invoices.UpdateInvoice;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -30,9 +31,9 @@ namespace Api.Controllers
 
         [AllowAnonymous]
         [HttpGet("{id:guid}")]
-        public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id)
+        public async Task<IActionResult> GetByIdAsync([FromRoute] Guid clientId, [FromRoute] Guid id)
         {
-            var result = await Mediator.Send(new GetInvoiceCommand { Id = id });
+            var result = await Mediator.Send(new GetInvoiceQuery { Id = id, ClientId = clientId });
 
             return Ok(result);
         }
