@@ -50,4 +50,9 @@ public class ItemRepository(AppDbContext context) : IItemRepository
 
         return item;
     }
+
+    public async Task<IEnumerable<Item>> GetByIdsAsync(IEnumerable<Guid> itemIds)
+    {
+        return await context.Set<Item>().Where(i => itemIds.Contains(i.Id)).ToListAsync();
+    }
 }

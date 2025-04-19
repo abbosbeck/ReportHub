@@ -20,6 +20,7 @@ namespace Infrastructure.Migrations
                     Name = table.Column<string>(type: "text", nullable: true),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     DeletedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    DeletedBy = table.Column<string>(type: "text", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<string>(type: "text", nullable: true),
                     LastModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -38,6 +39,7 @@ namespace Infrastructure.Migrations
                     Name = table.Column<string>(type: "text", nullable: true),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     DeletedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    DeletedBy = table.Column<string>(type: "text", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<string>(type: "text", nullable: true),
                     LastModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -69,6 +71,7 @@ namespace Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     DeletedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    DeletedBy = table.Column<string>(type: "text", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<string>(type: "text", nullable: true),
                     LastModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -94,6 +97,7 @@ namespace Infrastructure.Migrations
                     RefreshTokenExpiryTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     DeletedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    DeletedBy = table.Column<string>(type: "text", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<string>(type: "text", nullable: true),
                     LastModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -123,6 +127,7 @@ namespace Infrastructure.Migrations
                     ClientId = table.Column<Guid>(type: "uuid", nullable: false),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     DeletedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    DeletedBy = table.Column<string>(type: "text", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<string>(type: "text", nullable: true),
                     LastModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -140,15 +145,17 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ClientRoleAssignments",
+                name: "Plan",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Title = table.Column<string>(type: "text", nullable: true),
+                    StartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     ClientId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ClientRoleId = table.Column<Guid>(type: "uuid", nullable: false),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     DeletedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    DeletedBy = table.Column<string>(type: "text", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<string>(type: "text", nullable: true),
                     LastModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -156,7 +163,34 @@ namespace Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ClientRoleAssignments", x => x.Id);
+                    table.PrimaryKey("PK_Plan", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Plan_Clients_ClientId",
+                        column: x => x.ClientId,
+                        principalTable: "Clients",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ClientRoleAssignments",
+                columns: table => new
+                {
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ClientId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ClientRoleId = table.Column<Guid>(type: "uuid", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    DeletedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    DeletedBy = table.Column<string>(type: "text", nullable: true),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: true),
+                    LastModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    LastModifiedBy = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ClientRoleAssignments", x => new { x.UserId, x.ClientId, x.ClientRoleId });
                     table.ForeignKey(
                         name: "FK_ClientRoleAssignments_ClientRoles_ClientRoleId",
                         column: x => x.ClientRoleId,
@@ -186,6 +220,7 @@ namespace Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     DeletedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    DeletedBy = table.Column<string>(type: "text", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<string>(type: "text", nullable: true),
                     LastModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -223,6 +258,7 @@ namespace Infrastructure.Migrations
                     PaymentStatus = table.Column<int>(type: "integer", nullable: false),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     DeletedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    DeletedBy = table.Column<string>(type: "text", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<string>(type: "text", nullable: true),
                     LastModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -258,6 +294,7 @@ namespace Infrastructure.Migrations
                     InvoiceId = table.Column<Guid>(type: "uuid", nullable: false),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     DeletedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    DeletedBy = table.Column<string>(type: "text", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<string>(type: "text", nullable: true),
                     LastModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -280,6 +317,31 @@ namespace Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "PlanItem",
+                columns: table => new
+                {
+                    ItemId = table.Column<Guid>(type: "uuid", nullable: false),
+                    PlanId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Quantity = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PlanItem", x => new { x.ItemId, x.PlanId });
+                    table.ForeignKey(
+                        name: "FK_PlanItem_Items_ItemId",
+                        column: x => x.ItemId,
+                        principalTable: "Items",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PlanItem_Plan_PlanId",
+                        column: x => x.PlanId,
+                        principalTable: "Plan",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_ClientRoleAssignments_ClientId",
                 table: "ClientRoleAssignments",
@@ -289,11 +351,6 @@ namespace Infrastructure.Migrations
                 name: "IX_ClientRoleAssignments_ClientRoleId",
                 table: "ClientRoleAssignments",
                 column: "ClientRoleId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ClientRoleAssignments_UserId",
-                table: "ClientRoleAssignments",
-                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Customers_ClientId",
@@ -319,6 +376,16 @@ namespace Infrastructure.Migrations
                 name: "IX_Items_InvoiceId",
                 table: "Items",
                 column: "InvoiceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Plan_ClientId",
+                table: "Plan",
+                column: "ClientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PlanItem_PlanId",
+                table: "PlanItem",
+                column: "PlanId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SystemRoleAssignments_RoleId",
@@ -353,7 +420,7 @@ namespace Infrastructure.Migrations
                 name: "DataProtectionKeys");
 
             migrationBuilder.DropTable(
-                name: "Items");
+                name: "PlanItem");
 
             migrationBuilder.DropTable(
                 name: "SystemRoleAssignments");
@@ -362,13 +429,19 @@ namespace Infrastructure.Migrations
                 name: "ClientRoles");
 
             migrationBuilder.DropTable(
-                name: "Invoices");
+                name: "Items");
+
+            migrationBuilder.DropTable(
+                name: "Plan");
 
             migrationBuilder.DropTable(
                 name: "SystemRoles");
 
             migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "Invoices");
 
             migrationBuilder.DropTable(
                 name: "Customers");

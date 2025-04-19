@@ -17,4 +17,6 @@ public interface IItemRepository
     Task<Item> UpdateAsync(Item item);
 
     Task<bool> DeleteAsync(Item item);
+
+    Task<IEnumerable<Item>> GetByIdsAsync(IEnumerable<Guid> itemIds);
 }
