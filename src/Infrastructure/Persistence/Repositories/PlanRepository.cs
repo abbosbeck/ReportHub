@@ -16,4 +16,11 @@ public class PlanRepository(AppDbContext context) : IPlanRepository
     {
         return await context.Set<Plan>().FindAsync(id);
     }
+
+    public async Task<bool> RemoveAsync(Plan plan)
+    {
+        context.Set<Plan>().Remove(plan);
+
+        return await context.SaveChangesAsync() > 0;
+    }
 }
