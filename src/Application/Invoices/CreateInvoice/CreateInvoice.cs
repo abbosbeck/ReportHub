@@ -43,11 +43,8 @@ public class CreateInvoiceCommandHandler(
 
         var customer = await customerRepository.GetByIdAsync(invoice.CustomerId)
             ?? throw new NotFoundException($"Customer is not found with this id: {invoice.CustomerId}");
-        
-        var customerCountry = await countryService.GetByCodeAsync(customer.CountryCode);
-        var customerCurrency = customerCountry.Currencies
-            .Select(c => c.Code)
-            .FirstOrDefault();
+
+        var customerCurrency = await countryService.GetCurrencyCodeByCountryCodeAsync(customer.CountryCode);
 
         foreach (var itemDto in request.Invoice.Items)
         {
