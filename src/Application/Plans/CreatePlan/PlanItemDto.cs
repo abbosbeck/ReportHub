@@ -1,6 +1,4 @@
-﻿using System.Reflection.Metadata.Ecma335;
-
-namespace Application.Plans.CreatePlan;
+﻿namespace Application.Plans.CreatePlan;
 
 public class PlanItemDto
 {
