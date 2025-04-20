@@ -13,6 +13,10 @@ public class Plan : BaseAuditableEntity, ISoftDeletable
 
     public decimal TotalPrice { get; set; }
 
+    public Guid CustomerId { get; set; }
+
+    public Customer Customer { get; set; }
+
     public Guid ClientId { get; set; }
 
     public Client Client { get; set; }
