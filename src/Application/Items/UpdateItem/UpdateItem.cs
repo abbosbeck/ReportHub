@@ -22,7 +22,6 @@ public class UpdateItemCommandHandler(
     IItemRepository itemRepository,
     IInvoiceRepository invoiceRepository,
     ICustomerRepository customerRepository,
-    ICountryService countryService,
     ICurrencyExchangeService currencyExchangeService,
     IValidator<UpdateItemRequest> validator,
     IMapper mapper)
@@ -40,14 +39,12 @@ public class UpdateItemCommandHandler(
 
         var customer = await customerRepository.GetByIdAsync(invoice.CustomerId)
             ?? throw new NotFoundException($"Customer is not found with this id: {invoice.CustomerId}");
-
-        var customerCurrency = await countryService.GetCurrencyCodeByCountryCodeAsync(customer.CountryCode);
         
         var exchangedOldPrice = await currencyExchangeService
-            .ExchangeCurrencyAsync(item.CurrencyCode, customerCurrency, item.Price, invoice.IssueDate);
+            .ExchangeCurrencyAsync(item.CurrencyCode, invoice.CurrencyCode, item.Price, invoice.IssueDate);
 
         var exchangedNewPrice = await currencyExchangeService
-            .ExchangeCurrencyAsync(request.Item.CurrencyCode, customerCurrency, request.Item.Price, invoice.IssueDate);
+            .ExchangeCurrencyAsync(request.Item.CurrencyCode, invoice.CurrencyCode, request.Item.Price, invoice.IssueDate);
 
         invoice.Amount -= exchangedOldPrice;
         invoice.Amount += exchangedNewPrice;

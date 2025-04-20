@@ -21,7 +21,6 @@ public class CreateItemCommandHandler(
     IItemRepository itemRepository,
     IInvoiceRepository invoiceRepository,
     ICustomerRepository customerRepository,
-    ICountryService countryService,
     ICurrencyExchangeService currencyExchangeService,
     IMapper mapper,
     IValidator<CreateItemRequest> validator)
@@ -39,11 +38,9 @@ public class CreateItemCommandHandler(
 
         var customer = await customerRepository.GetByIdAsync(invoice.CustomerId)
             ?? throw new NotFoundException($"Customer is not found with this id: {invoice.CustomerId}");
-
-        var customerCurrency = await countryService.GetCurrencyCodeByCountryCodeAsync(customer.CountryCode);
         
         var exchangedPrice = await currencyExchangeService
-            .ExchangeCurrencyAsync(item.CurrencyCode, customerCurrency, item.Price, invoice.IssueDate);
+            .ExchangeCurrencyAsync(item.CurrencyCode, invoice.CurrencyCode, item.Price, invoice.IssueDate);
 
         invoice.Amount += exchangedPrice;
         
