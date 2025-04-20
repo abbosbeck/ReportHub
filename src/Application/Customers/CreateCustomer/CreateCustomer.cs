@@ -29,7 +29,7 @@ public class CreateCustomerCommandHandler(
     {
         await validator.ValidateAndThrowAsync(request.Customer, cancellationToken: cancellationToken);
 
-        _ = await countryService.GetByCode(request.Customer.CountryCode)
+        _ = await countryService.GetByCodeAsync(request.Customer.CountryCode)
             ?? throw new NotFoundException($"Country is not found with this code: {request.Customer.CountryCode}. " +
                                            $"Look at this https://www.iban.com/country-codes");
 

@@ -9,11 +9,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Infrastructure.Persistence.Migrations
+namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250419171425_ApplySoftDeleteQueryFilter")]
-    partial class ApplySoftDeleteQueryFilter
+    [Migration("20250420084315_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -332,6 +332,9 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("DeletedBy")
                         .HasColumnType("text");
 
@@ -360,7 +363,9 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("ClientId");
 
-                    b.ToTable("Plan");
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("Plans");
                 });
 
             modelBuilder.Entity("Domain.Entities.PlanItem", b =>
@@ -378,7 +383,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("PlanId");
 
-                    b.ToTable("PlanItem");
+                    b.ToTable("PlanItems");
                 });
 
             modelBuilder.Entity("Domain.Entities.SystemRole", b =>
@@ -658,7 +663,15 @@ namespace Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Domain.Entities.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Client");
+
+                    b.Navigation("Customer");
                 });
 
             modelBuilder.Entity("Domain.Entities.PlanItem", b =>

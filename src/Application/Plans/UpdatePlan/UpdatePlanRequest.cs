@@ -9,6 +9,4 @@ public class UpdatePlanRequest
     public DateTime StartDate { get; set; }
 
     public DateTime EndDate { get; set; }
-
-    public decimal TotalPrice { get; set; }
 }

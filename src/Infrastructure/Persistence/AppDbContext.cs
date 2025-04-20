@@ -35,6 +35,10 @@ public class AppDbContext(
 
     public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
 
+    public DbSet<Plan> Plans { get; set; }
+
+    public DbSet<PlanItem> PlanItems { get; set; }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

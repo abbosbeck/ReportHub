@@ -2,6 +2,7 @@
 using Application.Common.Constants;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
+using Application.Common.Interfaces.External.Countries;
 using Application.Common.Interfaces.External.CurrencyExchange;
 using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
@@ -21,6 +22,7 @@ public class CreateInvoiceCommandHandler(
     IInvoiceRepository invoiceRepository,
     IItemRepository itemRepository,
     ICustomerRepository customerRepository,
+    ICountryService countryService,
     ICurrencyExchangeService currencyExchange,
     IMapper mapper,
     IValidator<CreateInvoiceRequest> validator)
@@ -33,7 +35,8 @@ public class CreateInvoiceCommandHandler(
         var existInvoice = await invoiceRepository.GetByInvoiceNumberAsync(request.Invoice.InvoiceNumber);
         if (existInvoice != null)
         {
-            throw new ConflictException($"There is already an invoice with this invoice number: {request.Invoice.InvoiceNumber}");
+            throw new ConflictException(
+                $"There is already an invoice with this invoice number: {request.Invoice.InvoiceNumber}");
         }
 
         var invoice = mapper.Map<Invoice>(request.Invoice);
@@ -41,15 +44,18 @@ public class CreateInvoiceCommandHandler(
         var customer = await customerRepository.GetByIdAsync(invoice.CustomerId)
             ?? throw new NotFoundException($"Customer is not found with this id: {invoice.CustomerId}");
 
+        var customerCurrency = await countryService.GetCurrencyCodeByCountryCodeAsync(customer.CountryCode);
+
         foreach (var itemDto in request.Invoice.Items)
         {
             var item = mapper.Map<Item>(itemDto);
+
             var exchangedPrice = await currencyExchange
-                .ExchangeCurrencyAsync(item.CurrencyCode, customer.CountryCode, item.Price, invoice.IssueDate);
+                .ExchangeCurrencyAsync(item.CurrencyCode, customerCurrency, item.Price, invoice.IssueDate);
             invoice.Amount += exchangedPrice;
         }
 
-        invoice.CurrencyCode = customer.CountryCode;
+        invoice.CurrencyCode = customerCurrency;
         invoice.ClientId = request.ClientId;
         await invoiceRepository.AddAsync(invoice);
 

@@ -2,6 +2,7 @@
 using Application.Common.Constants;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
+using Application.Common.Interfaces.External.Countries;
 using Application.Common.Interfaces.External.CurrencyExchange;
 using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
@@ -40,14 +41,13 @@ public class UpdateInvoiceCommandHandler(
 
         var customer = await customerRepository.GetByIdAsync(invoice.CustomerId)
             ?? throw new NotFoundException($"Customer is not found wirt this id: {invoice.CustomerId}");
-
         mapper.Map(request.Invoice, invoice);
 
         foreach (var itemDto in request.Invoice.Items)
         {
             var item = mapper.Map<Item>(itemDto);
             var exchangedPrice = await currencyExchange
-                .ExchangeCurrencyAsync(item.CurrencyCode, customer.CountryCode, item.Price, invoice.IssueDate);
+                .ExchangeCurrencyAsync(item.CurrencyCode, invoice.CurrencyCode, item.Price, invoice.IssueDate);
             invoice.Amount += exchangedPrice;
         }
 
