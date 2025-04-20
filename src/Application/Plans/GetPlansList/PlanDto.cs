@@ -8,7 +8,5 @@ public class PlanDto
 
     public DateTime EndDate { get; set; }
 
-    public decimal TotalPrice { get; set; }
-
     public Guid ClientId { get; set; }
 }
