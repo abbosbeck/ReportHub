@@ -12,9 +12,9 @@ public class PlanDto
 
     public DateTime EndDate { get; set; }
 
-    public List<ItemDto> Items { get; set; }
-
     public decimal TotalPrice { get; set; }
 
     public Guid ClientId { get; set; }
+
+    public List<ItemDto> Items { get; set; }
 }
