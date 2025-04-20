@@ -19,6 +19,7 @@ public class CreatePlanCommandHandler(
     IItemRepository itemRepository,
     IPlanRepository planRepository,
     IClientRepository clientRepository,
+    IPlanItemRepository planItemRepository,
     IMapper mapper,
     IValidator<CreatePlanRequest> validator)
     : IRequestHandler<CreatePlanCommand, Guid>
@@ -32,13 +33,15 @@ public class CreatePlanCommandHandler(
 
         var newPlan = mapper.Map<Plan>(request.Plan);
 
-        if (request.Plan.ItemIds.Count > 0)
+        if (request.Plan.PlanItemDtos.Count > 0)
         {
-            var items = await itemRepository.GetByIdsAsync(request.Plan.ItemIds)
-                ?? throw new NotFoundException($"Items with these ids were not found: {string.Join(", ", request.Plan.ItemIds)}");
+            var items = await itemRepository.GetByIdsAsync(request.Plan.PlanItemDtos.Select(pi => pi.ItemId))
+                ?? throw new NotFoundException(
+                    $"Items with these ids were not found: " +
+                    $"{string.Join(", ", request.Plan.PlanItemDtos.Select(pi => pi.ItemId))}");
 
             var missingIds = new List<Guid>();
-            foreach (var requestedId in request.Plan.ItemIds)
+            foreach (var requestedId in request.Plan.PlanItemDtos.Select(pi => pi.ItemId))
             {
                 bool exists = items.Any(item => item.Id == requestedId);
                 if (!exists)
@@ -60,7 +63,18 @@ public class CreatePlanCommandHandler(
             newPlan.ClientId = request.ClientId;
         }
 
+
         var plan = await planRepository.AddAsync(newPlan);
+
+        var planItems = request.Plan.PlanItemDtos
+            .Select(dto => new PlanItem
+            {
+                ItemId = dto.ItemId,
+                PlanId = plan.Id,
+                Quantity = dto.Quantity
+            })
+            .ToList();
+        await planItemRepository.AddBulkAsync(planItems);
 
         return plan.Id;
     }
