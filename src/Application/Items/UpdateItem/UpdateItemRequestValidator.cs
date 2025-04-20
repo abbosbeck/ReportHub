@@ -15,10 +15,6 @@ public class UpdateItemRequestValidator : AbstractValidator<UpdateItemRequest>
         RuleFor(c => c.CurrencyCode)
             .NotEmpty()
             .MaximumLength(3);
-
-        RuleFor(c => c.InvoiceId)
-            .NotEmpty()
-            .Must(BeAValidGuid);
     }
 
     private static bool BeAValidGuid(Guid guid)
