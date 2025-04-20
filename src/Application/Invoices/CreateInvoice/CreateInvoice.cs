@@ -55,7 +55,7 @@ public class CreateInvoiceCommandHandler(
             invoice.Amount += exchangedPrice;
         }
 
-        invoice.CurrencyCode = customer.CountryCode;
+        invoice.CurrencyCode = customerCurrency;
         invoice.ClientId = request.ClientId;
         await invoiceRepository.AddAsync(invoice);
 

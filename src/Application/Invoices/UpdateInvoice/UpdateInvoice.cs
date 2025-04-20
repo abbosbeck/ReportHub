@@ -22,7 +22,6 @@ public class UpdateInvoiceCommandHandler(
     IInvoiceRepository invoiceRepository,
     ICustomerRepository customerRepository,
     IItemRepository itemRepository,
-    ICountryService countryService,
     ICurrencyExchangeService currencyExchange,
     IValidator<UpdateInvoiceRequest> validator,
     IMapper mapper)
@@ -44,13 +43,11 @@ public class UpdateInvoiceCommandHandler(
             ?? throw new NotFoundException($"Customer is not found wirt this id: {invoice.CustomerId}");
         mapper.Map(request.Invoice, invoice);
 
-        var customerCurrency = await countryService.GetCurrencyCodeByCountryCodeAsync(customer.CountryCode);
-
         foreach (var itemDto in request.Invoice.Items)
         {
             var item = mapper.Map<Item>(itemDto);
             var exchangedPrice = await currencyExchange
-                .ExchangeCurrencyAsync(item.CurrencyCode, customerCurrency, item.Price, invoice.IssueDate);
+                .ExchangeCurrencyAsync(item.CurrencyCode, invoice.CurrencyCode, item.Price, invoice.IssueDate);
             invoice.Amount += exchangedPrice;
         }
 
