@@ -2,5 +2,5 @@
 
 public interface ICountryService
 {
-    Task<CountryDto> GetByCode(string countryCode);
+    Task<CountryDto> GetByCodeAsync(string countryCode);
 }
