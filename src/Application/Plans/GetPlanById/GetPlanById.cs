@@ -2,8 +2,11 @@
 using Application.Common.Constants;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
+using Application.Common.Interfaces.External.Countries;
+using Application.Common.Interfaces.External.CurrencyExchange;
 using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
+using System.Numerics;
 
 namespace Application.Plans.GetPlanById;
 
@@ -18,7 +21,10 @@ public class GetPlanByIdQuery : IRequest<PlanDto>, IClientRequest
 public class GetPlanByIdQueryHandler(
     IPlanRepository planRepository,
     IPlanItemRepository planItemRepository,
+    ICustomerRepository customerRepository,
+    ICountryService countryService,
     IItemRepository itemRepository,
+    ICurrencyExchangeService currencyExchangeService,
     IMapper mapper)
     : IRequestHandler<GetPlanByIdQuery, PlanDto>
 {
@@ -27,10 +33,23 @@ public class GetPlanByIdQueryHandler(
         var plan = await planRepository.GetByIdAsync(request.Id)
             ?? throw new NotFoundException($"Plan is not found with this id: {request.ClientId}");
 
-        var itemIds = await planItemRepository.GetItemIdsByPlanIdAsync(plan.Id);
+        var customer = await customerRepository.GetByIdAsync(plan.CustomerId)
+            ?? throw new NotFoundException($"Customer is not found with this id: {plan.CustomerId}");
 
-        var items = await itemRepository.GetByIdsAsync(itemIds);
-        plan.Items = (ICollection<Item>)items;
+        var customerCurrency = await countryService.GetCurrencyCodeByCountryCodeAsync(customer.CountryCode);
+
+        var planItems = await planItemRepository.GetPlanItemsByPlanIdAsync(plan.Id);
+        
+        foreach(var planItem in planItems)
+        {
+            var item = await itemRepository.GetByIdAsync(planItem.ItemId);
+
+            var price = await currencyExchangeService
+                .ExchangeCurrencyAsync(item.CurrencyCode, customerCurrency, item.Price, plan.StartDate);
+            
+            plan.TotalPrice += planItem.Quantity * price;
+            plan.Items.Add(item);
+        }
 
         return mapper.Map<PlanDto>(plan);
     }
