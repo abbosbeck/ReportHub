@@ -15,4 +15,13 @@ public class CountryService(HttpClient httpClient) : ICountryService
 
         return await response.Content.ReadFromJsonAsync<CountryDto>();
     }
+
+    public async Task<string> GetCurrencyCodeByCountryCodeAsync(string code)
+    {
+        var customerCountry = await GetByCodeAsync(code);
+
+        return customerCountry.Currencies
+            .Select(c => c.Code)
+            .FirstOrDefault();
+    }
 }
