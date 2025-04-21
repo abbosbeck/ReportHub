@@ -2,6 +2,7 @@
 using Application.Invoices.CreateInvoice;
 using Application.Invoices.ExportInvoice;
 using Application.Invoices.GetExportLogById;
+using Application.Invoices.GetExportLogsList;
 using Application.Invoices.GetInvoiceById;
 using Application.Invoices.GetInvoicesList;
 using Application.Invoices.UpdateInvoice;
@@ -64,7 +65,7 @@ namespace Api.Controllers
         [HttpGet("logs")]
         public async Task<IActionResult> GetAllLogsAsync([FromRoute] Guid clientId)
         {
-            var result = await Mediator.Send(new GetInvoicesListQuery(clientId));
+            var result = await Mediator.Send(new GetExportLogsListQuery(clientId));
 
             return Ok(result);
         }

@@ -6,9 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Invoices.GetExportLogsList;
 
-public class GetExportLogsListQuery : IRequest<IEnumerable<LogDto>>, IClientRequest
+public class GetExportLogsListQuery(Guid clientId) : IRequest<IEnumerable<LogDto>>, IClientRequest
 {
-    public Guid ClientId { get; set; }
+    public Guid ClientId { get; set; } = clientId;
 }
 
 [RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin, ClientRoles.Operator)]
