@@ -8,7 +8,7 @@ namespace Application.Invoices.GetInvoiceById;
 
 public class GetInvoiceByIdQuery : IRequest<InvoiceDto>, IClientRequest
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; init; }
 
     public Guid ClientId { get; set; }
 }

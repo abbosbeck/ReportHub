@@ -1,6 +1,7 @@
 ﻿using Application.Invoices;
 using Application.Invoices.CreateInvoice;
 using Application.Invoices.ExportInvoice;
+using Application.Invoices.GetExportLogById;
 using Application.Invoices.GetInvoiceById;
 using Application.Invoices.GetInvoicesList;
 using Application.Invoices.UpdateInvoice;
@@ -53,11 +54,27 @@ namespace Api.Controllers
         }
 
         [HttpGet("{id:guid}/export-pdf")]
-        public async Task<IActionResult> GetAllAsync([FromRoute] Guid clientId, [FromRoute] Guid id)
+        public async Task<IActionResult> GetExportPdfAsync([FromRoute] Guid clientId, [FromRoute] Guid id)
         {
             var result = await Mediator.Send(new ExportInvoiceCommand(id, clientId));
 
             return File(result.ByteArray, result.ContentType, result.FileName);
+        }
+
+        [HttpGet("logs")]
+        public async Task<IActionResult> GetAllLogsAsync([FromRoute] Guid clientId)
+        {
+            var result = await Mediator.Send(new GetInvoicesListQuery(clientId));
+
+            return Ok(result);
+        }
+
+        [HttpGet("logs/{logId:guid}")]
+        public async Task<IActionResult> GetLogByIdAsync([FromRoute] Guid clientId, [FromRoute] Guid logId)
+        {
+            var result = await Mediator.Send(new GetExportLogByIdQuery(clientId, logId));
+
+            return Ok(result);
         }
     }
 }
