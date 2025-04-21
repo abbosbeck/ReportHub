@@ -42,15 +42,13 @@ public class ExportInvoiceCommandHandler(
             var document = new InvoiceDocument(invoice);
             pdfBytes = document.GeneratePdf();
             log.Status = LogStatus.Success;
+            await logRepository.AddAsync(log);
         }
         catch
         {
             log.Status = LogStatus.Failure;
-            throw;
-        }
-        finally
-        {
             await logRepository.AddAsync(log);
+            throw;
         }
 
         return new ExportPDFDto
