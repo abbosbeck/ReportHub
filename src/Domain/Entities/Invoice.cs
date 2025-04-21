@@ -5,7 +5,7 @@ namespace Domain.Entities;
 
 public class Invoice : BaseAuditableEntity, ISoftDeletable
 {
-    public string InvoiceNumber { get; init; }
+    public int InvoiceNumber { get; init; }
 
     public DateTime IssueDate { get; init; }
 
@@ -15,7 +15,7 @@ public class Invoice : BaseAuditableEntity, ISoftDeletable
 
     public string CurrencyCode { get; set; }
 
-    public ICollection<Item> Items { get; set; }
+    public IList<Item> Items { get; set; }
 
     public Guid ClientId { get; set; }
 

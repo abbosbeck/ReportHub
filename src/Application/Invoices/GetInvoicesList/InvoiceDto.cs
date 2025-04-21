@@ -6,7 +6,7 @@ public class InvoiceDto
 {
     public Guid Id { get; init; }
 
-    public string InvoiceNumber { get; init; }
+    public int InvoiceNumber { get; init; }
 
     public DateTime IssueDate { get; init; }
 

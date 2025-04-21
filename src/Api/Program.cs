@@ -3,6 +3,7 @@ using Application;
 using Infrastructure;
 using Infrastructure.Persistence;
 using Microsoft.OpenApi.Models;
+using QuestPDF.Infrastructure;
 using Serilog;
 
 DotNetEnv.Env.Load();
@@ -48,6 +49,8 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Host.UseSerilog((context, loggerConfiguration) =>
     loggerConfiguration.ReadFrom.Configuration(context.Configuration));
+
+QuestPDF.Settings.License = LicenseType.Community;
 
 var app = builder.Build();
 

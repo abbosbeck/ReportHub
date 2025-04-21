@@ -32,13 +32,6 @@ public class CreateInvoiceCommandHandler(
     {
         await validator.ValidateAndThrowAsync(request.Invoice, cancellationToken);
 
-        var existInvoice = await invoiceRepository.GetByInvoiceNumberAsync(request.Invoice.InvoiceNumber);
-        if (existInvoice != null)
-        {
-            throw new ConflictException(
-                $"There is already an invoice with this invoice number: {request.Invoice.InvoiceNumber}");
-        }
-
         var invoice = mapper.Map<Invoice>(request.Invoice);
 
         var customer = await customerRepository.GetByIdAsync(invoice.CustomerId)

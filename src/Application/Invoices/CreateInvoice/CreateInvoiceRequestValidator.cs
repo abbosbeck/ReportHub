@@ -4,7 +4,6 @@ public class CreateInvoiceRequestValidator : AbstractValidator<CreateInvoiceRequ
 {
     public CreateInvoiceRequestValidator()
     {
-        RuleFor(x => x.InvoiceNumber).NotEmpty();
         RuleFor(x => x.IssueDate).NotEmpty();
         RuleFor(x => x.DueDate).NotEmpty().GreaterThan(x => x.IssueDate);
         RuleFor(x => x.CustomerId).NotEmpty();

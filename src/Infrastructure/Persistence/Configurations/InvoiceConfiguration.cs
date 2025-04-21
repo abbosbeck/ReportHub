@@ -7,9 +7,7 @@ public class InvoiceConfiguration : IEntityTypeConfiguration<Invoice>
 {
     public void Configure(EntityTypeBuilder<Invoice> builder)
     {
-        builder.Property(i => i.InvoiceNumber)
-            .HasMaxLength(40)
-            .IsRequired();
+        builder.Property(i => i.InvoiceNumber).UseIdentityColumn();
 
         builder.Property(i => i.CurrencyCode)
             .HasMaxLength(40)

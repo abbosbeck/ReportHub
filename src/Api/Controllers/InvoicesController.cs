@@ -1,5 +1,6 @@
 ﻿using Application.Invoices;
 using Application.Invoices.CreateInvoice;
+using Application.Invoices.ExportInvoice;
 using Application.Invoices.GetInvoiceById;
 using Application.Invoices.GetInvoicesList;
 using Application.Invoices.UpdateInvoice;
@@ -49,6 +50,14 @@ namespace Api.Controllers
             var result = await Mediator.Send(new DeleteInvoiceCommand { Id = id, ClientId = clientId });
 
             return Ok(result);
+        }
+
+        [HttpGet("{id:guid}/export-pdf")]
+        public async Task<IActionResult> GetAllAsync([FromRoute] Guid clientId, [FromRoute] Guid id)
+        {
+            var result = await Mediator.Send(new ExportInvoiceCommand(id, clientId));
+
+            return File(result.ByteArray, result.ContentType, result.FileName);
         }
     }
 }

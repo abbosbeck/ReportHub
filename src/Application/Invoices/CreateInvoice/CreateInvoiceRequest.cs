@@ -4,8 +4,6 @@ namespace Application.Invoices.CreateInvoice;
 
 public class CreateInvoiceRequest
 {
-    public string InvoiceNumber { get; set; }
-
     public DateTime IssueDate { get; set; }
 
     public DateTime DueDate { get; set; }

@@ -29,12 +29,9 @@ public class InvoiceRepository(AppDbContext context) : IInvoiceRepository
     {
         return await context.Invoices
             .Include(i => i.Items)
+            .Include(i => i.Customer)
+            .Include(i => i.Client)
             .FirstOrDefaultAsync(i => i.Id == invoiceId);
-    }
-
-    public async Task<Invoice> GetByInvoiceNumberAsync(string number)
-    {
-        return await context.Invoices.FirstOrDefaultAsync(i => i.InvoiceNumber == number);
     }
 
     public async Task<Invoice> UpdateAsync(Invoice invoice)

@@ -8,8 +8,6 @@ public interface IInvoiceRepository
 
     Task<Invoice> GetByIdAsync(Guid invoiceId);
 
-    Task<Invoice> GetByInvoiceNumberAsync(string number);
-
     Task<Invoice> UpdateAsync(Invoice invoice);
 
     IQueryable<Invoice> GetAll();

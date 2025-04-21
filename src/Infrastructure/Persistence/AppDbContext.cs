@@ -39,6 +39,8 @@ public class AppDbContext(
 
     public DbSet<PlanItem> PlanItems { get; set; }
 
+    public DbSet<Log> Logs { get; set; }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
