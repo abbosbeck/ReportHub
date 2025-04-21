@@ -6,6 +6,6 @@ public class LogProfile : Profile
 {
     public LogProfile()
     {
-        CreateMap<Log, GetExportLogById.LogDto>();
+        CreateMap<Log, LogDto>();
     }
 }
