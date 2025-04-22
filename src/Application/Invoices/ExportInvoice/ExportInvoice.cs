@@ -17,7 +17,7 @@ public class ExportInvoiceCommand(Guid invoiceId, Guid clientId) : IRequest<Expo
     public Guid ClientId { get; set; } = clientId;
 }
 
-[RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin, ClientRoles.Operator)]
+//[RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin, ClientRoles.Operator)]
 public class ExportInvoiceCommandHandler(
     ILogRepository logRepository,
     IInvoiceRepository invoiceRepository,
