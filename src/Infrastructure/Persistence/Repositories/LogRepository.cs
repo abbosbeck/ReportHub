@@ -3,23 +3,20 @@ using Domain.Entities;
 
 namespace Infrastructure.Persistence.Repositories;
 
-public class LogRepository(AppDbContext context) : ILogRepository
+public class LogRepository: ILogRepository
 {
     public async Task<Log> AddAsync(Log log)
     {
-        await context.AddAsync(log);
-        await context.SaveChangesAsync();
-
-        return log;
+        throw new NotImplementedException();
     }
 
     public async Task<Log> GetByIdAsync(Guid id)
     {
-        return await context.Logs.FindAsync(id);
+        throw new NotImplementedException();
     }
 
     public IQueryable<Log> GetAll()
     {
-        return context.Logs;
+        throw new NotImplementedException();
     }
 }
