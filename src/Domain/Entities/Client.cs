@@ -6,6 +6,8 @@ public class Client : BaseAuditableEntity, ISoftDeletable
 {
     public string Name { get; set; }
 
+    public string CountryCode { get; set; }
+
     public bool IsDeleted { get; set; }
 
     public DateTime? DeletedOn { get; set; }

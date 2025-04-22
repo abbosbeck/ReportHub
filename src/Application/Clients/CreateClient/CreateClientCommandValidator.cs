@@ -8,6 +8,9 @@ public class CreateClientCommandValidator : AbstractValidator<CreateClientComman
             .NotEmpty()
             .MaximumLength(64);
 
+        RuleFor(c => c.CountryCode)
+            .NotEmpty();
+
         RuleFor(c => c.OwnerId)
             .NotEmpty()
             .Must(BeAValidGuid);
