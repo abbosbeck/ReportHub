@@ -34,6 +34,7 @@ public static class DependencyInjection
         services.AddJwtAuthentication(jwtOptions);
         services.AddAuthorization();
         services.AddPersistence(keyVaultOptions);
+        services.AddSingleton<AppMongoDbContext>();
         services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ISystemRoleAssignmentRepository, SystemRoleAssignmentRepository>();
