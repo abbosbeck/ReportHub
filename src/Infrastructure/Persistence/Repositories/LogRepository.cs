@@ -1,22 +1,33 @@
 ﻿using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
+using MongoDB.Driver;
+using Org.BouncyCastle.Utilities;
+using System.Threading.Tasks;
 
 namespace Infrastructure.Persistence.Repositories;
 
-public class LogRepository: ILogRepository
+public class LogRepository(AppMongoDbContext context) : ILogRepository
 {
+    private readonly IMongoCollection<Log> logs = context
+        .Database?.GetCollection<Log>("log");
+
     public async Task<Log> AddAsync(Log log)
     {
-        throw new NotImplementedException();
+        await logs.InsertOneAsync(log);
+
+        return log;
     }
 
-    public async Task<Log> GetByIdAsync(Guid id)
+    public Log GetById(string id)
     {
-        throw new NotImplementedException();
+        var filter = Builders<Log>.Filter.Eq(l => l.Id, id);
+        var log = logs.Find(filter).FirstOrDefault();
+
+        return log;
     }
 
-    public IQueryable<Log> GetAll()
+    public async Task<IEnumerable<Log>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        return await logs.Find(FilterDefinition<Log>.Empty).ToListAsync();
     }
 }

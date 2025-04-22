@@ -71,7 +71,7 @@ namespace Api.Controllers
         }
 
         [HttpGet("logs/{logId:guid}")]
-        public async Task<IActionResult> GetLogByIdAsync([FromRoute] Guid clientId, [FromRoute] Guid logId)
+        public async Task<IActionResult> GetLogByIdAsync([FromRoute] Guid clientId, [FromRoute] string logId)
         {
             var result = await Mediator.Send(new GetExportLogByIdQuery(clientId, logId));
 
