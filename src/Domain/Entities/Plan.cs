@@ -1,6 +1,7 @@
 ﻿using Domain.Common;
 
 namespace Domain.Entities;
+
 public class Plan : BaseAuditableEntity, ISoftDeletable
 {
     public string Title { get; set; }
@@ -12,10 +13,6 @@ public class Plan : BaseAuditableEntity, ISoftDeletable
     public ICollection<Item> Items { get; set; }
 
     public decimal TotalPrice { get; set; }
-
-    public Guid CustomerId { get; set; }
-
-    public Customer Customer { get; set; }
 
     public Guid ClientId { get; set; }
 
