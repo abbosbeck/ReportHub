@@ -8,8 +8,8 @@ public class Log
 {
     [BsonId]
     [BsonElement("_id")]
-    [BsonRepresentation(BsonType.ObjectId)]
-    public string Id { get; set; }
+    [BsonGuidRepresentation(GuidRepresentation.Standard)]
+    public Guid Id { get; set; }
 
     [BsonElement("user_id")]
     [BsonGuidRepresentation(GuidRepresentation.Standard)]
