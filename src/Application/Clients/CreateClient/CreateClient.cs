@@ -1,6 +1,7 @@
 ﻿using Application.Common.Attributes;
 using Application.Common.Constants;
 using Application.Common.Exceptions;
+using Application.Common.Interfaces.External.Countries;
 using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
 
@@ -10,6 +11,8 @@ public class CreateClientCommand : IRequest<ClientDto>
 {
     public string Name { get; set; }
 
+    public string CountryCode { get; set; }
+
     public Guid OwnerId { get; set; }
 }
 
@@ -18,6 +21,7 @@ public class CreateClientCommandHandler(
     IMapper mapper,
     IUserRepository userRepository,
     IClientRepository clientRepository,
+    ICountryService countryService,
     IValidator<CreateClientCommand> validator,
     IClientRoleRepository clientRoleRepository,
     IClientRoleAssignmentRepository clientRoleAssignmentRepository)
@@ -26,6 +30,10 @@ public class CreateClientCommandHandler(
     public async Task<ClientDto> Handle(CreateClientCommand request, CancellationToken cancellationToken)
     {
         await validator.ValidateAndThrowAsync(request, cancellationToken);
+
+        _ = await countryService.GetByCodeAsync(request.CountryCode)
+            ?? throw new NotFoundException($"Country is not found with this code: {request.CountryCode}." +
+                                           $"Look at this https://www.iban.com/country-codes");
 
         var owner = await userRepository.GetByIdAsync(request.OwnerId)
             ?? throw new NotFoundException($"User is not found with this id: {request.OwnerId}");

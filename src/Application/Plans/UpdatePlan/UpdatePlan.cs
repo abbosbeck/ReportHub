@@ -26,7 +26,7 @@ public class UpdatePlanCommandHandler(
 
         var plan = await repository.GetByIdAsync(request.Plan.Id)
             ?? throw new NotFoundException($"Plan is not found with this id: {request.ClientId}");
-        
+
         mapper.Map(request.Plan, plan);
 
         var updatedPlan = await repository.UpdateAsync(plan);

@@ -54,9 +54,9 @@ public class CreatePlanCommandHandler(
             {
                 throw new NotFoundException($"Items with these ids were not found: {string.Join(", ", missingIds)}");
             }
+
             newPlan.ClientId = request.ClientId;
         }
-
 
         var plan = await planRepository.AddAsync(newPlan);
 
@@ -65,7 +65,7 @@ public class CreatePlanCommandHandler(
             {
                 ItemId = dto.ItemId,
                 PlanId = plan.Id,
-                Quantity = dto.Quantity
+                Quantity = dto.Quantity,
             })
             .ToList();
 

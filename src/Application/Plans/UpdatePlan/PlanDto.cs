@@ -8,5 +8,5 @@ public class PlanDto
 
     public DateTime EndDate { get; set; }
 
-    public Guid CustomerId { get; set; }
+    public Guid ClientId { get; set; }
 }

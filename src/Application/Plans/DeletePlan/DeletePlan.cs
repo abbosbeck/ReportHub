@@ -14,7 +14,7 @@ public class DeletePlanCommand : IRequest<bool>, IClientRequest
 }
 
 [RequiresClientRole(ClientRoles.Owner)]
-public class DeletePlanCommandHandler(IPlanRepository repository) 
+public class DeletePlanCommandHandler(IPlanRepository repository)
     : IRequestHandler<DeletePlanCommand, bool>
 {
     public async Task<bool> Handle(DeletePlanCommand request, CancellationToken cancellationToken)
