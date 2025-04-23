@@ -6,9 +6,9 @@ using Application.Common.Interfaces.Repositories;
 
 namespace Application.Clients.DeleteClient;
 
-public class DeleteClientCommand : IRequest<bool>, IClientRequest
+public class DeleteClientCommand(Guid clientId) : IRequest<bool>, IClientRequest
 {
-    public Guid ClientId { get; set; }
+    public Guid ClientId { get; set; } = clientId;
 }
 
 [RequiresSystemRole(SystemRoles.SuperAdmin)]

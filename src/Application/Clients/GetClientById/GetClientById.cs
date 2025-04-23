@@ -6,9 +6,9 @@ using Application.Common.Interfaces.Repositories;
 
 namespace Application.Clients.GetClientById;
 
-public class GetClientByIdQuery : IRequest<ClientDto>, IClientRequest
+public class GetClientByIdQuery(Guid clientId) : IRequest<ClientDto>, IClientRequest
 {
-    public Guid ClientId { get; set; }
+    public Guid ClientId { get; set; } = clientId;
 }
 
 [RequiresSystemRole(SystemRoles.SuperAdmin)]
