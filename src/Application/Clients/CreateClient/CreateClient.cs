@@ -38,7 +38,8 @@ public class CreateClientCommandHandler(
         var owner = await userRepository.GetByIdAsync(request.OwnerId)
             ?? throw new NotFoundException($"User is not found with this id: {request.OwnerId}");
 
-        var client = await clientRepository.AddAsync(new Client { Name = request.Name });
+        var client = mapper.Map<Client>(request);
+        await clientRepository.AddAsync(client);
 
         await AssignClientRoleAsync(client, owner.Id, ClientRoles.Owner);
 
