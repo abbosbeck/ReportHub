@@ -6,22 +6,22 @@ using Application.Common.Interfaces.Repositories;
 
 namespace Application.Invoices.GetExportLogById;
 
-public class GetExportLogByIdQuery(Guid clientId, string logId) : IRequest<LogDto>, IClientRequest
+public class GetExportLogByIdQuery(Guid clientId, Guid logId) : IRequest<LogDto>, IClientRequest
 {
     public Guid ClientId { get; set; } = clientId;
 
-    public string LogId { get; set; } = logId;
+    public Guid LogId { get; set; } = logId;
 }
 
 [RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin, ClientRoles.Operator)]
 public class GetExportLogByIdQueryHandler(IMapper mapper, ILogRepository logRepository)
     : IRequestHandler<GetExportLogByIdQuery, LogDto>
 {
-    public async Task<LogDto> Handle(GetExportLogByIdQuery request, CancellationToken cancellationToken)
+    public Task<LogDto> Handle(GetExportLogByIdQuery request, CancellationToken cancellationToken)
     {
-        var log = logRepository.GetById(request.LogId)
+        var log = logRepository.GetById(request.LogId, request.ClientId)
             ?? throw new NotFoundException($"Log is not found with this Id: {request.LogId}");
 
-        return mapper.Map<LogDto>(log);
+        return Task.FromResult(mapper.Map<LogDto>(log));
     }
 }

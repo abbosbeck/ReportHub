@@ -2,7 +2,6 @@
 using Application.Common.Constants;
 using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.Repositories;
-using Microsoft.EntityFrameworkCore;
 
 namespace Application.Invoices.GetExportLogsList;
 
@@ -17,7 +16,7 @@ public class GetExportLogsListQueryHandler(IMapper mapper, ILogRepository logRep
 {
     public async Task<IEnumerable<LogDto>> Handle(GetExportLogsListQuery request, CancellationToken cancellationToken)
     {
-        var logs = await logRepository.GetAllAsync();
+        var logs = await logRepository.GetAllAsync(request.ClientId);
 
         return mapper.Map<IEnumerable<LogDto>>(logs);
     }
