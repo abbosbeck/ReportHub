@@ -17,11 +17,11 @@ public class GetExportLogByIdQuery(Guid clientId, Guid logId) : IRequest<LogDto>
 public class GetExportLogByIdQueryHandler(IMapper mapper, ILogRepository logRepository)
     : IRequestHandler<GetExportLogByIdQuery, LogDto>
 {
-    public async Task<LogDto> Handle(GetExportLogByIdQuery request, CancellationToken cancellationToken)
+    public Task<LogDto> Handle(GetExportLogByIdQuery request, CancellationToken cancellationToken)
     {
-        var log = await logRepository.GetByIdAsync(request.LogId)
+        var log = logRepository.GetById(request.LogId, request.ClientId)
             ?? throw new NotFoundException($"Log is not found with this Id: {request.LogId}");
 
-        return mapper.Map<LogDto>(log);
+        return Task.FromResult(mapper.Map<LogDto>(log));
     }
 }

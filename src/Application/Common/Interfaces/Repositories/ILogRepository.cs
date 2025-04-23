@@ -6,7 +6,7 @@ public interface ILogRepository
 {
     Task<Log> AddAsync(Log log);
 
-    Task<Log> GetByIdAsync(Guid id);
+    Log GetById(Guid id, Guid clientId);
 
-    IQueryable<Log> GetAll();
+    Task<IEnumerable<Log>> GetAllAsync(Guid clientId);
 }
