@@ -10,7 +10,7 @@ using QuestPDF.Fluent;
 
 namespace Application.Invoices.ExportInvoice;
 
-public class ExportInvoiceCommand(Guid invoiceId, Guid clientId) : IRequest<ExportPDFDto>, IClientRequest
+public class ExportInvoiceCommand(Guid invoiceId, Guid clientId) : IRequest<ExportPdfDto>, IClientRequest
 {
     public Guid InvoiceId { get; init; } = invoiceId;
 
@@ -22,9 +22,9 @@ public class ExportInvoiceCommandHandler(
     ILogRepository logRepository,
     IInvoiceRepository invoiceRepository,
     ICurrentUserService currentUserService)
-    : IRequestHandler<ExportInvoiceCommand, ExportPDFDto>
+    : IRequestHandler<ExportInvoiceCommand, ExportPdfDto>
 {
-    public async Task<ExportPDFDto> Handle(ExportInvoiceCommand request, CancellationToken cancellationToken)
+    public async Task<ExportPdfDto> Handle(ExportInvoiceCommand request, CancellationToken cancellationToken)
     {
         var invoice = await invoiceRepository.GetByIdAsync(request.InvoiceId)
             ?? throw new NotFoundException($"Invoice is not found with this Id: {request.InvoiceId}");
@@ -51,7 +51,7 @@ public class ExportInvoiceCommandHandler(
             throw;
         }
 
-        return new ExportPDFDto
+        return new ExportPdfDto
         {
             ByteArray = pdfBytes,
             FileName = $"{invoice.InvoiceNumber}_invoice.pdf",

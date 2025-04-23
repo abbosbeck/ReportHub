@@ -15,6 +15,7 @@ public class ClientComponent(string title, Client client) : IComponent
             column.Item().BorderBottom(1).PaddingBottom(5).Text(title).SemiBold();
 
             column.Item().Text(client.Name);
+            column.Item().Text(client.CountryCode);
         });
     }
 }

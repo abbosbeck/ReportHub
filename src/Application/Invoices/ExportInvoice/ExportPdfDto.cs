@@ -1,6 +1,6 @@
 ﻿namespace Application.Invoices.ExportInvoice;
 
-public class ExportPDFDto
+public class ExportPdfDto
 {
     public byte[] ByteArray { get; init; }
 
