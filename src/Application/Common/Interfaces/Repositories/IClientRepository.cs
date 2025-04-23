@@ -11,4 +11,6 @@ public interface IClientRepository
     Task<Client> UpdateAsync(Client client);
 
     Task<bool> DeleteAsync(Client client);
+
+    IQueryable<Client> GetAll();
 }

@@ -20,6 +20,11 @@ public class ClientRepository(AppDbContext context) : IClientRepository
         return await context.SaveChangesAsync() > 0;
     }
 
+    public IQueryable<Client> GetAll()
+    {
+        return context.Clients;
+    }
+
     public async Task<Client> GetByIdAsync(Guid clientId)
     {
         return await context.Clients.FindAsync(clientId);
