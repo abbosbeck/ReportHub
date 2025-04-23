@@ -1,0 +1,48 @@
+name: Trigger auto deployment for reporthub
+
+# When this action will be executed
+on:
+  # Automatically trigger it when detected changes in repo
+  push:
+    branches: 
+      [ main ]
+    paths:
+    - '**'
+    - '.github/workflows/reporthub-AutoDeployTrigger-88e6664d-bf82-4f99-a2c4-7ed2551ea6a2.yml'
+
+  # Allow manual trigger 
+  workflow_dispatch:      
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions: 
+      id-token: write #This is required for requesting the OIDC JWT Token
+      contents: read #Required when GH token is used to authenticate with private repo
+
+    steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v2
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.REPORTHUB_AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.REPORTHUB_AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.REPORTHUB_AZURE_SUBSCRIPTION_ID }}
+
+      - name: Build and push container image to registry
+        uses: azure/container-apps-deploy-action@v2
+        with:
+          appSourcePath: ${{ github.workspace }}
+          _dockerfilePathKey_: _dockerfilePath_
+          registryUrl: reporthub.azurecr.io
+          registryUsername: ${{ secrets.REPORTHUB_REGISTRY_USERNAME }}
+          registryPassword: ${{ secrets.REPORTHUB_REGISTRY_PASSWORD }}
+          containerAppName: reporthub
+          resourceGroup: ExadelBootcamp
+          imageToBuild: reporthub.azurecr.io/reporthub:${{ github.sha }}
+          _buildArgumentsKey_: |
+            _buildArgumentsValues_
+
+
