@@ -50,12 +50,14 @@ public static class DependencyInjection
         services.AddScoped<ILogRepository, LogRepository>();
         services.AddHttpClient<ICountryService, CountryService>(httpClient =>
         {
-            httpClient.BaseAddress = new Uri($"https://www.apicountries.com/");
+            httpClient.BaseAddress = new Uri(configuration["CountriesApi"] ??
+                                             throw new InvalidOperationException("Countries api url is null"));
         });
 
         services.AddHttpClient<ICurrencyExchangeService, CurrencyExchangeService>(httpClient =>
         {
-            httpClient.BaseAddress = new Uri(configuration["ExchangeRate"]);
+            httpClient.BaseAddress = new Uri(configuration["ExchangeRate"] ??
+                                             throw new InvalidOperationException("Exchange rate api url is null"));
         });
 
         services.AddIdentity(configuration);
