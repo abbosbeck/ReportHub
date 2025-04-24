@@ -1,4 +1,6 @@
-﻿namespace Application.Invoices.GetExportLogsList;
+﻿using Domain.Enums;
+
+namespace Application.Invoices.GetExportLogsList;
 
 public class LogDto
 {
@@ -9,6 +11,8 @@ public class LogDto
     public Guid InvoiceId { get; init; }
 
     public DateTime TimeStamp { get; init; }
+
+    public LogStatus LogStatus { get; set; }
 
     public Guid ClientId { get; init; }
 }
