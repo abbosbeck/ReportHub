@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using System.Reflection.Metadata;
 using Domain.Entities;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
@@ -131,16 +130,15 @@ public class InvoiceDocument(Invoice invoice) : IDocument
 
     private static string GetAmountWithSymbol(decimal amount, string currencyCode)
     {
-        foreach (var culture in CultureInfo.GetCultures(CultureTypes.SpecificCultures))
+        var cultures = CultureInfo.GetCultures(CultureTypes.SpecificCultures);
+
+        var result = cultures.Select(x =>
         {
-            var region = new RegionInfo(culture.Name);
+            var region = new RegionInfo(x.Name);
+            return region.ISOCurrencySymbol.Equals(currencyCode, StringComparison.OrdinalIgnoreCase)
+               ? amount.ToString("C", x) : null;
+        }).FirstOrDefault(result => result != null);
 
-            if (region.ISOCurrencySymbol.Equals(currencyCode, StringComparison.OrdinalIgnoreCase))
-            {
-                return amount.ToString("C", culture);
-            }
-        }
-
-        return $"{amount:N2} {currencyCode}";
+        return result;
     }
 }
