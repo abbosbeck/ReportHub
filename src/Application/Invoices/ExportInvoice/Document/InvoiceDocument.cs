@@ -81,7 +81,8 @@ public class InvoiceDocument(Invoice invoice) : IDocument
             });
 
             column.Item().Element(ComposeTable);
-            column.Item().AlignRight().Text($"Grand total: {GetAmountWithSymbol(invoice.Amount, invoice.CurrencyCode)}").FontSize(14);
+            string amount = GetAmountWithSymbol(invoice.Amount, invoice.CurrencyCode);
+            column.Item().AlignRight().Text($"Grand total: {amount}").FontSize(14);
         });
     }
 
@@ -136,11 +137,7 @@ public class InvoiceDocument(Invoice invoice) : IDocument
 
             if (region.ISOCurrencySymbol.Equals(currencyCode, StringComparison.OrdinalIgnoreCase))
             {
-                // var symbol = region.CurrencySymbol;
-
-                var money = amount.ToString("C", culture);
-
-                return money;
+                return amount.ToString("C", culture);
             }
         }
 
