@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using System.Globalization;
+using Domain.Entities;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
@@ -39,7 +40,7 @@ public class InvoiceDocument(Invoice invoice) : IDocument
             row.RelativeItem().Column(column =>
             {
                 column.Item()
-                    .Text($"Invoice #{invoice.InvoiceNumber:0000}")
+                    .Text($"Invoice #{invoice.InvoiceNumber:000000}")
                     .FontSize(20).SemiBold().FontColor(Colors.Blue.Medium);
 
                 column.Item().Text(text =>
@@ -79,8 +80,8 @@ public class InvoiceDocument(Invoice invoice) : IDocument
             });
 
             column.Item().Element(ComposeTable);
-
-            column.Item().AlignRight().Text($"Grand total: {invoice.Amount} {invoice.CurrencyCode.ToUpper()}").FontSize(14);
+            string amount = GetAmountWithSymbol(invoice.Amount, invoice.CurrencyCode);
+            column.Item().AlignRight().Text($"Grand total: {amount}").FontSize(14);
         });
     }
 
@@ -125,5 +126,19 @@ public class InvoiceDocument(Invoice invoice) : IDocument
                 }
             }
         });
+    }
+
+    private static string GetAmountWithSymbol(decimal amount, string currencyCode)
+    {
+        var cultures = CultureInfo.GetCultures(CultureTypes.SpecificCultures);
+
+        var result = cultures.Select(x =>
+        {
+            var region = new RegionInfo(x.Name);
+            return region.ISOCurrencySymbol.Equals(currencyCode, StringComparison.OrdinalIgnoreCase)
+               ? amount.ToString("C", x) : null;
+        }).FirstOrDefault(result => result != null);
+
+        return result;
     }
 }

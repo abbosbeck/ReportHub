@@ -16,14 +16,11 @@ public class LogRepository(AppMongoDbContext context) : ILogRepository
         return log;
     }
 
-    public Log GetById(Guid id, Guid clientId)
+    public async Task<Log> GetByIdAsync(Guid id, Guid clientId)
     {
-        var filter = Builders<Log>.Filter.And(
-            Builders<Log>.Filter.Eq(l => l.Id, id),
-            Builders<Log>.Filter.Eq(l => l.ClientId, clientId));
-        var log = logs.Find(filter).FirstOrDefault();
+        var filter = await logs.FindAsync(l => l.Id == id && l.ClientId == clientId);
 
-        return log;
+        return await filter.FirstOrDefaultAsync();
     }
 
     public async Task<IEnumerable<Log>> GetAllAsync(Guid clientId)
