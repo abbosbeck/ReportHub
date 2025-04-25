@@ -80,7 +80,7 @@ public class InvoiceDocument(Invoice invoice) : IDocument
             });
 
             column.Item().Element(ComposeTable);
-            string amount = GetAmountWithSymbol(invoice.Amount, invoice.CurrencyCode);
+            var amount = GetAmountWithSymbol(invoice.Amount, invoice.CurrencyCode);
             column.Item().AlignRight().Text($"Grand total: {amount}").FontSize(14);
         });
     }
