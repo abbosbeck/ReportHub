@@ -2,11 +2,13 @@
 
 public class PlanDto
 {
-    public string Title { get; set; }
+    public Guid Id { get; init; }
 
-    public DateTime StartDate { get; set; }
+    public string Title { get; init; }
 
-    public DateTime EndDate { get; set; }
+    public DateTime StartDate { get; init; }
 
-    public Guid ClientId { get; set; }
+    public DateTime EndDate { get; init; }
+
+    public Guid ClientId { get; init; }
 }

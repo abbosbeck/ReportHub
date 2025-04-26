@@ -15,9 +15,9 @@ public class UpdatePlanCommand(Guid clientId, UpdatePlanRequest request) : IRequ
 
 [RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin)]
 public class UpdatePlanCommandHandler(
+    IMapper mapper,
     IPlanRepository repository,
-    IValidator<UpdatePlanRequest> validator,
-    IMapper mapper)
+    IValidator<UpdatePlanRequest> validator)
     : IRequestHandler<UpdatePlanCommand, PlanDto>
 {
     public async Task<PlanDto> Handle(UpdatePlanCommand request, CancellationToken cancellationToken)
@@ -29,8 +29,8 @@ public class UpdatePlanCommandHandler(
 
         mapper.Map(request.Plan, plan);
 
-        var updatedPlan = await repository.UpdateAsync(plan);
+        await repository.UpdateAsync(plan);
 
-        return mapper.Map<PlanDto>(updatedPlan);
+        return mapper.Map<PlanDto>(plan);
     }
 }
