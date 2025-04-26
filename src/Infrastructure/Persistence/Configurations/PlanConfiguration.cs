@@ -6,6 +6,5 @@ internal class PlanConfiguration : IEntityTypeConfiguration<Plan>
 {
     public void Configure(EntityTypeBuilder<Plan> builder)
     {
-        builder.Ignore(i => i.TotalPrice);
     }
 }

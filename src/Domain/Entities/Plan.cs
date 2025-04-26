@@ -12,8 +12,6 @@ public class Plan : BaseAuditableEntity, ISoftDeletable
 
     public IList<PlanItem> Items { get; set; }
 
-    public decimal TotalPrice { get; set; }
-
     public Guid ClientId { get; set; }
 
     public Client Client { get; set; }

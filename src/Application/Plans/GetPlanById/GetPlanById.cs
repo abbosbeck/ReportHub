@@ -34,18 +34,19 @@ public class GetPlanByIdQueryHandler(
 
         var clientCurrency = await countryService.GetCurrencyCodeByCountryCodeAsync(client.CountryCode);
 
-        var planItems = plan.Items;
-
-        foreach (var planItem in planItems)
+        var totalPrice = plan.Items.Sum(planItem =>
         {
-            var item = planItem.Item;
+            var price = currencyExchangeService
+                .ExchangeCurrencyAsync(planItem.Item.CurrencyCode, clientCurrency, planItem.Item.Price, plan.StartDate)
+                .Result;
 
-            var price = await currencyExchangeService
-                .ExchangeCurrencyAsync(item.CurrencyCode, clientCurrency, item.Price, plan.StartDate);
+            return planItem.Quantity * price;
+        });
 
-            plan.TotalPrice += planItem.Quantity * price;
-        }
+        var result = mapper.Map<PlanDto>(plan);
+        result.TotalPrice = totalPrice;
+        result.CurrencyCode = clientCurrency;
 
-        return mapper.Map<PlanDto>(plan);
+        return result;
     }
 }

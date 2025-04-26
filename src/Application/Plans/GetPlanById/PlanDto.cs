@@ -12,7 +12,9 @@ public class PlanDto
 
     public DateTime EndDate { get; init; }
 
-    public decimal TotalPrice { get; init; }
+    public decimal TotalPrice { get; set; }
+
+    public string CurrencyCode { get; set; }
 
     public Guid ClientId { get; init; }
 
