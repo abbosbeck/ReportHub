@@ -16,9 +16,4 @@ public class UpdateItemRequestValidator : AbstractValidator<UpdateItemRequest>
             .NotEmpty()
             .MaximumLength(3);
     }
-
-    private static bool BeAValidGuid(Guid guid)
-    {
-        return Guid.TryParse(guid.ToString(), out _);
-    }
 }

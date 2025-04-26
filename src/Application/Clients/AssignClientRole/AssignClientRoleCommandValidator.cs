@@ -1,4 +1,6 @@
-﻿namespace Application.Clients.AssignClientRole;
+﻿using Application.Common.ExtensionMethods;
+
+namespace Application.Clients.AssignClientRole;
 
 public class AssignClientRoleCommandValidator : AbstractValidator<AssignClientRoleCommand>
 {
@@ -10,15 +12,10 @@ public class AssignClientRoleCommandValidator : AbstractValidator<AssignClientRo
 
         RuleFor(c => c.ClientId)
             .NotEmpty()
-            .Must(BeAValidGuid);
+            .BeAValidGuid();
 
         RuleFor(c => c.UserId)
             .NotEmpty()
-            .Must(BeAValidGuid);
-    }
-
-    private static bool BeAValidGuid(Guid guid)
-    {
-        return Guid.TryParse(guid.ToString(), out _);
+            .BeAValidGuid();
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace Application.Clients.UpdateClient;
+﻿using Application.Common.ExtensionMethods;
+
+namespace Application.Clients.UpdateClient;
 
 public class UpdateClientCommandValidator : AbstractValidator<UpdateClientCommand>
 {
@@ -10,11 +12,6 @@ public class UpdateClientCommandValidator : AbstractValidator<UpdateClientComman
 
         RuleFor(c => c.ClientId)
             .NotEmpty()
-            .Must(BeAValidGuid);
-    }
-
-    private static bool BeAValidGuid(Guid guid)
-    {
-        return Guid.TryParse(guid.ToString(), out _);
+            .BeAValidGuid();
     }
 }

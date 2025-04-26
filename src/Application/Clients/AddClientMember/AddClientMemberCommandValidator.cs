@@ -1,4 +1,6 @@
-﻿namespace Application.Clients.AddClientMember;
+﻿using Application.Common.ExtensionMethods;
+
+namespace Application.Clients.AddClientMember;
 
 public class AddClientMemberCommandValidator : AbstractValidator<AddClientMemberCommand>
 {
@@ -6,15 +8,10 @@ public class AddClientMemberCommandValidator : AbstractValidator<AddClientMember
     {
         RuleFor(c => c.ClientId)
             .NotEmpty()
-            .Must(BeAValidGuid);
+            .BeAValidGuid();
 
         RuleFor(c => c.UserId)
             .NotEmpty()
-            .Must(BeAValidGuid);
-    }
-
-    private static bool BeAValidGuid(Guid guid)
-    {
-        return Guid.TryParse(guid.ToString(), out _);
+            .BeAValidGuid();
     }
 }
