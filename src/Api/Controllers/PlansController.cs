@@ -31,7 +31,7 @@ public class PlansController(ISender mediator) : ApiControllerBase(mediator)
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetByIdAsync([FromRoute] Guid clientId, [FromRoute] Guid id)
     {
-        var result = await Mediator.Send(new GetPlanByIdQuery { ClientId = clientId, Id = id });
+        var result = await Mediator.Send(new GetPlanByIdQuery(id, clientId));
 
         return Ok(result);
     }
@@ -39,7 +39,7 @@ public class PlansController(ISender mediator) : ApiControllerBase(mediator)
     [HttpGet]
     public async Task<IActionResult> GetListAsync([FromRoute] Guid clientId)
     {
-        var result = await Mediator.Send(new GetPlansListQuery { ClientId = clientId });
+        var result = await Mediator.Send(new GetPlansListQuery(clientId));
 
         return Ok(result);
     }
@@ -47,7 +47,7 @@ public class PlansController(ISender mediator) : ApiControllerBase(mediator)
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteAsync([FromRoute] Guid clientId, [FromRoute] Guid id)
     {
-        var result = await Mediator.Send(new DeletePlanCommand { ClientId = clientId, Id = id });
+        var result = await Mediator.Send(new DeletePlanCommand(id, clientId));
 
         return Ok(result);
     }

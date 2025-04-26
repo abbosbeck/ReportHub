@@ -6,9 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Plans.GetPlansList;
 
-public class GetPlansListQuery : IRequest<List<PlanDto>>, IClientRequest
+public class GetPlansListQuery(Guid clientId) : IRequest<List<PlanDto>>, IClientRequest
 {
-    public Guid ClientId { get; set; }
+    public Guid ClientId { get; set; } = clientId;
 }
 
 [RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin)]
