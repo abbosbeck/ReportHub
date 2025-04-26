@@ -6,11 +6,11 @@ using Application.Common.Interfaces.Repositories;
 
 namespace Application.Plans.DeletePlan;
 
-public class DeletePlanCommand : IRequest<bool>, IClientRequest
+public class DeletePlanCommand(Guid planId, Guid clientId) : IRequest<bool>, IClientRequest
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; set; } = planId;
 
-    public Guid ClientId { get; set; }
+    public Guid ClientId { get; set; } = clientId;
 }
 
 [RequiresClientRole(ClientRoles.Owner)]

@@ -1,4 +1,6 @@
-﻿namespace Application.Clients.CreateClient;
+﻿using Application.Common.ExtensionMethods;
+
+namespace Application.Clients.CreateClient;
 
 public class CreateClientCommandValidator : AbstractValidator<CreateClientCommand>
 {
@@ -13,11 +15,6 @@ public class CreateClientCommandValidator : AbstractValidator<CreateClientComman
 
         RuleFor(c => c.OwnerId)
             .NotEmpty()
-            .Must(BeAValidGuid);
-    }
-
-    private static bool BeAValidGuid(Guid guid)
-    {
-        return Guid.TryParse(guid.ToString(), out _);
+            .BeAValidGuid();
     }
 }

@@ -2,7 +2,6 @@
 using Application.Common.Constants;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
-using Application.Common.Interfaces.External.Countries;
 using Application.Common.Interfaces.External.CurrencyExchange;
 using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
@@ -36,14 +35,14 @@ public class CreateItemCommandHandler(
         var invoice = await invoiceRepository.GetByIdAsync(item.InvoiceId)
             ?? throw new NotFoundException($"Invoice is not found with this id: {item.InvoiceId}");
 
-        var customer = await customerRepository.GetByIdAsync(invoice.CustomerId)
+        _ = await customerRepository.GetByIdAsync(invoice.CustomerId)
             ?? throw new NotFoundException($"Customer is not found with this id: {invoice.CustomerId}");
-        
+
         var exchangedPrice = await currencyExchangeService
             .ExchangeCurrencyAsync(item.CurrencyCode, invoice.CurrencyCode, item.Price, invoice.IssueDate);
 
         invoice.Amount += exchangedPrice;
-        
+
         await invoiceRepository.UpdateAsync(invoice);
 
         await itemRepository.AddAsync(item);

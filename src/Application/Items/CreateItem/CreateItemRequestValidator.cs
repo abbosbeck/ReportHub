@@ -1,4 +1,6 @@
-﻿namespace Application.Items.CreateItem;
+﻿using Application.Common.ExtensionMethods;
+
+namespace Application.Items.CreateItem;
 
 public class CreateItemRequestValidator : AbstractValidator<CreateItemRequest>
 {
@@ -18,11 +20,6 @@ public class CreateItemRequestValidator : AbstractValidator<CreateItemRequest>
 
         RuleFor(c => c.InvoiceId)
             .NotEmpty()
-            .Must(BeAValidGuid);
-    }
-
-    private static bool BeAValidGuid(Guid guid)
-    {
-        return Guid.TryParse(guid.ToString(), out _);
+            .BeAValidGuid();
     }
 }

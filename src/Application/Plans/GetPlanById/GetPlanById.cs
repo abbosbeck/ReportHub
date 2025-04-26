@@ -8,11 +8,11 @@ using Application.Common.Interfaces.Repositories;
 
 namespace Application.Plans.GetPlanById;
 
-public class GetPlanByIdQuery : IRequest<PlanDto>, IClientRequest
+public class GetPlanByIdQuery(Guid planId, Guid clientId) : IRequest<PlanDto>, IClientRequest
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; set; } = planId;
 
-    public Guid ClientId { get; set; }
+    public Guid ClientId { get; set; } = clientId;
 }
 
 [RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin)]
