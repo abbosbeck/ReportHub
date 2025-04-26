@@ -345,9 +345,6 @@ namespace Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<Guid?>("ItemId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("text");
 
@@ -363,8 +360,6 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
-
-                    b.HasIndex("ItemId");
 
                     b.ToTable("Plans");
                 });
@@ -406,6 +401,8 @@ namespace Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ItemId");
 
                     b.HasIndex("PlanId");
 
@@ -689,20 +686,26 @@ namespace Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Item", null)
-                        .WithMany("Plans")
-                        .HasForeignKey("ItemId");
-
                     b.Navigation("Client");
                 });
 
             modelBuilder.Entity("Domain.Entities.PlanItem", b =>
                 {
-                    b.HasOne("Domain.Entities.Plan", null)
+                    b.HasOne("Domain.Entities.Item", "Item")
+                        .WithMany()
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Plan", "Plan")
                         .WithMany("Items")
                         .HasForeignKey("PlanId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Item");
+
+                    b.Navigation("Plan");
                 });
 
             modelBuilder.Entity("Domain.Entities.SystemRoleAssignment", b =>
@@ -723,11 +726,6 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Entities.Invoice", b =>
                 {
                     b.Navigation("Items");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Item", b =>
-                {
-                    b.Navigation("Plans");
                 });
 
             modelBuilder.Entity("Domain.Entities.Plan", b =>

@@ -2,13 +2,13 @@
 
 public class ItemDto
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; init; }
 
-    public string Name { get; set; }
+    public string Name { get; init; }
 
-    public string Description { get; set; }
+    public string Description { get; init; }
 
-    public decimal Price { get; set; }
+    public decimal Price { get; init; }
 
-    public string CurrencyCode { get; set; }
+    public string CurrencyCode { get; init; }
 }

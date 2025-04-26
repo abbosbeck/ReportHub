@@ -17,13 +17,11 @@ public class GetPlanByIdQuery(Guid planId, Guid clientId) : IRequest<PlanDto>, I
 
 [RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin)]
 public class GetPlanByIdQueryHandler(
+    IMapper mapper,
     IPlanRepository planRepository,
-    IPlanItemRepository planItemRepository,
-    IClientRepository clientRepository,
     ICountryService countryService,
-    IItemRepository itemRepository,
-    ICurrencyExchangeService currencyExchangeService,
-    IMapper mapper)
+    IClientRepository clientRepository,
+    ICurrencyExchangeService currencyExchangeService)
     : IRequestHandler<GetPlanByIdQuery, PlanDto>
 {
     public async Task<PlanDto> Handle(GetPlanByIdQuery request, CancellationToken cancellationToken)
@@ -36,17 +34,16 @@ public class GetPlanByIdQueryHandler(
 
         var clientCurrency = await countryService.GetCurrencyCodeByCountryCodeAsync(client.CountryCode);
 
-        var planItems = await planItemRepository.GetPlanItemsByPlanIdAsync(plan.Id);
+        var planItems = plan.Items;
 
         foreach (var planItem in planItems)
         {
-            var item = await itemRepository.GetByIdAsync(planItem.ItemId);
+            var item = planItem.Item;
 
             var price = await currencyExchangeService
                 .ExchangeCurrencyAsync(item.CurrencyCode, clientCurrency, item.Price, plan.StartDate);
 
             plan.TotalPrice += planItem.Quantity * price;
-            plan.Items.Add(item);
         }
 
         return mapper.Map<PlanDto>(plan);

@@ -6,9 +6,10 @@ public class PlanProfile : Profile
 {
     public PlanProfile()
     {
-        CreateMap<Plan, PlanDto>()
-            .ForMember(p => p.Items, opt => opt.MapFrom(src => src.Items));
+        CreateMap<Plan, PlanDto>();
 
         CreateMap<Item, ItemDto>();
+
+        CreateMap<PlanItem, PlanItemDto>();
     }
 }

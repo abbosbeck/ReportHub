@@ -20,8 +20,6 @@ public class Item : BaseAuditableEntity, ISoftDeletable
 
     public Invoice Invoice { get; init; }
 
-    public ICollection<Plan> Plans { get; init; }
-
     public bool IsDeleted { get; set; }
 
     public DateTime? DeletedOn { get; set; }

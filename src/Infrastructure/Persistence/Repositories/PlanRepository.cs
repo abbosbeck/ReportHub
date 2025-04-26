@@ -19,7 +19,10 @@ public class PlanRepository(AppDbContext context) : IPlanRepository
 
     public async Task<Plan> GetByIdAsync(Guid id)
     {
-        return await context.Set<Plan>().FindAsync(id);
+        return await context.Set<Plan>()
+            .Include(p => p.Items)
+            .ThenInclude(pi => pi.Item)
+            .FirstOrDefaultAsync(p => p.Id == id);
     }
 
     public async Task<bool> RemoveAsync(Plan plan)
