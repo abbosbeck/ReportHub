@@ -16,11 +16,10 @@ public class CreatePlanCommand(Guid clientId, CreatePlanRequest request) : IRequ
 
 [RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin)]
 public class CreatePlanCommandHandler(
+    IMapper mapper,
     IItemRepository itemRepository,
     IPlanRepository planRepository,
     IClientRepository clientRepository,
-    IPlanItemRepository planItemRepository,
-    IMapper mapper,
     IValidator<CreatePlanRequest> validator)
     : IRequestHandler<CreatePlanCommand, Guid>
 {
@@ -31,45 +30,34 @@ public class CreatePlanCommandHandler(
         _ = await clientRepository.GetByIdAsync(request.ClientId)
             ?? throw new NotFoundException($"Client is not found with this id: {request.ClientId}");
 
-        var newPlan = mapper.Map<Plan>(request.Plan);
+        var plan = mapper.Map<Plan>(request.Plan);
+        var itemIds = request.Plan.PlanItems.Select(pi => pi.ItemId).ToList();
 
-        if (request.Plan.PlanItemDtos.Count > 0)
+        if (itemIds.Count > 0)
         {
-            var items = await itemRepository.GetByIdsAsync(request.Plan.PlanItemDtos.Select(pi => pi.ItemId))
-                ?? throw new NotFoundException(
-                    $"Items with these ids were not found: " +
-                    $"{string.Join(", ", request.Plan.PlanItemDtos.Select(pi => pi.ItemId))}");
+            var items = (await itemRepository.GetByIdsAsync(itemIds)).ToList();
 
-            var missingIds = new List<Guid>();
-            foreach (var requestedId in request.Plan.PlanItemDtos.Select(pi => pi.ItemId))
-            {
-                bool exists = items.Any(item => item.Id == requestedId);
-                if (!exists)
-                {
-                    missingIds.Add(requestedId);
-                }
-            }
+            var missingIds = itemIds
+                .FindAll(itemId => items.All(item => item.Id != itemId));
 
             if (missingIds.Count > 0)
             {
                 throw new NotFoundException($"Items with these ids were not found: {string.Join(", ", missingIds)}");
             }
 
-            newPlan.ClientId = request.ClientId;
+            plan.Items = request.Plan.PlanItems
+                .Select(planItem => new PlanItem
+                {
+                    ItemId = planItem.ItemId,
+                    PlanId = plan.Id,
+                    Quantity = planItem.Quantity,
+                })
+                .ToList();
         }
 
-        var plan = await planRepository.AddAsync(newPlan);
+        plan.ClientId = request.ClientId;
 
-        var planItems = request.Plan.PlanItemDtos
-            .Select(dto => new PlanItem
-            {
-                ItemId = dto.ItemId,
-                PlanId = plan.Id,
-                Quantity = dto.Quantity,
-            })
-            .ToList();
-
-        await planItemRepository.AddBulkAsync(planItems);
+        await planRepository.AddAsync(plan);
 
         return plan.Id;
     }

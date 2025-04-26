@@ -1,6 +1,6 @@
 ﻿namespace Application.Plans.CreatePlan;
 
-public class PlanItemDto
+public class CreatePlanItemDto
 {
     public Guid ItemId { get; set; }
 

@@ -10,7 +10,7 @@ public class Plan : BaseAuditableEntity, ISoftDeletable
 
     public DateTime EndDate { get; set; }
 
-    public ICollection<Item> Items { get; set; }
+    public IList<PlanItem> Items { get; set; }
 
     public decimal TotalPrice { get; set; }
 
