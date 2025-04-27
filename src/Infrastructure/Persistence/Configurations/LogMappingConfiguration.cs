@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.Enums;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
@@ -13,28 +14,30 @@ public static class LogMappingConfiguration
         {
             BsonClassMap.RegisterClassMap<Log>(cfg =>
             {
-                cfg.MapIdProperty(log => log.Id)
-                .SetElementName("_id")
-                .SetSerializer(new GuidSerializer(GuidRepresentation.Standard));
+                cfg.AutoMap();
+                cfg.IdMemberMap
+                    .SetElementName("_id")
+                    .SetSerializer(new GuidSerializer(GuidRepresentation.Standard));
 
                 cfg.MapProperty(log => log.UserId)
-                .SetElementName("user_id")
-                .SetSerializer(new GuidSerializer(GuidRepresentation.Standard));
+                    .SetElementName("user_id")
+                    .SetSerializer(new GuidSerializer(GuidRepresentation.Standard));
 
                 cfg.MapProperty(log => log.InvoiceId)
-                .SetElementName("invoice_id")
-                .SetSerializer(new GuidSerializer(GuidRepresentation.Standard));
+                    .SetElementName("invoice_id")
+                    .SetSerializer(new GuidSerializer(GuidRepresentation.Standard));
 
                 cfg.MapProperty(log => log.TimeStamp)
-                .SetElementName("time_stamp")
-                .SetSerializer(new DateTimeSerializer(DateTimeKind.Local, BsonType.String));
+                    .SetElementName("time_stamp")
+                    .SetSerializer(new DateTimeSerializer(DateTimeKind.Local, BsonType.DateTime));
 
                 cfg.MapProperty(log => log.Status)
-                .SetElementName("status");
+                    .SetElementName("status")
+                    .SetSerializer(new EnumSerializer<LogStatus>());
 
                 cfg.MapProperty(log => log.ClientId)
-                .SetElementName("client_id")
-                .SetSerializer(new GuidSerializer(GuidRepresentation.Standard));
+                    .SetElementName("client_id")
+                    .SetSerializer(new GuidSerializer(GuidRepresentation.Standard));
             });
         }
     }
