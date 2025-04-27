@@ -93,9 +93,9 @@ public class InvoiceDocument(Invoice invoice) : IDocument
             {
                 columns.ConstantColumn(25);
                 columns.RelativeColumn(2);
-                columns.RelativeColumn(4);
+                columns.RelativeColumn(5);
                 columns.RelativeColumn(2);
-                columns.RelativeColumn(1);
+                columns.RelativeColumn(1.2f);
             });
 
             table.Header(header =>
@@ -116,7 +116,7 @@ public class InvoiceDocument(Invoice invoice) : IDocument
             {
                 table.Cell().Element(CellStyle).Text($"{invoice.Items.IndexOf(item) + 1}");
                 table.Cell().Element(CellStyle).Text(item.Name);
-                table.Cell().Element(CellStyle).Text(item.Description);
+                table.Cell().Element(CellStyle).PaddingHorizontal(10).Text(item.Description);
                 table.Cell().Element(CellStyle).Text($"{item.Price}");
                 table.Cell().Element(CellStyle).AlignCenter().Text($"{item.CurrencyCode}");
 
