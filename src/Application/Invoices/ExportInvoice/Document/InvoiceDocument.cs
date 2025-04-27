@@ -103,7 +103,7 @@ public class InvoiceDocument(Invoice invoice) : IDocument
                 header.Cell().Element(CellStyle).Text("#");
                 header.Cell().Element(CellStyle).Text("Name");
                 header.Cell().Element(CellStyle).PaddingLeft(30).Text("Description");
-                header.Cell().Element(CellStyle).AlignCenter().Text("Price");
+                header.Cell().Element(CellStyle).AlignLeft().Text("Price");
                 header.Cell().Element(CellStyle).AlignCenter().Text("Currency");
 
                 static IContainer CellStyle(IContainer container)
@@ -138,6 +138,11 @@ public class InvoiceDocument(Invoice invoice) : IDocument
             return region.ISOCurrencySymbol.Equals(currencyCode, StringComparison.OrdinalIgnoreCase)
                ? amount.ToString("C", x) : null;
         }).FirstOrDefault(result => result != null);
+
+        if (result != null && currencyCode.Equals("UZS", StringComparison.OrdinalIgnoreCase))
+        {
+            return result.Replace("сўм", "so'm");
+        }
 
         return result;
     }

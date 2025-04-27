@@ -8,13 +8,13 @@ public class Log
 {
     public Guid Id { get; set; }
 
-    public Guid UserId { get; init; }
+    public Guid UserId { get; set; }
 
-    public Guid InvoiceId { get; init; }
+    public Guid InvoiceId { get; set; }
 
-    public DateTime TimeStamp { get; init; }
+    public DateTime TimeStamp { get; set; }
 
     public LogStatus Status { get; set; }
 
-    public Guid ClientId { get; init; }
+    public Guid ClientId { get; set; }
 }
