@@ -6,25 +6,15 @@ namespace Domain.Entities;
 
 public class Log
 {
-    [BsonId]
-    [BsonElement("_id")]
-    [BsonGuidRepresentation(GuidRepresentation.Standard)]
     public Guid Id { get; set; }
 
-    [BsonElement("user_id")]
-    [BsonGuidRepresentation(GuidRepresentation.Standard)]
-    public Guid UserId { get; init; }
+    public Guid UserId { get; set; }
 
-    [BsonElement("invoice_id")]
-    [BsonGuidRepresentation(GuidRepresentation.Standard)]
-    public Guid InvoiceId { get; init; }
+    public Guid InvoiceId { get; set; }
 
-    [BsonDateTimeOptions(Kind = DateTimeKind.Local, Representation = BsonType.String)]
-    public DateTime TimeStamp { get; init; }
+    public DateTime TimeStamp { get; set; }
 
     public LogStatus Status { get; set; }
 
-    [BsonElement("client_id")]
-    [BsonGuidRepresentation(GuidRepresentation.Standard)]
-    public Guid ClientId { get; init; }
+    public Guid ClientId { get; set; }
 }

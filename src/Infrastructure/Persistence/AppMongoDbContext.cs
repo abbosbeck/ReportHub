@@ -1,5 +1,6 @@
 ﻿using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
+using Infrastructure.Persistence.Configurations;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
@@ -15,7 +16,7 @@ public class AppMongoDbContext(IOptions<KeyVaultOptions> keyVaultOptions)
 
         var mongoUrl = MongoUrl.Create(connectionString);
         var mongoClient = new MongoClient(mongoUrl);
-
+        RegisterMappings();
         return mongoClient.GetDatabase("reporthub");
     }
 
@@ -33,5 +34,10 @@ public class AppMongoDbContext(IOptions<KeyVaultOptions> keyVaultOptions)
         var client = new SecretClient(new Uri(keyVaultUrl), credential);
 
         return client.GetSecret("MongoDb").Value.Value;
+    }
+
+    private static void RegisterMappings()
+    {
+        LogMappingConfiguration.Configure();
     }
 }
