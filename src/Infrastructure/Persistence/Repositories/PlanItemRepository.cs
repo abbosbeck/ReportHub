@@ -19,6 +19,19 @@ public class PlanItemRepository(AppDbContext context) : IPlanItemRepository
         return planItem;
     }
 
+    public async Task<bool> DeleteAsync(PlanItem planItem)
+    {
+        context.Remove(planItem);
+
+        return await context.SaveChangesAsync() > 0;
+    }
+
+    public async Task<PlanItem> GetByPlanAndItemIdAsync(Guid planId, Guid itemId)
+    {
+        return await context.PlanItems.FirstOrDefaultAsync(planItem =>
+            planItem.PlanId == planId && planItem.ItemId == itemId);
+    }
+
     public async Task<List<PlanItem>> GetPlanItemsByPlanIdAsync(Guid id)
     {
         return await context.Set<PlanItem>()

@@ -9,4 +9,8 @@ public interface IPlanItemRepository
     Task AddBulkAsync(List<PlanItem> planItems);
 
     Task<PlanItem> AddAsync(PlanItem planItem);
+
+    Task<bool> DeleteAsync(PlanItem planItem);
+
+    Task<PlanItem> GetByPlanAndItemIdAsync(Guid planId, Guid itemId);
 }
