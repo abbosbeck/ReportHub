@@ -35,7 +35,7 @@ public class CreateItemCommandHandler(
         var isCurrencyCodeValid = await currencyExchangeService.CheckCurrencyCodeAsync(item.CurrencyCode);
         if (!isCurrencyCodeValid)
         {
-            throw new NotFoundException($"This CurrencyCode is not found with this id: {item.CurrencyCode}\n" +
+            throw new NotFoundException($"This CurrencyCode is not found with this id: {item.CurrencyCode} " +
                                         $"https://www.exchangerate-api.com/docs/supported-currencies");
         }
 

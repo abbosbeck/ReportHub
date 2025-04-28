@@ -19,17 +19,24 @@ public class UpdateItemCommand(Guid clientId, UpdateItemRequest item) : IRequest
 
 [RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin)]
 public class UpdateItemCommandHandler(
+    IMapper mapper,
     IItemRepository itemRepository,
     IInvoiceRepository invoiceRepository,
     ICustomerRepository customerRepository,
-    ICurrencyExchangeService currencyExchangeService,
     IValidator<UpdateItemRequest> validator,
-    IMapper mapper)
+    ICurrencyExchangeService currencyExchangeService)
     : IRequestHandler<UpdateItemCommand, ItemDto>
 {
     public async Task<ItemDto> Handle(UpdateItemCommand request, CancellationToken cancellationToken)
     {
         await validator.ValidateAndThrowAsync(request.Item, cancellationToken);
+
+        var isCurrencyCodeValid = await currencyExchangeService.CheckCurrencyCodeAsync(request.Item.CurrencyCode);
+        if (!isCurrencyCodeValid)
+        {
+            throw new NotFoundException($"This CurrencyCode is not found with this id: {request.Item.CurrencyCode} " +
+                                        $"https://www.exchangerate-api.com/docs/supported-currencies");
+        }
 
         var item = await itemRepository.GetByIdAsync(request.Item.Id)
             ?? throw new NotFoundException($"Item is not found with this id: {request.Item.Id}");
@@ -39,7 +46,7 @@ public class UpdateItemCommandHandler(
 
         var customer = await customerRepository.GetByIdAsync(invoice.CustomerId)
             ?? throw new NotFoundException($"Customer is not found with this id: {invoice.CustomerId}");
-        
+
         var exchangedOldPrice = await currencyExchangeService
             .ExchangeCurrencyAsync(item.CurrencyCode, invoice.CurrencyCode, item.Price, invoice.IssueDate);
 
