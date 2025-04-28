@@ -1,4 +1,5 @@
-﻿using Application.Plans.CreatePlan;
+﻿using Application.Plans.AddPlanItem;
+using Application.Plans.CreatePlan;
 using Application.Plans.DeletePlan;
 using Application.Plans.GetPlanById;
 using Application.Plans.GetPlansList;
@@ -48,6 +49,17 @@ public class PlansController(ISender mediator) : ApiControllerBase(mediator)
     public async Task<IActionResult> DeleteAsync([FromRoute] Guid clientId, [FromRoute] Guid id)
     {
         var result = await Mediator.Send(new DeletePlanCommand(id, clientId));
+
+        return Ok(result);
+    }
+
+    [HttpPost("{id:guid}/items")]
+    public async Task<IActionResult> AddItemAsync(
+        [FromRoute] Guid id,
+        [FromRoute] Guid clientId,
+        [FromBody] AddPlanItemRequest request)
+    {
+        var result = await Mediator.Send(new AddPlanItemCommand(id, request, clientId));
 
         return Ok(result);
     }
