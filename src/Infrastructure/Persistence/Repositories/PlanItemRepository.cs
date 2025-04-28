@@ -11,6 +11,14 @@ public class PlanItemRepository(AppDbContext context) : IPlanItemRepository
         await context.SaveChangesAsync();
     }
 
+    public async Task<PlanItem> AddAsync(PlanItem planItem)
+    {
+        await context.AddAsync(planItem);
+        await context.SaveChangesAsync();
+
+        return planItem;
+    }
+
     public async Task<List<PlanItem>> GetPlanItemsByPlanIdAsync(Guid id)
     {
         return await context.Set<PlanItem>()
