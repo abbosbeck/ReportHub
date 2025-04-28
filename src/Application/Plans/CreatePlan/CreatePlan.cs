@@ -31,11 +31,11 @@ public class CreatePlanCommandHandler(
             ?? throw new NotFoundException($"Client is not found with this id: {request.ClientId}");
 
         var plan = mapper.Map<Plan>(request.Plan);
-        var itemIds = request.Plan.PlanItems.Select(pi => pi.ItemId).ToList();
+        var itemIds = request.Plan.PlanItems.Select(planItem => planItem.ItemId).ToList();
 
         if (itemIds.Count > 0)
         {
-            var items = (await itemRepository.GetByIdsAsync(itemIds)).ToList();
+            var items = await itemRepository.GetByIdsAsync(itemIds);
 
             var missingIds = itemIds
                 .FindAll(itemId => items.All(item => item.Id != itemId));
