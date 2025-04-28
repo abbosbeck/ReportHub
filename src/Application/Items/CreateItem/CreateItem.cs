@@ -17,12 +17,12 @@ public class CreateItemCommand(Guid clientId, CreateItemRequest item) : IRequest
 
 [RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin)]
 public class CreateItemCommandHandler(
+    IMapper mapper,
     IItemRepository itemRepository,
     IInvoiceRepository invoiceRepository,
     ICustomerRepository customerRepository,
-    ICurrencyExchangeService currencyExchangeService,
-    IMapper mapper,
-    IValidator<CreateItemRequest> validator)
+    IValidator<CreateItemRequest> validator,
+    ICurrencyExchangeService currencyExchangeService)
     : IRequestHandler<CreateItemCommand, ItemDto>
 {
     public async Task<ItemDto> Handle(CreateItemCommand request, CancellationToken cancellationToken)
@@ -31,6 +31,13 @@ public class CreateItemCommandHandler(
 
         var item = mapper.Map<Item>(request.Item);
         item.ClientId = request.ClientId;
+
+        var isCurrencyCodeValid = await currencyExchangeService.CheckCurrencyCodeAsync(item.CurrencyCode);
+        if (!isCurrencyCodeValid)
+        {
+            throw new NotFoundException($"This CurrencyCode is not found with this id: {item.CurrencyCode}\n" +
+                                        $"https://www.exchangerate-api.com/docs/supported-currencies");
+        }
 
         var invoice = await invoiceRepository.GetByIdAsync(item.InvoiceId)
             ?? throw new NotFoundException($"Invoice is not found with this id: {item.InvoiceId}");

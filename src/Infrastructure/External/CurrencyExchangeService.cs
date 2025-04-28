@@ -6,6 +6,13 @@ namespace Infrastructure.External;
 
 public class CurrencyExchangeService(HttpClient httpClient) : ICurrencyExchangeService
 {
+    public async Task<bool> CheckCurrencyCodeAsync(string currencyCode)
+    {
+        var response = await httpClient.GetAsync($"latest/{currencyCode}");
+
+        return response.IsSuccessStatusCode;
+    }
+
     public async Task<HistoricalExchangeRatesDto> GetHistoricalExchangeRatesAsync(string currency, DateTime time, decimal amount)
     {
         var year = time.Year;
