@@ -4,6 +4,7 @@ using Application.Common.Interfaces.External;
 using Application.Common.Interfaces.External.Countries;
 using Application.Common.Interfaces.External.CurrencyExchange;
 using Application.Common.Interfaces.Repositories;
+using Application.Common.Interfaces.Time;
 using Domain.Entities;
 using Infrastructure.Authentication;
 using Infrastructure.Authentication.Extensions;
@@ -11,6 +12,7 @@ using Infrastructure.External;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Extensions;
 using Infrastructure.Persistence.Repositories;
+using Infrastructure.Time;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -48,6 +50,7 @@ public static class DependencyInjection
         services.AddScoped<IPlanRepository, PlanRepository>();
         services.AddScoped<IPlanItemRepository, PlanItemRepository>();
         services.AddScoped<ILogRepository, LogRepository>();
+        services.AddSingleton<IDateTimeService, DateTimeService>();
         services.AddHttpClient<ICountryService, CountryService>(httpClient =>
         {
             httpClient.BaseAddress = new Uri(configuration["CountriesApi"] ??
