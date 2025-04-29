@@ -1,6 +1,7 @@
 ﻿using Application.Common.Attributes;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
+using Application.Common.Interfaces.Time;
 using Domain.Entities;
 
 namespace Application.Users.LoginUser;
@@ -14,6 +15,7 @@ public sealed class LoginUserCommand : IRequest<LoginDto>
 
 public class LoginUserCommandHandler(
         UserManager<User> userManager,
+        IDateTimeService dateTimeService,
         IJwtTokenGenerator jwtTokenGenerator,
         IValidator<LoginUserCommand> validator)
         : IRequestHandler<LoginUserCommand, LoginDto>
@@ -41,7 +43,7 @@ public class LoginUserCommandHandler(
         var refreshToken = jwtTokenGenerator.GenerateRefreshToken();
 
         user.RefreshToken = refreshToken;
-        user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+        user.RefreshTokenExpiryTime = dateTimeService.UtcNow.AddDays(7);
 
         var result = await userManager.UpdateAsync(user);
         if (!result.Succeeded)

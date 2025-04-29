@@ -1,9 +1,11 @@
 ﻿using Application.Common.Interfaces.Authorization;
+using Application.Common.Interfaces.Time;
 using Domain.Common;
 
 namespace Infrastructure.Persistence.Interceptors;
 
-public class AuditableEntityInterceptor(ICurrentUserService currentUserService) : SaveChangesInterceptor
+public class AuditableEntityInterceptor(ICurrentUserService currentUserService, IDateTimeService dateTimeService)
+    : SaveChangesInterceptor
 {
     public override InterceptionResult<int> SavingChanges(
         DbContextEventData eventData,
@@ -35,12 +37,12 @@ public class AuditableEntityInterceptor(ICurrentUserService currentUserService) 
         {
             if (entry.State == EntityState.Added)
             {
-                entry.Entity.CreatedOn = DateTime.UtcNow;
+                entry.Entity.CreatedOn = dateTimeService.UtcNow;
                 entry.Entity.CreatedBy = currentUserService.UserId.ToString();
             }
             else if (entry.State == EntityState.Modified)
             {
-                entry.Entity.LastModifiedOn = DateTime.UtcNow;
+                entry.Entity.LastModifiedOn = dateTimeService.UtcNow;
                 entry.Entity.LastModifiedBy = currentUserService.UserId.ToString();
             }
         }

@@ -3,6 +3,7 @@ using Application.Common.Constants;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.Repositories;
+using Application.Common.Interfaces.Time;
 using Application.Invoices.ExportInvoice.Document;
 using Domain.Entities;
 using Domain.Enums;
@@ -20,6 +21,7 @@ public class ExportInvoiceCommand(Guid invoiceId, Guid clientId) : IRequest<Expo
 [RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin, ClientRoles.Operator)]
 public class ExportInvoiceCommandHandler(
     ILogRepository logRepository,
+    IDateTimeService dateTimeService,
     IInvoiceRepository invoiceRepository,
     ICurrentUserService currentUserService)
     : IRequestHandler<ExportInvoiceCommand, ExportPdfDto>
@@ -33,7 +35,7 @@ public class ExportInvoiceCommandHandler(
             ClientId = request.ClientId,
             InvoiceId = request.InvoiceId,
             UserId = currentUserService.UserId,
-            TimeStamp = DateTime.UtcNow,
+            TimeStamp = dateTimeService.UtcNow,
         };
         byte[] pdfBytes;
 

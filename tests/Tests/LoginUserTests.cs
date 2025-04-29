@@ -1,5 +1,6 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
+using Application.Common.Interfaces.Time;
 using Application.Users.LoginUser;
 using Domain.Entities;
 using FluentValidation;
@@ -13,6 +14,7 @@ public class LoginUserTests
     private Mock<UserManager<User>> mockUserManager;
     private Mock<IJwtTokenGenerator> mockJwtTokenGenerator;
     private Mock<IValidator<LoginUserCommand>> mockValidator;
+    private Mock<IDateTimeService> mockDateTimeService;
     private LoginUserCommandHandler handler;
 
     [SetUp]
@@ -30,9 +32,11 @@ public class LoginUserTests
             null);
         mockJwtTokenGenerator = new Mock<IJwtTokenGenerator>();
         mockValidator = new Mock<IValidator<LoginUserCommand>>();
+        mockDateTimeService = new Mock<IDateTimeService>();
 
         handler = new LoginUserCommandHandler(
             mockUserManager.Object,
+            mockDateTimeService.Object,
             mockJwtTokenGenerator.Object,
             mockValidator.Object);
     }

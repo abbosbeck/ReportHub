@@ -1,9 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Application.Common.Interfaces.Time;
+using Microsoft.Extensions.Logging;
 
 namespace Application.Common.Behaviors;
 
 public class LoggingPipelineBehavior<TRequest, TResponse>(
-    ILogger<LoggingPipelineBehavior<TRequest, TResponse>> logger)
+    ILogger<LoggingPipelineBehavior<TRequest, TResponse>> logger,
+    IDateTimeService dateTimeService)
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : class, IBaseRequest
 {
@@ -15,16 +17,16 @@ public class LoggingPipelineBehavior<TRequest, TResponse>(
         var requestName = request.GetType().Name;
 
         logger.LogInformation(
-                "Starting request {@RequestName}, {@DateTimeUtc}",
-                requestName,
-                DateTime.UtcNow);
+            "Starting request {@RequestName}, {@DateTimeUtc}",
+            requestName,
+            dateTimeService.UtcNow);
 
         var result = await next();
 
         logger.LogInformation(
             "Completed request {@RequestName}, {@DateTimeUtc}",
             requestName,
-            DateTime.UtcNow);
+            dateTimeService.UtcNow);
 
         return result;
     }

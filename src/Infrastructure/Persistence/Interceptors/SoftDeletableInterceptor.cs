@@ -1,9 +1,11 @@
 ﻿using Application.Common.Interfaces.Authorization;
+using Application.Common.Interfaces.Time;
 using Domain.Common;
 
 namespace Infrastructure.Persistence.Interceptors;
 
-public class SoftDeletableInterceptor(ICurrentUserService currentUserService) : SaveChangesInterceptor
+public class SoftDeletableInterceptor(ICurrentUserService currentUserService, IDateTimeService dateTimeService)
+    : SaveChangesInterceptor
 {
     public override InterceptionResult<int> SavingChanges(
         DbContextEventData eventData,
@@ -40,7 +42,7 @@ public class SoftDeletableInterceptor(ICurrentUserService currentUserService) : 
 
             entry.State = EntityState.Modified;
             entry.Entity.IsDeleted = true;
-            entry.Entity.DeletedOn = DateTime.UtcNow;
+            entry.Entity.DeletedOn = dateTimeService.UtcNow;
             entry.Entity.DeletedBy = currentUserService.UserId.ToString();
         }
     }

@@ -1,6 +1,7 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.Repositories;
+using Application.Common.Interfaces.Time;
 
 namespace Application.Users.RefreshToken;
 
@@ -11,6 +12,7 @@ public sealed class RefreshTokenCommand : IRequest<AccessTokenDto>
 
 public class RefreshTokenCommandHandler(
     IUserRepository repository,
+    IDateTimeService dateTimeService,
     IJwtTokenGenerator jwtTokenGenerator,
     IValidator<RefreshTokenCommand> validator)
     : IRequestHandler<RefreshTokenCommand, AccessTokenDto>
@@ -21,7 +23,7 @@ public class RefreshTokenCommandHandler(
 
         var user = await repository.GetByRefreshTokenAsync(request.RefreshToken);
         if (user == null || user.RefreshToken != request.RefreshToken
-                         || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
+                         || user.RefreshTokenExpiryTime <= dateTimeService.UtcNow)
         {
             throw new UnauthorizedException("Invalid refresh token.");
         }
@@ -30,7 +32,7 @@ public class RefreshTokenCommandHandler(
         var refreshToken = jwtTokenGenerator.GenerateRefreshToken();
 
         user.RefreshToken = refreshToken;
-        user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+        user.RefreshTokenExpiryTime = dateTimeService.UtcNow.AddDays(7);
 
         await repository.UpdateAsync(user);
 

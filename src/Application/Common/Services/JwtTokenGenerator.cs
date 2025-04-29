@@ -5,6 +5,7 @@ using System.Text;
 using Application.Common.Configurations;
 using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.Repositories;
+using Application.Common.Interfaces.Time;
 using Domain.Entities;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -14,6 +15,7 @@ namespace Application.Common.Services;
 public class JwtTokenGenerator(
         IUserRepository userRepository,
         IOptions<JwtOptions> jwtOptions,
+        IDateTimeService dateTimeService,
         ISystemRoleAssignmentRepository systemRoleAssignmentRepository)
         : IJwtTokenGenerator
     {
@@ -31,7 +33,7 @@ public class JwtTokenGenerator(
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Value.Key));
             var signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var expires = DateTime.UtcNow.AddMinutes(Convert.ToDouble(jwtOptions.Value.AccessTokenExpiryMinutes));
+            var expires = dateTimeService.UtcNow.AddMinutes(Convert.ToDouble(jwtOptions.Value.AccessTokenExpiryMinutes));
 
             var token = new JwtSecurityToken(
                 issuer: jwtOptions.Value.Issuer,
@@ -47,7 +49,7 @@ public class JwtTokenGenerator(
         {
             var refreshToken = GenerateRefreshToken();
             user.RefreshToken = refreshToken;
-            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(jwtOptions.Value.RefreshTokenExpiryDays);
+            user.RefreshTokenExpiryTime = dateTimeService.UtcNow.AddDays(jwtOptions.Value.RefreshTokenExpiryDays);
             await userRepository.UpdateAsync(user);
             return refreshToken;
         }
