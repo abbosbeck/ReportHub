@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+﻿using Application.Common.Interfaces.External.CurrencyExchange;
 using Domain.Entities;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
@@ -6,7 +6,7 @@ using QuestPDF.Infrastructure;
 
 namespace Application.Invoices.ExportInvoice.Document;
 
-public class InvoiceDocument(Invoice invoice) : IDocument
+public class InvoiceDocument(Invoice invoice, ICurrencyExchangeService currency) : IDocument
 {
     public DocumentMetadata GetMetadata() => DocumentMetadata.Default;
 
@@ -80,7 +80,7 @@ public class InvoiceDocument(Invoice invoice) : IDocument
             });
 
             column.Item().Element(ComposeTable);
-            var amount = GetAmountWithSymbol(invoice.Amount, invoice.CurrencyCode);
+            var amount = currency.GetAmountWithSymbol(invoice.Amount, invoice.CurrencyCode);
             column.Item().AlignRight().Text($"Grand total: {amount}").FontSize(14);
         });
     }
@@ -126,24 +126,5 @@ public class InvoiceDocument(Invoice invoice) : IDocument
                 }
             }
         });
-    }
-
-    private static string GetAmountWithSymbol(decimal amount, string currencyCode)
-    {
-        var cultures = CultureInfo.GetCultures(CultureTypes.SpecificCultures);
-
-        var result = cultures.Select(x =>
-        {
-            var region = new RegionInfo(x.Name);
-            return region.ISOCurrencySymbol.Equals(currencyCode, StringComparison.OrdinalIgnoreCase)
-               ? amount.ToString("C", x) : null;
-        }).FirstOrDefault(result => result != null);
-
-        if (result != null && currencyCode.Equals("UZS", StringComparison.OrdinalIgnoreCase))
-        {
-            return result.Replace("сўм", "so'm");
-        }
-
-        return result;
     }
 }
