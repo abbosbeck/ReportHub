@@ -1,4 +1,6 @@
-﻿using Application.Common.Exceptions;
+﻿using Application.Common.Attributes;
+using Application.Common.Constants;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.External.Countries;
 using Application.Common.Interfaces.External.CurrencyExchange;
@@ -15,6 +17,7 @@ public class GetOverdueInvoicePaymentsAnalysisQuery(Guid clientId)
     public Guid ClientId { get; set; } = clientId;
 }
 
+[RequiresClientRole(ClientRoles.Owner, ClientRoles.Owner, ClientRoles.Operator)]
 public class GetOverdueInvoicePaymentsAnalysisQueryHandler(
     ICountryService countryService,
     IDateTimeService dateTimeService,
