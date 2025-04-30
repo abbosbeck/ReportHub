@@ -5,6 +5,7 @@ using Application.Invoices.GetExportLogById;
 using Application.Invoices.GetExportLogsList;
 using Application.Invoices.GetInvoiceById;
 using Application.Invoices.GetInvoicesList;
+using Application.Invoices.GetOverdueInvoicePaymentsAnalysis;
 using Application.Invoices.UpdateInvoice;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -74,6 +75,14 @@ namespace Api.Controllers
         public async Task<IActionResult> GetLogByIdAsync([FromRoute] Guid clientId, [FromRoute] Guid logId)
         {
             var result = await Mediator.Send(new GetExportLogByIdQuery(clientId, logId));
+
+            return Ok(result);
+        }
+
+        [HttpGet("overdue-payments-analysis")]
+        public async Task<IActionResult> GetOverduePaymentsAnalysisAsync([FromRoute] Guid clientId)
+        {
+            var result = await Mediator.Send(new GetOverdueInvoicePaymentsAnalysisQuery(clientId));
 
             return Ok(result);
         }
