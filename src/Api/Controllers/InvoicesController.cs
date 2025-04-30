@@ -6,6 +6,7 @@ using Application.Invoices.GetExportLogsList;
 using Application.Invoices.GetInvoiceById;
 using Application.Invoices.GetInvoicesList;
 using Application.Invoices.GetOverdueInvoicePaymentsAnalysis;
+using Application.Invoices.TotalRevenueCalculation;
 using Application.Invoices.UpdateInvoice;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -83,6 +84,14 @@ namespace Api.Controllers
         public async Task<IActionResult> GetOverduePaymentsAnalysisAsync([FromRoute] Guid clientId)
         {
             var result = await Mediator.Send(new GetOverdueInvoicePaymentsAnalysisQuery(clientId));
+
+            return Ok(result);
+        }
+
+        [HttpGet("total-revenue-calculation")]
+        public async Task<IActionResult> TotalRevenueCalucationAsync([FromRoute] Guid clientId, [FromQuery] TotalRevenueCalculationRequest request)
+        {
+            var result = await Mediator.Send(new TotalRevenueCalculationQuery(clientId, request));
 
             return Ok(result);
         }
