@@ -2,6 +2,7 @@
 using Application.Common.Constants;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
+using Application.Common.Interfaces.External.CurrencyExchange;
 using Application.Common.Interfaces.Repositories;
 using Application.Common.Interfaces.Time;
 using Application.Invoices.ExportInvoice.Document;
@@ -23,7 +24,8 @@ public class ExportInvoiceCommandHandler(
     ILogRepository logRepository,
     IDateTimeService dateTimeService,
     IInvoiceRepository invoiceRepository,
-    ICurrentUserService currentUserService)
+    ICurrentUserService currentUserService,
+    ICurrencyExchangeService currencyExchangeService)
     : IRequestHandler<ExportInvoiceCommand, ExportPdfDto>
 {
     public async Task<ExportPdfDto> Handle(ExportInvoiceCommand request, CancellationToken cancellationToken)
@@ -41,7 +43,7 @@ public class ExportInvoiceCommandHandler(
 
         try
         {
-            var document = new InvoiceDocument(invoice);
+            var document = new InvoiceDocument(invoice, currencyExchangeService);
             pdfBytes = document.GeneratePdf();
             log.Status = LogStatus.Success;
             await logRepository.AddAsync(log);

@@ -8,6 +8,7 @@ using Application.Invoices.GetInvoiceById;
 using Application.Invoices.GetInvoicesList;
 using Application.Invoices.GetOverdueInvoicePaymentsAnalysis;
 using Application.Invoices.TotalNumberOfInvoices.GetInvoiceCount;
+using Application.Invoices.TotalRevenueCalculation;
 using Application.Invoices.UpdateInvoice;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -88,8 +89,16 @@ namespace Api.Controllers
 
             return Ok(result);
         }
+        
+        [HttpGet("total-revenue-calculation")]
+        public async Task<IActionResult> TotalRevenueCalucationAsync([FromRoute] Guid clientId, [FromQuery] TotalRevenueCalculationRequest request)
+        {
+            var result = await Mediator.Send(new TotalRevenueCalculationQuery(clientId, request));
 
-        [HttpGet("total-number-of-invoices-By-DateRange")]
+            return Ok(result);
+        }
+      
+      [HttpGet("total-number-of-invoices-By-DateRange")]
         public async Task<IActionResult> GetTotalNumberOfInvoicesWithinDateRange(
             [FromRoute] Guid clientId,
             [FromQuery] string startDate,
@@ -115,8 +124,5 @@ namespace Api.Controllers
                 EndDate = parsedEndDate,
                 CustomerId = customerId,
             });
-
-            return Ok(result);
-        }
     }
 }
