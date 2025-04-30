@@ -30,34 +30,39 @@ public class GetOverdueInvoicePaymentsAnalysisQueryHandler(
         GetOverdueInvoicePaymentsAnalysisQuery request, CancellationToken cancellationToken)
     {
         var client = await clientRepository.GetByIdAsync(request.ClientId);
-        var clientCurrencyCode = await countryService.GetCurrencyCodeByCountryCodeAsync(client.CountryCode);
+        var currencyCode = await countryService.GetCurrencyCodeByCountryCodeAsync(client.CountryCode);
         var today = dateTimeService.UtcNow.Date;
 
-        var invoices = await invoiceRepository.GetAll()
+        var invoicesQueryable = invoiceRepository
+            .GetAll()
             .Where(invoice =>
                 invoice.PaymentStatus != InvoicePaymentStatus.Paid &&
-                invoice.DueDate < today)
-            .Select(invoice => new
-            {
-                invoice.CurrencyCode,
-                invoice.Amount,
-            })
-            .ToListAsync(cancellationToken: cancellationToken);
+                invoice.DueDate < today);
 
-        if (invoices.Count == 0)
+        var numberOfInvoices = await invoicesQueryable.CountAsync(cancellationToken: cancellationToken);
+        if (numberOfInvoices == 0)
         {
             throw new NotFoundException("No Overdue Invoice Payments are found");
         }
 
+        var invoicesList = await invoicesQueryable
+            .GroupBy(invoice => invoice.CurrencyCode)
+            .Select(group => new
+            {
+                CurrencyCode = group.Key,
+                Amount = group.Sum(invoice => invoice.Amount),
+            })
+            .ToListAsync(cancellationToken: cancellationToken);
+
         var result = await Task.WhenAll(
-            invoices.Select(invoice => currencyExchangeService.ExchangeCurrencyAsync(
-                invoice.CurrencyCode, clientCurrencyCode, invoice.Amount, today)));
+            invoicesList.Select(invoice => currencyExchangeService.ExchangeCurrencyAsync(
+                invoice.CurrencyCode, currencyCode, invoice.Amount, today)));
 
         return new OverdueInvoicePaymentsAnalysisDto
         {
-            CurrencyCode = clientCurrencyCode,
+            CurrencyCode = currencyCode,
             TotalAmount = result.Sum(),
-            NumberOfInvoices = result.Length,
+            NumberOfInvoices = numberOfInvoices,
         };
     }
 }
