@@ -11,6 +11,7 @@ using Application.Invoices.TotalNumberOfInvoices.GetInvoiceCount;
 using Application.Invoices.TotalRevenueCalculation;
 using Application.Invoices.UpdateInvoice;
 using MediatR;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
@@ -89,7 +90,7 @@ namespace Api.Controllers
 
             return Ok(result);
         }
-        
+
         [HttpGet("total-revenue-calculation")]
         public async Task<IActionResult> TotalRevenueCalucationAsync([FromRoute] Guid clientId, [FromQuery] TotalRevenueCalculationRequest request)
         {
@@ -97,13 +98,13 @@ namespace Api.Controllers
 
             return Ok(result);
         }
-      
-      [HttpGet("total-number-of-invoices-By-DateRange")]
+
+        [HttpGet("total-number-of-invoices-By-DateRange")]
         public async Task<IActionResult> GetTotalNumberOfInvoicesWithinDateRange(
-            [FromRoute] Guid clientId,
-            [FromQuery] string startDate,
-            [FromQuery] string endDate,
-            [FromQuery] Guid? customerId = null)
+              [FromRoute] Guid clientId,
+              [FromQuery] string startDate,
+              [FromQuery] string endDate,
+              [FromQuery] Guid? customerId = null)
         {
             if (!DateTime.TryParseExact(startDate, "dd.MM.yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedStartDate))
             {
@@ -124,5 +125,8 @@ namespace Api.Controllers
                 EndDate = parsedEndDate,
                 CustomerId = customerId,
             });
+
+            return Ok(result);
+        }
     }
 }
