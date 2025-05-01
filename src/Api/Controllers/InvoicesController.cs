@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using Application.Invoices;
+﻿using Application.Invoices;
 using Application.Invoices.CreateInvoice;
 using Application.Invoices.ExportInvoice;
 using Application.Invoices.GetExportLogById;
@@ -11,7 +10,6 @@ using Application.Invoices.TotalNumberOfInvoices.GetInvoiceCount;
 using Application.Invoices.TotalRevenueCalculation;
 using Application.Invoices.UpdateInvoice;
 using MediatR;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
@@ -99,32 +97,14 @@ namespace Api.Controllers
             return Ok(result);
         }
 
-        [HttpGet("total-number-of-invoices-By-DateRange")]
+        [HttpGet("total-number-of-invoices-by-daterange")]
         public async Task<IActionResult> GetTotalNumberOfInvoicesWithinDateRange(
               [FromRoute] Guid clientId,
-              [FromQuery] string startDate,
-              [FromQuery] string endDate,
+              [FromQuery] DateTime startDate,
+              [FromQuery] DateTime endDate,
               [FromQuery] Guid? customerId = null)
         {
-            if (!DateTime.TryParseExact(startDate, "dd.MM.yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedStartDate))
-            {
-                return BadRequest(new { Message = "Invalid format for startDate. Expected format: dd.MM.yyyy (e.g., 25.04.2025)." });
-            }
-
-            if (!DateTime.TryParseExact(endDate, "dd.MM.yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedEndDate))
-            {
-                return BadRequest(new { Message = "Invalid format for endDate. Expected format: dd.MM.yyyy (e.g., 25.04.2025)." });
-            }
-
-            parsedStartDate = DateTime.SpecifyKind(parsedStartDate, DateTimeKind.Utc);
-            parsedEndDate = DateTime.SpecifyKind(parsedEndDate, DateTimeKind.Utc);
-
-            var result = await Mediator.Send(new GetInvoiceCountQuery(clientId)
-            {
-                StartDate = parsedStartDate,
-                EndDate = parsedEndDate,
-                CustomerId = customerId,
-            });
+            var result = await Mediator.Send(new GetInvoiceCountQuery(clientId, startDate, endDate, customerId));
 
             return Ok(result);
         }

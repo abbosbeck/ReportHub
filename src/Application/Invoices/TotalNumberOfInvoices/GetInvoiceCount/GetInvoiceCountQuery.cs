@@ -7,20 +7,24 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Invoices.TotalNumberOfInvoices.GetInvoiceCount;
 
-public class GetInvoiceCountQuery(Guid clientId) : IRequest<int>, IClientRequest
+public class GetInvoiceCountQuery(
+    Guid clientId,
+    DateTime startDate,
+    DateTime endDate,
+    Guid? customerId) : IRequest<int>, IClientRequest
 {
     public Guid ClientId { get; set; } = clientId;
 
-    public DateTime StartDate { get; set; }
+    public DateTime StartDate { get; set; } = startDate;
 
-    public DateTime EndDate { get; set; }
+    public DateTime EndDate { get; set; } = endDate;
 
-    public Guid? CustomerId { get; set; }
+    public Guid? CustomerId { get; set; } = customerId;
 }
 
 [RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin, ClientRoles.Operator)]
 public class GetInvoiceCountQueryHandler
-    (IInvoiceRepository repository,
+    (IInvoiceRepository invoiceRepository,
     ICustomerRepository customerRepository,
     IValidator<GetInvoiceCountQuery> validator)
     : IRequestHandler<GetInvoiceCountQuery, int>
@@ -33,7 +37,7 @@ public class GetInvoiceCountQueryHandler
         {
             bool customerExists = await customerRepository
                 .GetAll()
-                .AnyAsync(c => c.Id == request.CustomerId.Value && c.ClientId == request.ClientId, cancellationToken);
+                .AnyAsync(c => c.Id == request.CustomerId.Value, cancellationToken);
 
             if (!customerExists)
             {
@@ -41,15 +45,10 @@ public class GetInvoiceCountQueryHandler
             }
         }
 
-        var query = repository.GetAll()
-            .Where(i => i.ClientId == request.ClientId &&
-           i.IssueDate <= request.EndDate &&
-           i.DueDate >= request.StartDate);
-
-        if (request.CustomerId.HasValue)
-        {
-            query = query.Where(i => i.CustomerId == request.CustomerId.Value);
-        }
+        var query = invoiceRepository.GetAll()
+                    .Where(i => i.IssueDate <= request.EndDate &&
+                    i.DueDate >= request.StartDate &&
+                    (!request.CustomerId.HasValue || i.CustomerId == request.CustomerId.Value));
 
         var count = await query.CountAsync(cancellationToken);
 
