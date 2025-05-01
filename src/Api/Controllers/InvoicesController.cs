@@ -6,6 +6,7 @@ using Application.Invoices.GetExportLogsList;
 using Application.Invoices.GetInvoiceById;
 using Application.Invoices.GetInvoicesList;
 using Application.Invoices.GetOverdueInvoicePaymentsAnalysis;
+using Application.Invoices.TotalNumberOfInvoices.GetInvoiceCount;
 using Application.Invoices.TotalRevenueCalculation;
 using Application.Invoices.UpdateInvoice;
 using MediatR;
@@ -96,6 +97,18 @@ namespace Api.Controllers
             [FromQuery, BindRequired] DateTime endDate)
         {
             var result = await Mediator.Send(new TotalRevenueCalculationQuery(clientId, startDate, endDate));
+
+            return Ok(result);
+        }
+
+        [HttpGet("total-number-of-invoices-by-daterange")]
+        public async Task<IActionResult> GetTotalNumberOfInvoicesWithinDateRange(
+              [FromRoute] Guid clientId,
+              [FromQuery] DateTime startDate,
+              [FromQuery] DateTime endDate,
+              [FromQuery] Guid? customerId = null)
+        {
+            var result = await Mediator.Send(new GetInvoiceCountQuery(clientId, startDate, endDate, customerId));
 
             return Ok(result);
         }
