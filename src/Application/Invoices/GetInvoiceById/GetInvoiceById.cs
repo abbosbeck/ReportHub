@@ -6,11 +6,11 @@ using Application.Common.Interfaces.Repositories;
 
 namespace Application.Invoices.GetInvoiceById;
 
-public class GetInvoiceByIdQuery : IRequest<InvoiceDto>, IClientRequest
+public class GetInvoiceByIdQuery(Guid clientId, Guid id) : IRequest<InvoiceDto>, IClientRequest
 {
-    public Guid Id { get; init; }
+    public Guid Id { get; init; } = id;
 
-    public Guid ClientId { get; set; }
+    public Guid ClientId { get; set; } = clientId;
 }
 
 [RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin, ClientRoles.Operator)]
