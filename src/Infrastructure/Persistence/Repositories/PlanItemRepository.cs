@@ -38,4 +38,9 @@ public class PlanItemRepository(AppDbContext context) : IPlanItemRepository
             .Where(pi => pi.PlanId == id)
             .ToListAsync();
     }
+
+    public IQueryable<PlanItem> GetAll()
+    {
+        return context.PlanItems;
+    }
 }
