@@ -8,21 +8,106 @@ namespace Application.ExportReports.ExportReportsToFile.FileGenerators;
 
 public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService)
 {
-    public void GenerateExcelFile(List<Invoice> invoices, List<Item> items)
+    public void GenerateExcelFile(List<Invoice> invoices, List<Item> items, List<Plan> plans)
     {
         Workbook mainWorkbook = new Workbook();
         Workbook invoiceWorkbook = GenerateInvoice(invoices);
         Workbook itemWorkBook = GenerateItems(items);
+        Workbook planWorkBook = GeneratePlans(plans);
 
         WorksheetCollection sheets = mainWorkbook.Worksheets;
         sheets[0].Copy(invoiceWorkbook.Worksheets[0]);
-        sheets[0].Name = "Invoice";
+        sheets[0].Name = "Invoices";
 
         sheets.Add();
         sheets[1].Copy(itemWorkBook.Worksheets[0]);
-        sheets[1].Name = "Item";
+        sheets[1].Name = "Items";
+
+        sheets.Add();
+        sheets[2].Copy(planWorkBook.Worksheets[0]);
+        sheets[2].Name = "Plans";
 
         mainWorkbook.Save(@"C:\Users\Abbos\OneDrive\Desktop\output.xlsx", SaveFormat.Xlsx);
+    }
+
+    private static Workbook GeneratePlans(List<Plan> plans)
+    {
+        Workbook workbook = new Workbook();
+        DataTable planTable = new DataTable("Item");
+
+        planTable.Columns.Add("No", typeof(long));
+        planTable.Columns.Add(nameof(Plan.Title), typeof(string));
+        planTable.Columns.Add(nameof(Plan.StartDate), typeof(DateTime));
+        planTable.Columns.Add(nameof(Plan.EndDate), typeof(DateTime));
+        planTable.Columns.Add("Quentity", typeof(int));
+
+        int counter = 1;
+        foreach (var plan in plans)
+        {
+            DataRow invoiceRecord = planTable.NewRow();
+
+            invoiceRecord["No"] = counter;
+            invoiceRecord[nameof(Plan.Title)] = plan.Title;
+            invoiceRecord[nameof(Plan.StartDate)] = plan.StartDate;
+            invoiceRecord[nameof(Plan.EndDate)] = plan.EndDate;
+            invoiceRecord["Quentity"] = plan.Items.Select(planItem => planItem.Quantity).Sum(); // If we want to display Qunatity in a proper manner, then plan should have
+            counter++;
+
+            planTable.Rows.Add(invoiceRecord);
+        }
+
+        ImportTableOptions importOptions = new ImportTableOptions();
+
+        Worksheet dataTableWorksheet = workbook.Worksheets[0];
+        dataTableWorksheet.Name = "Item";
+        dataTableWorksheet.Cells.ImportData(planTable, 0, 0, importOptions);
+
+        var cells = dataTableWorksheet.Cells;
+        var headerStyle = cells["A1"].GetStyle();
+        headerStyle.HorizontalAlignment = TextAlignmentType.Center;
+        headerStyle.VerticalAlignment = TextAlignmentType.Center;
+        headerStyle.Font.IsBold = true;
+        headerStyle.ForegroundColor = Color.MediumSlateBlue;
+        headerStyle.Pattern = BackgroundType.Solid;
+        headerStyle.Font.Color = Color.White;
+
+        for (int col = 0; col < planTable.Columns.Count; col++)
+        {
+            cells[0, col].SetStyle(headerStyle);
+            cells.SetColumnWidth(col, 18);
+        }
+
+        for (int row = 1; row <= planTable.Rows.Count; row++)
+        {
+            for (int col = 0; col < planTable.Columns.Count; col++)
+            {
+                Cell currentCell = cells[row, col];
+                Style cellStyle = currentCell.GetStyle();
+
+                cellStyle.Borders[BorderType.TopBorder].LineStyle = CellBorderType.Thin;
+                cellStyle.Borders[BorderType.BottomBorder].LineStyle = CellBorderType.Thin;
+                cellStyle.Borders[BorderType.LeftBorder].LineStyle = CellBorderType.Thin;
+                cellStyle.Borders[BorderType.RightBorder].LineStyle = CellBorderType.Thin;
+
+                if (row % 2 == 0)
+                {
+                    cellStyle.BackgroundColor = Color.WhiteSmoke;
+                }
+                else
+                {
+                    cellStyle.BackgroundColor = Color.White;
+                }
+
+                cellStyle.Pattern = BackgroundType.Solid;
+
+                currentCell.SetStyle(cellStyle);
+            }
+        }
+
+        dataTableWorksheet.FreezePanes(1, 0, 1, planTable.Columns.Count);
+        dataTableWorksheet.AutoFitColumns();
+
+        return workbook;
     }
 
     private Workbook GenerateItems(List<Item> items)

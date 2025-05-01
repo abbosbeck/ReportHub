@@ -2,7 +2,6 @@
 using Application.Common.Interfaces.External.CurrencyExchange;
 using Application.Common.Interfaces.Repositories;
 using Application.ExportReports.ExportReportsToFile.FileGenerators;
-using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.ExportReports.ExportReportsToFile;
@@ -17,6 +16,8 @@ public class ExportReportsToFileQuery(Guid clinetId, ExportReportsFileType fileT
 public class ExportReportsToFileQueryHandler(
     IInvoiceRepository invoiceRepository,
     IItemRepository itemRepository,
+    IPlanRepository planRepository,
+    IPlanItemRepository planItemRepository,
     ICurrencyExchangeService currencyExchangeService)
     : IRequestHandler<ExportReportsToFileQuery, ExportReportsToFileDto>
 {
@@ -24,9 +25,12 @@ public class ExportReportsToFileQueryHandler(
     {
         var invoices = await invoiceRepository.GetAll().ToListAsync(cancellationToken);
         var items = await itemRepository.GetAll().ToListAsync(cancellationToken);
+        var plans = await planRepository.GetAll().ToListAsync(cancellationToken);
+        plans.ForEach(async x => x.Items = await planItemRepository.GetAll()
+            .Where(planItem => planItem.PlanId == x.Id).ToListAsync(cancellationToken));
 
         new ExcelFileGenerator(currencyExchangeService)
-            .GenerateExcelFile(invoices, items);
+            .GenerateExcelFile(invoices, items, plans);
 
         return new ExportReportsToFileDto();
     }
