@@ -1,9 +1,6 @@
 name: ReportHub
 
 on:
-  push:
-    branches: ['main']
-
   pull_request:
     branches: ['main']
     types: ['closed']
@@ -14,21 +11,23 @@ env:
   CONTAINER_APP_NAME: reporthub
   RESOURCE_GROUP: ExadelBootcamp
 
-jobs: 
-  build:
-    runs-on: ubuntu-latest
+jobs:
+  if_merged:
+    if: github.event.pull_request.merged == true  
+    build:
+      runs-on: ubuntu-latest
 
-    steps: 
-      - name: Check out code
-        uses: actions/checkout@v4
+      steps: 
+        - name: Check out code
+          uses: actions/checkout@v4
 
-      - name: Run docker compose
-        uses: hoverkraft-tech/compose-action@v2.0.1
-        with: 
-          compose-file: './docker-compose.yml'
-          services: |
-            api
-          up-flags: '--build -d'
+        - name: Run docker compose
+          uses: hoverkraft-tech/compose-action@v2.0.1
+          with: 
+            compose-file: './docker-compose.yml'
+            services: |
+              api
+            up-flags: '--build -d'
 
   run-unit-tests:
     needs: build
