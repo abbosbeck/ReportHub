@@ -9,10 +9,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Invoices.TotalRevenueCalculation;
 
-public class TotalRevenueCalculationQuery(Guid clientId, TotalRevenueCalculationRequest request)
+public class TotalRevenueCalculationQuery(Guid clientId, DateTime startDate, DateTime endDate)
     : IClientRequest, IRequest<TotalRevenueCalculationDto>
 {
-    public TotalRevenueCalculationRequest TotalRevenueCalucationRequest { get; set; } = request;
+    public DateTime StartDate { get; set; } = startDate;
+
+    public DateTime EndDate { get; set; } = endDate;
 
     public Guid ClientId { get; set; } = clientId;
 }
@@ -34,8 +36,8 @@ public class TotalRevenueCalculationQueryHandler(
 
         var invoices = await invoiceRepository.GetAll()
             .Where(
-                invoice => invoice.IssueDate > request.TotalRevenueCalucationRequest.StartDate &&
-                invoice.IssueDate < request.TotalRevenueCalucationRequest.EndDate)
+                invoice => invoice.IssueDate > request.StartDate &&
+                invoice.IssueDate < request.EndDate)
             .Select(invoice => new
             {
                 invoice.Amount,
@@ -55,11 +57,7 @@ public class TotalRevenueCalculationQueryHandler(
 
         var totalRevenue = currencyExchangeService.GetAmountWithSymbol(result.Sum(), clientCurrencyCode);
 
-        return new TotalRevenueCalculationDto
-        {
-            StartDate = request.TotalRevenueCalucationRequest.StartDate,
-            EndDate = request.TotalRevenueCalucationRequest.EndDate,
-            TotalRevenue = totalRevenue,
-        };
+        return new TotalRevenueCalculationDto(
+            totalRevenue, clientCurrencyCode, request.StartDate, request.EndDate);
     }
 }
