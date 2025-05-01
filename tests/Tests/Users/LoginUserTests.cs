@@ -7,7 +7,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Moq;
 
-namespace Tests;
+namespace Tests.Users;
 
 public class LoginUserTests
 {
