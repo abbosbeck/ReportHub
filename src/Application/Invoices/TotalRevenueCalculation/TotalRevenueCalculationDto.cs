@@ -1,10 +1,16 @@
 ﻿namespace Application.Invoices.TotalRevenueCalculation;
 
-public class TotalRevenueCalculationDto
+public class TotalRevenueCalculationDto(
+    string totalRevenue,
+    string currencyCode,
+    DateTime startDate,
+    DateTime endDate)
 {
-    public string TotalRevenue { get; set; }
+    public string TotalRevenue { get; set; } = totalRevenue;
 
-    public DateTime StartDate { get; set; }
+    public string CurrencyCode { get; set; } = currencyCode;
 
-    public DateTime EndDate { get; set; }
+    public DateTime StartDate { get; set; } = startDate;
+
+    public DateTime EndDate { get; set; } = endDate;
 }

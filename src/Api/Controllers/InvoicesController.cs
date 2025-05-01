@@ -10,6 +10,7 @@ using Application.Invoices.TotalRevenueCalculation;
 using Application.Invoices.UpdateInvoice;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Api.Controllers
 {
@@ -89,9 +90,12 @@ namespace Api.Controllers
         }
 
         [HttpGet("total-revenue-calculation")]
-        public async Task<IActionResult> TotalRevenueCalucationAsync([FromRoute] Guid clientId, [FromQuery] TotalRevenueCalculationRequest request)
+        public async Task<IActionResult> TotalRevenueCalucationAsync(
+            [FromRoute] Guid clientId,
+            [FromQuery, BindRequired] DateTime startDate,
+            [FromQuery, BindRequired] DateTime endDate)
         {
-            var result = await Mediator.Send(new TotalRevenueCalculationQuery(clientId, request));
+            var result = await Mediator.Send(new TotalRevenueCalculationQuery(clientId, startDate, endDate));
 
             return Ok(result);
         }
