@@ -8,7 +8,112 @@ namespace Application.ExportReports.ExportReportsToFile.FileGenerators;
 
 public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService)
 {
-    public void GenerateInvoice(List<Invoice> invoices)
+    public void GenerateExcelFile(List<Invoice> invoices, List<Item> items)
+    {
+        Workbook mainWorkbook = new Workbook();
+        Workbook invoiceWorkbook = GenerateInvoice(invoices);
+        Workbook itemWorkBook = GenerateItems(items);
+
+        WorksheetCollection sheets = mainWorkbook.Worksheets;
+        sheets[0].Copy(invoiceWorkbook.Worksheets[0]);
+        sheets[0].Name = "Invoice";
+
+        sheets.Add();
+        sheets[1].Copy(itemWorkBook.Worksheets[0]);
+        sheets[1].Name = "Item";
+
+        mainWorkbook.Save(@"C:\Users\Abbos\OneDrive\Desktop\output.xlsx", SaveFormat.Xlsx);
+    }
+
+    private Workbook GenerateItems(List<Item> items)
+    {
+        Workbook workbook = new Workbook();
+        DataTable itemTable = new DataTable("Item");
+
+        itemTable.Columns.Add("No", typeof(long));
+        itemTable.Columns.Add(nameof(Item.Name), typeof(string));
+        itemTable.Columns.Add(nameof(Item.Description), typeof(string));
+        itemTable.Columns.Add(nameof(Item.Price), typeof(string));
+        itemTable.Columns.Add(nameof(Item.CurrencyCode), typeof(string));
+        itemTable.Columns.Add("Invoice Number", typeof(string));
+
+        int counter = 1;
+        foreach (var item in items)
+        {
+            DataRow invoiceRecord = itemTable.NewRow();
+            string price = currencyExchangeService.GetAmountWithSymbol(item.Price, item.CurrencyCode);
+
+            invoiceRecord["No"] = counter;
+            invoiceRecord[nameof(Item.Name)] = item.Name;
+            invoiceRecord[nameof(Item.Description)] = item.Description;
+            invoiceRecord[nameof(Item.Price)] = price;
+            invoiceRecord[nameof(Item.CurrencyCode)] = item.CurrencyCode;
+            invoiceRecord["Invoice Number"] = item.Invoice.InvoiceNumber.ToString("D6");
+            counter++;
+
+            itemTable.Rows.Add(invoiceRecord);
+        }
+
+        ImportTableOptions importOptions = new ImportTableOptions();
+
+        Worksheet dataTableWorksheet = workbook.Worksheets[0];
+        dataTableWorksheet.Name = "Item";
+        dataTableWorksheet.Cells.ImportData(itemTable, 0, 0, importOptions);
+
+        var cells = dataTableWorksheet.Cells;
+        var headerStyle = cells["A1"].GetStyle();
+        headerStyle.HorizontalAlignment = TextAlignmentType.Center;
+        headerStyle.VerticalAlignment = TextAlignmentType.Center;
+        headerStyle.Font.IsBold = true;
+        headerStyle.ForegroundColor = Color.MediumSlateBlue;
+        headerStyle.Pattern = BackgroundType.Solid;
+        headerStyle.Font.Color = Color.White;
+
+        for (int col = 0; col < itemTable.Columns.Count; col++)
+        {
+            cells[0, col].SetStyle(headerStyle);
+            cells.SetColumnWidth(col, 18);
+        }
+
+        for (int row = 1; row <= itemTable.Rows.Count; row++)
+        {
+            for (int col = 0; col < itemTable.Columns.Count; col++)
+            {
+                Cell currentCell = cells[row, col];
+                Style cellStyle = currentCell.GetStyle();
+
+                cellStyle.Borders[BorderType.TopBorder].LineStyle = CellBorderType.Thin;
+                cellStyle.Borders[BorderType.BottomBorder].LineStyle = CellBorderType.Thin;
+                cellStyle.Borders[BorderType.LeftBorder].LineStyle = CellBorderType.Thin;
+                cellStyle.Borders[BorderType.RightBorder].LineStyle = CellBorderType.Thin;
+
+                if (row % 2 == 0)
+                {
+                    cellStyle.BackgroundColor = Color.WhiteSmoke;
+                }
+                else
+                {
+                    cellStyle.BackgroundColor = Color.White;
+                }
+
+                cellStyle.Pattern = BackgroundType.Solid;
+
+                if (col == 0 || itemTable.Columns[col].ColumnName == "Price")
+                {
+                    cellStyle.HorizontalAlignment = TextAlignmentType.Right;
+                }
+
+                currentCell.SetStyle(cellStyle);
+            }
+        }
+
+        dataTableWorksheet.FreezePanes(1, 0, 1, itemTable.Columns.Count);
+        dataTableWorksheet.AutoFitColumns();
+
+        return workbook;
+    }
+
+    private Workbook GenerateInvoice(List<Invoice> invoices)
     {
         Workbook workbook = new Workbook();
         DataTable invoiceTable = new DataTable("Invoice");
@@ -105,10 +210,9 @@ public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService
             }
         }
 
-
         dataTableWorksheet.FreezePanes(1, 0, 1, invoiceTable.Columns.Count);
         dataTableWorksheet.AutoFitColumns();
 
-        workbook.Save(@"C:\Users\Abbos\OneDrive\Desktop\output.xlsx", SaveFormat.Xlsx);
+        return workbook;
     }
 }
