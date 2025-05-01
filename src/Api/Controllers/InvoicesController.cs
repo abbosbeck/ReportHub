@@ -36,7 +36,7 @@ namespace Api.Controllers
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetByIdAsync([FromRoute] Guid clientId, [FromRoute] Guid id)
         {
-            var result = await Mediator.Send(new GetInvoiceByIdQuery { Id = id, ClientId = clientId });
+            var result = await Mediator.Send(new GetInvoiceByIdQuery(clientId, id));
 
             return Ok(result);
         }
@@ -52,7 +52,7 @@ namespace Api.Controllers
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteAsync([FromRoute] Guid clientId, [FromRoute] Guid id)
         {
-            var result = await Mediator.Send(new DeleteInvoiceCommand { Id = id, ClientId = clientId });
+            var result = await Mediator.Send(new DeleteInvoiceCommand(clientId, id));
 
             return Ok(result);
         }

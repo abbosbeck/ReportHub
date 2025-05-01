@@ -6,11 +6,11 @@ using Application.Common.Interfaces.Repositories;
 
 namespace Application.Invoices;
 
-public class DeleteInvoiceCommand : IRequest<bool>, IClientRequest
+public class DeleteInvoiceCommand(Guid clientId, Guid id) : IRequest<bool>, IClientRequest
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; set; } = id;
 
-    public Guid ClientId { get; set; }
+    public Guid ClientId { get; set; } = clientId;
 }
 
 [RequiresClientRole(ClientRoles.Owner)]
