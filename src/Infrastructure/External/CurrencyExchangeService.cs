@@ -53,9 +53,7 @@ public class CurrencyExchangeService(HttpClient httpClient) : ICurrencyExchangeS
             culture = new CultureInfo("uz-Latn-UZ");
         }
 
-        var result = amount.ToString("C", culture);
-
-        return result;
+        return amount.ToString("C", culture);
     }
 
     private static void ValidateCurrencyCode(HistoricalExchangeRatesDto currency, string source, string destination)
