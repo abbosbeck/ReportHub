@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.DataProtection;
 
 namespace Application.Users.ConfirmUserEmail;
 
-public sealed class ConfirmUserEmailQuery : IRequest<string>
+public sealed class ConfirmUserEmailQuery(string token) : IRequest<string>
 {
-    public string Token { get; init; }
+    public string Token { get; init; } = token;
 }
 
 public class ConfirmUserEmailQueryHandler(
