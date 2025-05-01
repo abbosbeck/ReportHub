@@ -42,6 +42,20 @@ public class CurrencyExchangeService(HttpClient httpClient) : ICurrencyExchangeS
         return (decimal)exchangedCurrency;
     }
 
+    public string GetAmountWithSymbol(decimal amount, string currencyCode)
+    {
+        var culture = CultureInfo.GetCultures(CultureTypes.SpecificCultures)
+            .FirstOrDefault(x => new RegionInfo(x.Name).ISOCurrencySymbol.Equals(
+                currencyCode, StringComparison.OrdinalIgnoreCase));
+
+        if (culture.Name == "uz-Cyrl-UZ")
+        {
+            culture = new CultureInfo("uz-Latn-UZ");
+        }
+
+        return amount.ToString("C", culture);
+    }
+
     private static void ValidateCurrencyCode(HistoricalExchangeRatesDto currency, string source, string destination)
     {
         if (!currency.ConversionAmounts.ContainsKey(source))
@@ -53,24 +67,5 @@ public class CurrencyExchangeService(HttpClient httpClient) : ICurrencyExchangeS
         {
             throw new BadRequestException($"{destination} is not supported by the given API");
         }
-    }
-
-    public string GetAmountWithSymbol(decimal amount, string currencyCode)
-    {
-        var cultures = CultureInfo.GetCultures(CultureTypes.SpecificCultures);
-
-        var result = cultures.Select(x =>
-        {
-            var region = new RegionInfo(x.Name);
-            return region.ISOCurrencySymbol.Equals(currencyCode, StringComparison.OrdinalIgnoreCase)
-               ? amount.ToString("C", x) : null;
-        }).FirstOrDefault(result => result != null);
-
-        if (result != null && currencyCode.Equals("UZS", StringComparison.OrdinalIgnoreCase))
-        {
-            return result.Replace("сўм", "so'm");
-        }
-
-        return result;
     }
 }
