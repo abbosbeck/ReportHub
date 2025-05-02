@@ -2,7 +2,7 @@
 
 namespace Domain.Entities;
 
-public class PlanItem : BaseAuditableEntity, ISoftDeletable
+public class PlanItem : IAuditableEntity, ISoftDeletable
 {
     public Guid ItemId { get; init; }
 
@@ -19,4 +19,12 @@ public class PlanItem : BaseAuditableEntity, ISoftDeletable
     public DateTime? DeletedOn { get; set; }
 
     public string DeletedBy { get; set; }
+
+    public DateTime CreatedOn { get; set; }
+
+    public string CreatedBy { get; set; }
+
+    public DateTime? LastModifiedOn { get; set; }
+
+    public string LastModifiedBy { get; set; }
 }

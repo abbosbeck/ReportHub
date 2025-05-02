@@ -13,4 +13,6 @@ public interface IPlanItemRepository
     Task<bool> DeleteAsync(PlanItem planItem);
 
     Task<PlanItem> GetByPlanAndItemIdAsync(Guid planId, Guid itemId);
+
+    IQueryable<PlanItem> GetAll();
 }

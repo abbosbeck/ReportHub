@@ -45,7 +45,7 @@ public class CreatePlanCommandHandler(
                 throw new NotFoundException($"Items with these ids were not found: {string.Join(", ", missingIds)}");
             }
 
-            plan.Items = request.Plan.PlanItems
+            plan.PlanItems = request.Plan.PlanItems
                 .Select(planItem => new PlanItem
                 {
                     ItemId = planItem.ItemId,

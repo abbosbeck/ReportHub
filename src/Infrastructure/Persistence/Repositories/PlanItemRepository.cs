@@ -36,6 +36,12 @@ public class PlanItemRepository(AppDbContext context) : IPlanItemRepository
     {
         return await context.Set<PlanItem>()
             .Where(pi => pi.PlanId == id)
+            .Include(p => p.Item)
             .ToListAsync();
+    }
+
+    public IQueryable<PlanItem> GetAll()
+    {
+        return context.PlanItems;
     }
 }

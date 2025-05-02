@@ -14,13 +14,16 @@ public class PlanRepository(AppDbContext context) : IPlanRepository
 
     public IQueryable<Plan> GetAll()
     {
-        return (IQueryable<Plan>)context.Set<Plan>();
+        return context.Set<Plan>()
+            .Include(p => p.Client)
+            .Include(p => p.PlanItems)
+            .ThenInclude(pi => pi.Item);
     }
 
     public async Task<Plan> GetByIdAsync(Guid id)
     {
         return await context.Set<Plan>()
-            .Include(p => p.Items)
+            .Include(p => p.PlanItems)
             .ThenInclude(pi => pi.Item)
             .FirstOrDefaultAsync(p => p.Id == id);
     }
