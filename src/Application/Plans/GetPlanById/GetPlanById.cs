@@ -34,7 +34,7 @@ public class GetPlanByIdQueryHandler(
 
         var clientCurrency = await countryService.GetCurrencyCodeByCountryCodeAsync(client.CountryCode);
 
-        var totalPrice = plan.Items.Sum(planItem =>
+        var totalPrice = plan.PlanItems.Sum(planItem =>
         {
             var price = currencyExchangeService
                 .ExchangeCurrencyAsync(planItem.Item.CurrencyCode, clientCurrency, planItem.Item.Price, plan.StartDate)
