@@ -8,7 +8,7 @@ namespace Application.ExportReports.ExportReportsToFile.FileGenerators;
 
 public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService)
 {
-    public void GenerateExcelFile(List<Invoice> invoices, List<Item> items, List<Plan> plans)
+    public void GenerateExcelFile(List<Invoice> invoices, List<Item> items, List<PlanDto> plans)
     {
         Workbook mainWorkbook = new Workbook();
         Workbook invoiceWorkbook = GenerateInvoice(invoices);
@@ -30,16 +30,17 @@ public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService
         mainWorkbook.Save(@"C:\Users\Abbos\OneDrive\Desktop\output.xlsx", SaveFormat.Xlsx);
     }
 
-    private static Workbook GeneratePlans(List<Plan> plans)
+    private static Workbook GeneratePlans(List<PlanDto> plans)
     {
         Workbook workbook = new Workbook();
         DataTable planTable = new DataTable("Item");
 
         planTable.Columns.Add("No", typeof(long));
-        planTable.Columns.Add(nameof(Plan.Title), typeof(string));
-        planTable.Columns.Add(nameof(Plan.StartDate), typeof(DateTime));
-        planTable.Columns.Add(nameof(Plan.EndDate), typeof(DateTime));
-        planTable.Columns.Add("Quentity", typeof(int));
+        planTable.Columns.Add(nameof(PlanDto.Title), typeof(string));
+        planTable.Columns.Add(nameof(PlanDto.StartDate), typeof(DateTime));
+        planTable.Columns.Add(nameof(PlanDto.EndDate), typeof(DateTime));
+        planTable.Columns.Add(nameof(PlanDto.TotalPrice), typeof(string));
+        planTable.Columns.Add(nameof(PlanDto.CurrencyCode), typeof(string));
 
         int counter = 1;
         foreach (var plan in plans)
@@ -47,10 +48,11 @@ public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService
             DataRow invoiceRecord = planTable.NewRow();
 
             invoiceRecord["No"] = counter;
-            invoiceRecord[nameof(Plan.Title)] = plan.Title;
-            invoiceRecord[nameof(Plan.StartDate)] = plan.StartDate;
-            invoiceRecord[nameof(Plan.EndDate)] = plan.EndDate;
-            invoiceRecord["Quentity"] = plan.Items.Select(planItem => planItem.Quantity).Sum(); // If we want to display Qunatity in a proper manner, then plan should have
+            invoiceRecord[nameof(PlanDto.Title)] = plan.Title;
+            invoiceRecord[nameof(PlanDto.StartDate)] = plan.StartDate;
+            invoiceRecord[nameof(PlanDto.EndDate)] = plan.EndDate;
+            invoiceRecord[nameof(PlanDto.TotalPrice)] = plan.TotalPrice;
+            invoiceRecord[nameof(PlanDto.CurrencyCode)] = plan.CurrencyCode;
             counter++;
 
             planTable.Rows.Add(invoiceRecord);
