@@ -10,7 +10,7 @@ public class Plan : BaseAuditableEntity, ISoftDeletable
 
     public DateTime EndDate { get; set; }
 
-    public IList<PlanItem> Items { get; set; }
+    public IList<PlanItem> PlanItems { get; set; }
 
     public Guid ClientId { get; set; }
 
