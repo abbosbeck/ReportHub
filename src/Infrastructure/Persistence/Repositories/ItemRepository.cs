@@ -28,7 +28,7 @@ public class ItemRepository(AppDbContext context) : IItemRepository
 
     public IQueryable<Item> GetAll()
     {
-        return context.Items.AsQueryable();
+        return context.Items.Include(i => i.Invoice).AsQueryable();
     }
 
     public async Task<Item> GetByIdAsync(Guid itemId)
