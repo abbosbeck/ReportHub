@@ -1,13 +1,11 @@
 ﻿using Application.ExportReports.ExportReportsToFile;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Api.Controllers;
 
 [Route("clients/{clientId:guid}/[controller]")]
-[AllowAnonymous]
 public class ExportReportsController(ISender mediator) : ApiControllerBase(mediator)
 {
     [HttpGet]

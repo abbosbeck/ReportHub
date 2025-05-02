@@ -1,8 +1,9 @@
-﻿using Application.Common.Interfaces.Authorization;
+﻿using Application.Common.Attributes;
+using Application.Common.Constants;
+using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.External.Countries;
 using Application.Common.Interfaces.External.CurrencyExchange;
 using Application.Common.Interfaces.Repositories;
-using Application.Common.Interfaces.Time;
 using Application.ExportReports.ExportReportsToFile.FileGenerators;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,6 +22,7 @@ public class ExportReportsToFileQuery(
     public Guid ClientId { get; set; } = clinetId;
 }
 
+[RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin, ClientRoles.Operator)]
 public class ExportReportsToFileQueryHandler(
     IInvoiceRepository invoiceRepository,
     IItemRepository itemRepository,
