@@ -1,21 +1,64 @@
 ﻿using System.Data;
 using System.Drawing;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces.External.CurrencyExchange;
+using Application.Common.Interfaces.Time;
 using Aspose.Cells;
 using Domain.Entities;
 
 namespace Application.ExportReports.ExportReportsToFile.FileGenerators;
 
-public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService)
+public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService, IDateTimeService dateTimeService)
 {
-    public void GenerateExcelFile(List<Invoice> invoices, List<Item> items, List<PlanDto> plans)
+    public ExportReportsToFileDto GenerateExcelFile(
+        List<Invoice> invoices,
+        List<Item> items,
+        List<PlanDto> plans,
+        ExportReportsFileType fileType,
+        ExportReportsReportType reportType)
     {
         Workbook mainWorkbook = new Workbook();
+        WorksheetCollection sheets = mainWorkbook.Worksheets;
+
+        MemoryStream ms = new MemoryStream();
+
+        if (fileType == ExportReportsFileType.CSV)
+        {
+            if (reportType == ExportReportsReportType.Invoice)
+            {
+                Workbook invoiceWorkbookForCsv = GenerateInvoice(invoices);
+                sheets[0].Copy(invoiceWorkbookForCsv.Worksheets[0]);
+                sheets[0].Name = "Invoices";
+            }
+            else if (reportType == ExportReportsReportType.Item)
+            {
+                Workbook itemWorkbookForCsv = GenerateItems(items);
+                sheets[0].Copy(itemWorkbookForCsv.Worksheets[0]);
+                sheets[0].Name = "Items";
+            }
+            else if (reportType == ExportReportsReportType.Plan)
+            {
+                Workbook planWorkbookForCsv = GeneratePlans(plans);
+                sheets[0].Copy(planWorkbookForCsv.Worksheets[0]);
+                sheets[0].Name = "Plans";
+            }
+            else
+            {
+                throw new BadRequestException("You have to choose table");
+            }
+
+            mainWorkbook.Save(ms, SaveFormat.Csv);
+
+            return new ExportReportsToFileDto(
+                ms.ToArray(),
+                "text/csv",
+                dateTimeService.UtcNow.ToString());
+        }
+
         Workbook invoiceWorkbook = GenerateInvoice(invoices);
         Workbook itemWorkBook = GenerateItems(items);
         Workbook planWorkBook = GeneratePlans(plans);
 
-        WorksheetCollection sheets = mainWorkbook.Worksheets;
         sheets[0].Copy(invoiceWorkbook.Worksheets[0]);
         sheets[0].Name = "Invoices";
 
@@ -27,7 +70,12 @@ public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService
         sheets[2].Copy(planWorkBook.Worksheets[0]);
         sheets[2].Name = "Plans";
 
-        mainWorkbook.Save(@"C:\Users\Abbos\OneDrive\Desktop\output.xlsx", SaveFormat.Xlsx);
+        mainWorkbook.Save(ms, SaveFormat.Xlsx);
+
+        return new ExportReportsToFileDto(
+                ms.ToArray(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                dateTimeService.UtcNow.ToString());
     }
 
     private static Workbook GeneratePlans(List<PlanDto> plans)
