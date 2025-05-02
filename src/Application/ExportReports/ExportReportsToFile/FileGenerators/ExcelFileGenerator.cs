@@ -44,7 +44,7 @@ public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService
             }
             else
             {
-                throw new BadRequestException("You have to choose table");
+                throw new BadRequestException("Please choose a table: Invoices, Items, or Plans.");
             }
 
             mainWorkbook.Save(ms, SaveFormat.Csv);
