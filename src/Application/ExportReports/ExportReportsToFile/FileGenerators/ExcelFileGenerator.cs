@@ -49,10 +49,12 @@ public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService
 
             mainWorkbook.Save(ms, SaveFormat.Csv);
 
+            mainWorkbook.Worksheets[0].AutoFitColumns();
+
             return new ExportReportsToFileDto(
                 ms.ToArray(),
                 "text/csv",
-                dateTimeService.UtcNow.ToString());
+                reportType.ToString());
         }
 
         Workbook invoiceWorkbook = GenerateInvoice(invoices);
