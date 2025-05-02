@@ -2,14 +2,21 @@
 using Application.Common.Interfaces.External.Countries;
 using Application.Common.Interfaces.External.CurrencyExchange;
 using Application.Common.Interfaces.Repositories;
+using Application.Common.Interfaces.Time;
 using Application.ExportReports.ExportReportsToFile.FileGenerators;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.ExportReports.ExportReportsToFile;
 
-public class ExportReportsToFileQuery(Guid clinetId, ExportReportsFileType fileType) : IRequest<ExportReportsToFileDto>, IClientRequest
+public class ExportReportsToFileQuery(
+    Guid clinetId,
+    ExportReportsFileType fileType,
+    ExportReportsReportType reportType)
+    : IRequest<ExportReportsToFileDto>, IClientRequest
 {
     public ExportReportsFileType ExportReportsFileType { get; set; } = fileType;
+
+    public ExportReportsReportType ReportType { get; set; } = reportType;
 
     public Guid ClientId { get; set; } = clinetId;
 }
@@ -18,10 +25,10 @@ public class ExportReportsToFileQueryHandler(
     IInvoiceRepository invoiceRepository,
     IItemRepository itemRepository,
     IPlanRepository planRepository,
-    IPlanItemRepository planItemRepository,
     IClientRepository clientRepository,
     ICurrencyExchangeService currencyExchangeService,
     ICountryService countryService,
+    IDateTimeService dateTimeService,
     IMapper mapper)
     : IRequestHandler<ExportReportsToFileQuery, ExportReportsToFileDto>
 {
@@ -51,9 +58,9 @@ public class ExportReportsToFileQueryHandler(
             planDtos.Add(planDto);
         }
 
-        new ExcelFileGenerator(currencyExchangeService)
-            .GenerateExcelFile(invoices, items, planDtos);
+        var result = new ExcelFileGenerator(currencyExchangeService, dateTimeService)
+            .GenerateExcelFile(invoices, items, planDtos, request.ExportReportsFileType, request.ReportType);
 
-        return new ExportReportsToFileDto();
+        return result;
     }
 }

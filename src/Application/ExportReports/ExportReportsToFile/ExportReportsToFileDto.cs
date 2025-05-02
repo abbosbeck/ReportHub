@@ -1,10 +1,10 @@
 ﻿namespace Application.ExportReports.ExportReportsToFile;
 
-public class ExportReportsToFileDto
+public class ExportReportsToFileDto(byte[] byteArray, string contentType, string fileName)
 {
-    public byte[] ByteArray { get; set; }
+    public byte[] ByteArray { get; set; } = byteArray;
 
-    public string ContentType { get; set; }
+    public string ContentType { get; set; } = contentType;
 
-    public string FileName { get; set; }
+    public string FileName { get; set; } = fileName;
 }
