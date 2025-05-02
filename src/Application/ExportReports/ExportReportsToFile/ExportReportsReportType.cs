@@ -13,15 +13,15 @@ public enum ExportReportsReportType
     /// <summary>
     /// Inovice
     /// </summary>
-    Invoice,
+    Invoices,
 
     /// <summary>
     /// Item
     /// </summary>
-    Item,
+    Items,
 
     /// <summary>
     /// Plan
     /// </summary>
-    Plan,
+    Plans,
 }

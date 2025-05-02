@@ -24,19 +24,19 @@ public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService
 
         if (fileType == ExportReportsFileType.CSV)
         {
-            if (reportType == ExportReportsReportType.Invoice)
+            if (reportType == ExportReportsReportType.Invoices)
             {
                 Workbook invoiceWorkbookForCsv = GenerateInvoice(invoices);
                 sheets[0].Copy(invoiceWorkbookForCsv.Worksheets[0]);
                 sheets[0].Name = "Invoices";
             }
-            else if (reportType == ExportReportsReportType.Item)
+            else if (reportType == ExportReportsReportType.Items)
             {
                 Workbook itemWorkbookForCsv = GenerateItems(items);
                 sheets[0].Copy(itemWorkbookForCsv.Worksheets[0]);
                 sheets[0].Name = "Items";
             }
-            else if (reportType == ExportReportsReportType.Plan)
+            else if (reportType == ExportReportsReportType.Plans)
             {
                 Workbook planWorkbookForCsv = GeneratePlans(plans);
                 sheets[0].Copy(planWorkbookForCsv.Worksheets[0]);
