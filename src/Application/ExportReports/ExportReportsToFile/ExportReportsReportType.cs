@@ -8,7 +8,7 @@ public enum ExportReportsReportType
     /// <summary>
     /// Default value
     /// </summary>
-    None,
+    ChooseReportType,
 
     /// <summary>
     /// Inovice

@@ -28,7 +28,6 @@ public class ExportReportsToFileQueryHandler(
     IClientRepository clientRepository,
     ICurrencyExchangeService currencyExchangeService,
     ICountryService countryService,
-    IDateTimeService dateTimeService,
     IMapper mapper)
     : IRequestHandler<ExportReportsToFileQuery, ExportReportsToFileDto>
 {
@@ -58,8 +57,8 @@ public class ExportReportsToFileQueryHandler(
             planDtos.Add(planDto);
         }
 
-        var result = new ExcelFileGenerator(currencyExchangeService, dateTimeService)
-            .GenerateExcelFile(invoices, items, planDtos, request.ExportReportsFileType, request.ReportType);
+        var result = new ExcelFileGenerator(currencyExchangeService)
+                .GenerateExcelFile(invoices, items, planDtos, request.ExportReportsFileType, request.ReportType);
 
         return result;
     }

@@ -2,13 +2,12 @@
 using System.Drawing;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces.External.CurrencyExchange;
-using Application.Common.Interfaces.Time;
 using Aspose.Cells;
 using Domain.Entities;
 
 namespace Application.ExportReports.ExportReportsToFile.FileGenerators;
 
-public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService, IDateTimeService dateTimeService)
+public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService)
 {
     public ExportReportsToFileDto GenerateExcelFile(
         List<Invoice> invoices,
@@ -77,7 +76,7 @@ public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService
         return new ExportReportsToFileDto(
                 ms.ToArray(),
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                dateTimeService.UtcNow.ToString());
+                "Reports");
     }
 
     private static Workbook GeneratePlans(List<PlanDto> plans)
