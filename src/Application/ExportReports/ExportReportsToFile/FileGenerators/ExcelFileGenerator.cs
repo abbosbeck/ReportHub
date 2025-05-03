@@ -25,20 +25,20 @@ public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService
         {
             if (reportType == ExportReportsReportTableType.Invoices)
             {
-                Workbook invoiceWorkbookForCsv = GenerateInvoice(invoices);
-                sheets[0].Copy(invoiceWorkbookForCsv.Worksheets[0]);
+                Worksheet invoiceWorkbookForCsv = GenerateInvoice(invoices);
+                sheets[0].Copy(invoiceWorkbookForCsv);
                 sheets[0].Name = "Invoices";
             }
             else if (reportType == ExportReportsReportTableType.Items)
             {
-                Workbook itemWorkbookForCsv = GenerateItems(items);
-                sheets[0].Copy(itemWorkbookForCsv.Worksheets[0]);
+                Worksheet itemWorkbookForCsv = GenerateItems(items);
+                sheets[0].Copy(itemWorkbookForCsv);
                 sheets[0].Name = "Items";
             }
             else if (reportType == ExportReportsReportTableType.Plans)
             {
-                Workbook planWorkbookForCsv = GeneratePlans(plans);
-                sheets[0].Copy(planWorkbookForCsv.Worksheets[0]);
+                Worksheet planWorkbookForCsv = GeneratePlans(plans);
+                sheets[0].Copy(planWorkbookForCsv);
                 sheets[0].Name = "Plans";
             }
             else
@@ -56,19 +56,19 @@ public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService
                 reportType.ToString());
         }
 
-        Workbook invoiceWorkbook = GenerateInvoice(invoices);
-        Workbook itemWorkBook = GenerateItems(items);
-        Workbook planWorkBook = GeneratePlans(plans);
+        Worksheet invoiceWorkbook = GenerateInvoice(invoices);
+        Worksheet itemWorkBook = GenerateItems(items);
+        Worksheet planWorkBook = GeneratePlans(plans);
 
-        sheets[0].Copy(invoiceWorkbook.Worksheets[0]);
+        sheets[0].Copy(invoiceWorkbook);
         sheets[0].Name = "Invoices";
 
         sheets.Add();
-        sheets[1].Copy(itemWorkBook.Worksheets[0]);
+        sheets[1].Copy(itemWorkBook);
         sheets[1].Name = "Items";
 
         sheets.Add();
-        sheets[2].Copy(planWorkBook.Worksheets[0]);
+        sheets[2].Copy(planWorkBook);
         sheets[2].Name = "Plans";
 
         mainWorkbook.Save(ms, SaveFormat.Xlsx);
@@ -79,7 +79,7 @@ public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService
                 "Reports");
     }
 
-    private static Workbook GeneratePlans(List<PlanDto> plans)
+    private static Worksheet GeneratePlans(List<PlanDto> plans)
     {
         Workbook workbook = new Workbook();
         DataTable planTable = new DataTable("Item");
@@ -149,10 +149,10 @@ public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService
         dataTableWorksheet.FreezePanes(1, 0, 1, planTable.Columns.Count);
         dataTableWorksheet.AutoFitColumns();
 
-        return workbook;
+        return dataTableWorksheet;
     }
 
-    private Workbook GenerateItems(List<Item> items)
+    private Worksheet GenerateItems(List<Item> items)
     {
         Workbook workbook = new Workbook();
         DataTable itemTable = new DataTable("Item");
@@ -237,10 +237,10 @@ public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService
         dataTableWorksheet.FreezePanes(1, 0, 1, itemTable.Columns.Count);
         dataTableWorksheet.AutoFitColumns();
 
-        return workbook;
+        return dataTableWorksheet;
     }
 
-    private Workbook GenerateInvoice(List<Invoice> invoices)
+    private Worksheet GenerateInvoice(List<Invoice> invoices)
     {
         Workbook workbook = new Workbook();
         DataTable invoiceTable = new DataTable("Invoice");
@@ -326,6 +326,6 @@ public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService
         dataTableWorksheet.FreezePanes(1, 0, 1, invoiceTable.Columns.Count);
         dataTableWorksheet.AutoFitColumns();
 
-        return workbook;
+        return dataTableWorksheet;
     }
 }
