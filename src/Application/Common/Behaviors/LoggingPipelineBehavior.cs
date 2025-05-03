@@ -1,4 +1,5 @@
 ﻿using Application.Common.Interfaces.Time;
+using Application.Common.Services;
 using Microsoft.Extensions.Logging;
 
 namespace Application.Common.Behaviors;
@@ -20,6 +21,7 @@ public class LoggingPipelineBehavior<TRequest, TResponse>(
             "Starting request {@RequestName}, {@DateTimeUtc}",
             requestName,
             dateTimeService.UtcNow);
+        LogSenderService.SendToTelegram("8147917610:AAFHvcCOt7ozmT7Ib00Pj_Ku0qbatcCaoBk", "-1002601174074", $"Starting request: {requestName}");
 
         var result = await next();
 
@@ -27,6 +29,7 @@ public class LoggingPipelineBehavior<TRequest, TResponse>(
             "Completed request {@RequestName}, {@DateTimeUtc}",
             requestName,
             dateTimeService.UtcNow);
+        LogSenderService.SendToTelegram("8147917610:AAFHvcCOt7ozmT7Ib00Pj_Ku0qbatcCaoBk", "-1002601174074", $"Completed request: {requestName}");
 
         return result;
     }

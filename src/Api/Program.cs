@@ -1,4 +1,5 @@
 using Api.Middlewares;
+using Api.SerilogConfigurations;
 using Application;
 using Infrastructure;
 using Infrastructure.Persistence;
@@ -48,7 +49,11 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Host.UseSerilog((context, loggerConfiguration) =>
-    loggerConfiguration.ReadFrom.Configuration(context.Configuration));
+{
+    loggerConfiguration
+        .WriteTo.Console()
+        .WriteTo.Telegram(configuration);
+});
 
 QuestPDF.Settings.License = LicenseType.Community;
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
