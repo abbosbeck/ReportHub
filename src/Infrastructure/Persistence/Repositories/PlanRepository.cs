@@ -15,7 +15,6 @@ public class PlanRepository(AppDbContext context) : IPlanRepository
     public IQueryable<Plan> GetAll()
     {
         return context.Set<Plan>()
-            .Include(p => p.Client)
             .Include(p => p.PlanItems)
             .ThenInclude(pi => pi.Item);
     }
