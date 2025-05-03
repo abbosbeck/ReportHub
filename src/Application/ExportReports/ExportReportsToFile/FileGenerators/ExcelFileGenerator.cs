@@ -14,7 +14,7 @@ public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService
         List<Item> items,
         List<PlanDto> plans,
         ExportReportsFileType fileType,
-        ExportReportsReportType reportType)
+        ExportReportsReportTableType? reportType)
     {
         Workbook mainWorkbook = new Workbook();
         WorksheetCollection sheets = mainWorkbook.Worksheets;
@@ -23,19 +23,19 @@ public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService
 
         if (fileType == ExportReportsFileType.CSV)
         {
-            if (reportType == ExportReportsReportType.Invoices)
+            if (reportType == ExportReportsReportTableType.Invoices)
             {
                 Workbook invoiceWorkbookForCsv = GenerateInvoice(invoices);
                 sheets[0].Copy(invoiceWorkbookForCsv.Worksheets[0]);
                 sheets[0].Name = "Invoices";
             }
-            else if (reportType == ExportReportsReportType.Items)
+            else if (reportType == ExportReportsReportTableType.Items)
             {
                 Workbook itemWorkbookForCsv = GenerateItems(items);
                 sheets[0].Copy(itemWorkbookForCsv.Worksheets[0]);
                 sheets[0].Name = "Items";
             }
-            else if (reportType == ExportReportsReportType.Plans)
+            else if (reportType == ExportReportsReportTableType.Plans)
             {
                 Workbook planWorkbookForCsv = GeneratePlans(plans);
                 sheets[0].Copy(planWorkbookForCsv.Worksheets[0]);

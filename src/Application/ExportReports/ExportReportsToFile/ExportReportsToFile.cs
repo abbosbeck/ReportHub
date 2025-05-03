@@ -12,12 +12,12 @@ namespace Application.ExportReports.ExportReportsToFile;
 public class ExportReportsToFileQuery(
     Guid clinetId,
     ExportReportsFileType fileType,
-    ExportReportsReportType reportType)
+    ExportReportsReportTableType? reportType)
     : IRequest<ExportReportsToFileDto>, IClientRequest
 {
     public ExportReportsFileType ExportReportsFileType { get; set; } = fileType;
 
-    public ExportReportsReportType ReportType { get; set; } = reportType;
+    public ExportReportsReportTableType? ReportType { get; set; } = reportType;
 
     public Guid ClientId { get; set; } = clinetId;
 }

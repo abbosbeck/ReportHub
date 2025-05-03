@@ -12,9 +12,9 @@ public class ExportReportsController(ISender mediator) : ApiControllerBase(media
     public async Task<IActionResult> GetFileAsync(
         [FromRoute] Guid clientId,
         [FromQuery, BindRequired] ExportReportsFileType type,
-        [FromQuery, BindRequired] ExportReportsReportType reportType )
+        [FromQuery] ExportReportsReportTableType? reportTableType )
     {
-        var result = await Mediator.Send(new ExportReportsToFileQuery(clientId, type, reportType));
+        var result = await Mediator.Send(new ExportReportsToFileQuery(clientId, type, reportTableType));
 
         return File(result.ByteArray, result.ContentType, result.FileName);
     }
