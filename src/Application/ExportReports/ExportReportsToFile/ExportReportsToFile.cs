@@ -5,6 +5,7 @@ using Application.Common.Interfaces.External.Countries;
 using Application.Common.Interfaces.External.CurrencyExchange;
 using Application.Common.Interfaces.Repositories;
 using Application.ExportReports.ExportReportsToFile.FileGenerators;
+using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.ExportReports.ExportReportsToFile;
@@ -35,33 +36,76 @@ public class ExportReportsToFileQueryHandler(
 {
     public async Task<ExportReportsToFileDto> Handle(ExportReportsToFileQuery request, CancellationToken cancellationToken)
     {
-        var invoices = await invoiceRepository.GetAll().ToListAsync(cancellationToken);
-        var items = await itemRepository.GetAll().ToListAsync(cancellationToken);
-        //var plans = await planRepository.GetAll().ToListAsync(cancellationToken);
-
-        var client = await clientRepository.GetByIdAsync(request.ClientId);
-        //var clientCurrency = await countryService.GetCurrencyCodeByCountryCodeAsync(client.CountryCode);
-
+        List<Invoice> invoices = new List<Invoice>();
+        List<Item> items = new List<Item>();
         List<PlanDto> planDtos = new List<PlanDto>();
-        /*foreach (var plan in plans)
-        {
-            var planDto = mapper.Map<PlanDto>(plan);
-            var totalPrice = plan.PlanItems.Sum(planItem =>
-            {
-                var price = currencyExchangeService
-                    .ExchangeCurrencyAsync(planItem.Item.CurrencyCode, clientCurrency, planItem.Item.Price, plan.StartDate)
-                    .Result;
 
-                return planItem.Quantity * price;
-            });
-            planDto.TotalPrice = currencyExchangeService.GetAmountWithSymbol(totalPrice, clientCurrency);
-            planDto.CurrencyCode = clientCurrency;
-            planDtos.Add(planDto);
-        }*/
+        if (request.ExportReportsFileType.Equals(ExportReportsFileType.Excel))
+        {
+            invoices = await invoiceRepository.GetAll().ToListAsync(cancellationToken);
+            items = await itemRepository.GetAll().ToListAsync(cancellationToken);
+            planDtos = await GetPlansAsync(request.ClientId, cancellationToken);
+        }
+        else
+        {
+            if (request.ReportType.Equals(ExportReportsReportTableType.Invoices))
+            {
+                invoices = await invoiceRepository.GetAll().ToListAsync(cancellationToken);
+            }
+            else if (request.ReportType.Equals(ExportReportsReportTableType.Items))
+            {
+                items = await itemRepository.GetAll().ToListAsync(cancellationToken);
+            }
+            else if (request.ReportType.Equals(ExportReportsReportTableType.Plans))
+            {
+                planDtos = await GetPlansAsync(request.ClientId, cancellationToken);
+            }
+        }
 
         var result = new ExcelFileGenerator(currencyExchangeService)
                 .GenerateExcelFile(invoices, items, planDtos, request.ExportReportsFileType, request.ReportType);
 
         return result;
+    }
+
+    public async Task<List<PlanDto>> GetPlansAsync(Guid clientId, CancellationToken cancellationToken)
+    {
+        var plans = await planRepository.GetAll().ToListAsync(cancellationToken);
+
+        var client = await clientRepository.GetByIdAsync(clientId);
+        var clientCurrency = await countryService.GetCurrencyCodeByCountryCodeAsync(client.CountryCode);
+
+        List<PlanDto> planDtos = new List<PlanDto>();
+        var exchangedValueCache = new Dictionary<(string, string, DateTime), decimal>();
+        foreach (var plan in plans)
+        {
+            var itemsGroup = plan.PlanItems
+                .GroupBy(pl => pl.Item.CurrencyCode)
+                .Select(group => new
+                {
+                    CurrencyCode = group.Key,
+                    Amount = group.Sum(planItem => planItem.Item.Price * planItem.Quantity),
+                }).ToList();
+
+            var planDto = mapper.Map<PlanDto>(plan);
+            var totalPrice = (await Task.WhenAll(itemsGroup.Select(async item =>
+            {
+                var key = (item.CurrencyCode, clientCurrency, plan.StartDate);
+                if (!exchangedValueCache.TryGetValue(key, out var exchangedValue))
+                {
+                    exchangedValue = await currencyExchangeService
+                        .ExchangeCurrencyAsync(item.CurrencyCode, clientCurrency, 1, plan.StartDate);
+                    exchangedValueCache[key] = exchangedValue;
+                }
+
+                return exchangedValue * item.Amount;
+            }))).Sum();
+
+            planDto.TotalPrice = currencyExchangeService.GetAmountWithSymbol(totalPrice, clientCurrency);
+            planDto.CurrencyCode = clientCurrency;
+            planDtos.Add(planDto);
+        }
+
+        return planDtos;
     }
 }
