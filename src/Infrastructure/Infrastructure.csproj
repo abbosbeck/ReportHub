@@ -4,7 +4,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
-	<NoWarn>SA1413</NoWarn>
+	<NoWarn>SA1413,S4581,S1186</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

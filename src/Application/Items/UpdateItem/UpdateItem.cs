@@ -2,11 +2,8 @@
 using Application.Common.Constants;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
-using Application.Common.Interfaces.External.Countries;
 using Application.Common.Interfaces.External.CurrencyExchange;
 using Application.Common.Interfaces.Repositories;
-using Domain.Entities;
-using System.Linq.Expressions;
 
 namespace Application.Items.UpdateItem;
 
@@ -44,7 +41,7 @@ public class UpdateItemCommandHandler(
         var invoice = await invoiceRepository.GetByIdAsync(item.InvoiceId)
             ?? throw new NotFoundException($"Invoice is not found with this id: {item.InvoiceId}");
 
-        var customer = await customerRepository.GetByIdAsync(invoice.CustomerId)
+        _ = await customerRepository.GetByIdAsync(invoice.CustomerId)
             ?? throw new NotFoundException($"Customer is not found with this id: {invoice.CustomerId}");
 
         var exchangedOldPrice = await currencyExchangeService
