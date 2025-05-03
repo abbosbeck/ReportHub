@@ -1,4 +1,5 @@
-﻿using Application.Invoices;
+﻿using System.ComponentModel.DataAnnotations;
+using Application.Invoices;
 using Application.Invoices.CreateInvoice;
 using Application.Invoices.ExportInvoice;
 using Application.Invoices.GetExportLogById;
@@ -11,7 +12,6 @@ using Application.Invoices.TotalRevenueCalculation;
 using Application.Invoices.UpdateInvoice;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Api.Controllers
 {
@@ -93,8 +93,8 @@ namespace Api.Controllers
         [HttpGet("total-revenue-calculation")]
         public async Task<IActionResult> TotalRevenueCalucationAsync(
             [FromRoute] Guid clientId,
-            [FromQuery, BindRequired] DateTime startDate,
-            [FromQuery, BindRequired] DateTime endDate)
+            [FromQuery, Required] DateTime startDate,
+            [FromQuery, Required] DateTime endDate)
         {
             var result = await Mediator.Send(new TotalRevenueCalculationQuery(clientId, startDate, endDate));
 
