@@ -37,13 +37,13 @@ public class ExportReportsToFileQueryHandler(
     {
         var invoices = await invoiceRepository.GetAll().ToListAsync(cancellationToken);
         var items = await itemRepository.GetAll().ToListAsync(cancellationToken);
-        var plans = await planRepository.GetAll().ToListAsync(cancellationToken);
+        //var plans = await planRepository.GetAll().ToListAsync(cancellationToken);
 
         var client = await clientRepository.GetByIdAsync(request.ClientId);
-        var clientCurrency = await countryService.GetCurrencyCodeByCountryCodeAsync(client.CountryCode);
+        //var clientCurrency = await countryService.GetCurrencyCodeByCountryCodeAsync(client.CountryCode);
 
         List<PlanDto> planDtos = new List<PlanDto>();
-        foreach (var plan in plans)
+        /*foreach (var plan in plans)
         {
             var planDto = mapper.Map<PlanDto>(plan);
             var totalPrice = plan.PlanItems.Sum(planItem =>
@@ -57,7 +57,7 @@ public class ExportReportsToFileQueryHandler(
             planDto.TotalPrice = currencyExchangeService.GetAmountWithSymbol(totalPrice, clientCurrency);
             planDto.CurrencyCode = clientCurrency;
             planDtos.Add(planDto);
-        }
+        }*/
 
         var result = new ExcelFileGenerator(currencyExchangeService)
                 .GenerateExcelFile(invoices, items, planDtos, request.ExportReportsFileType, request.ReportType);
