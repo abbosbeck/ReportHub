@@ -1,4 +1,5 @@
-﻿using Application.Common.Interfaces.External.Countries;
+﻿using Application.Common.Exceptions;
+using Application.Common.Interfaces.External.Countries;
 using Application.Common.Interfaces.External.CurrencyExchange;
 using Application.Common.Interfaces.Repositories;
 using Application.Invoices.GetTotalRevenueCalculation;
@@ -135,5 +136,49 @@ public class GetTotalRevenueCalculationTests
             service => service.ExchangeCurrencyAsync(
                 It.IsAny<string>(), It.IsAny<string>(), It.IsAny<decimal>(), It.IsAny<DateTime>()),
             Times.Exactly(3));
+    }
+
+    [Test]
+    public async Task Should_Throw_NotFoundException()
+    {
+        // Arrange
+        var clientId = Guid.NewGuid();
+        var invoices = new List<Invoice>().BuildMock().AsQueryable();
+
+        mockClientRepository
+           .Setup(repository => repository.GetByIdAsync(clientId))
+           .ReturnsAsync(new Client());
+
+        mockCountryService
+            .Setup(service => service.GetCurrencyCodeByCountryCodeAsync("UZB"))
+            .ReturnsAsync("UZS");
+
+        mockInvoiceRepository
+            .Setup(repository => repository.GetAll())
+            .Returns(invoices);
+
+        var query = new GetTotalRevenueCalculationQuery(clientId, DateTime.Now, DateTime.Now);
+
+        // Act and Assert
+        Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(query, CancellationToken.None));
+
+        mockClientRepository.Verify(
+            repository => repository.GetByIdAsync(It.IsAny<Guid>()),
+            Times.Once);
+
+        mockCountryService.Verify(
+            service => service.GetCurrencyCodeByCountryCodeAsync(It.IsAny<string>()),
+            Times.Once);
+
+        mockInvoiceRepository.Verify(
+            repository => repository.GetAll(),
+            Times.Once);
+
+        mockCurrencyExchangeService.Verify(
+            service => service.ExchangeCurrencyAsync(
+                It.IsAny<string>(), It.IsAny<string>(), It.IsAny<decimal>(), It.IsAny<DateTime>()),
+            Times.Never);
+
+        await Task.CompletedTask;
     }
 }
