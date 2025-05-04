@@ -1,4 +1,4 @@
-﻿namespace Application.Invoices.TotalNumberOfInvoices.GetInvoiceCount;
+﻿namespace Application.Invoices.GetTotalNumberOfInvoices;
 
 public class GetInvoiceCountQueryValidator : AbstractValidator<GetInvoiceCountQuery>
 {

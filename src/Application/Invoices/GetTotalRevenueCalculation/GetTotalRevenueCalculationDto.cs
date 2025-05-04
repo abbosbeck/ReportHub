@@ -1,6 +1,6 @@
-﻿namespace Application.Invoices.TotalRevenueCalculation;
+﻿namespace Application.Invoices.GetTotalRevenueCalculation;
 
-public class TotalRevenueCalculationDto(
+public class GetTotalRevenueCalculationDto(
     string totalRevenue,
     string currencyCode,
     DateTime startDate,
