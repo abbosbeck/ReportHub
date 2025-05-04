@@ -12,7 +12,10 @@ public static class ApplicationBuilderExtensions
         var services = scope.ServiceProvider;
         var context = services.GetRequiredService<AppDbContext>();
         var service = services.GetRequiredService<IReportScheduleService>();
-        var reportSchedules = await context.ReportSchedules.ToListAsync();
+        var reportSchedules = await context.ReportSchedules
+            .IgnoreQueryFilters()
+            .Where(reportSchedule => !reportSchedule.IsDeleted)
+            .ToListAsync();
 
         await service.RestoreScheduledJobsAsync(reportSchedules);
     }
