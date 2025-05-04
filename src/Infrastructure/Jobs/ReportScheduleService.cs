@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using Application.Common.Interfaces.Repositories;
+﻿using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
 using Quartz;
 
@@ -16,6 +15,7 @@ public class ReportScheduleService(ISchedulerFactory schedulerFactory) : IReport
         var job = JobBuilder.Create<ReportEmailSenderJob>()
             .WithIdentity(reportSchedule.JobKey)
             .UsingJobData(nameof(reportSchedule.UserId), reportSchedule.UserId)
+            .UsingJobData(nameof(reportSchedule.ClientId), reportSchedule.ClientId)
             .Build();
 
         var trigger = TriggerBuilder.Create()
@@ -55,8 +55,9 @@ public class ReportScheduleService(ISchedulerFactory schedulerFactory) : IReport
             reportSchedule => JobBuilder.Create<ReportEmailSenderJob>()
                 .WithIdentity(reportSchedule.JobKey)
                 .UsingJobData(nameof(reportSchedule.UserId), reportSchedule.UserId)
+                .UsingJobData(nameof(reportSchedule.ClientId), reportSchedule.ClientId)
                 .Build(),
-            IReadOnlyCollection<ITrigger> (reportSchedule) => new List<ITrigger>()
+            IReadOnlyCollection<ITrigger>(reportSchedule) => new List<ITrigger>()
             {
                 TriggerBuilder.Create()
                     .WithIdentity(reportSchedule.TriggerKey)
