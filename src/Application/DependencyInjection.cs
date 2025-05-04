@@ -2,6 +2,7 @@
 using Application.Common.Behaviors;
 using Application.Common.Configurations;
 using Application.Common.Interfaces.Authorization;
+using Application.Common.Interfaces.Services;
 using Application.Common.Services;
 using Domain.Entities;
 using Microsoft.Extensions.Configuration;
@@ -35,6 +36,7 @@ public static class DependencyInjection
 
         services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
+        services.AddScoped<IReportGeneratorAsFileService, ReportGeneratorAsFileService>();
         services.AddHttpContextAccessor();
 
         services.AddScoped<IClientIdProvider, ClientIdProvider>();

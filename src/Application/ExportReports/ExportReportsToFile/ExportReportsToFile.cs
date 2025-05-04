@@ -4,6 +4,7 @@ using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.External.Countries;
 using Application.Common.Interfaces.External.CurrencyExchange;
 using Application.Common.Interfaces.Repositories;
+using Application.Common.Interfaces.Services;
 using Application.Common.Services;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -31,6 +32,7 @@ public class ExportReportsToFileQueryHandler(
     IClientRepository clientRepository,
     ICurrencyExchangeService currencyExchangeService,
     ICountryService countryService,
+    IReportGeneratorAsFileService fileGenerator,
     IMapper mapper)
     : IRequestHandler<ExportReportsToFileQuery, ExportReportsToFileDto>
 {
@@ -62,7 +64,7 @@ public class ExportReportsToFileQueryHandler(
             }
         }
 
-        var result = new ReportGeneratorAsFileService()
+        var result = fileGenerator
                 .GenerateExcelFile(invoices, items, planDtos, request.ExportReportsFileType, request.ReportType);
 
         return result;
