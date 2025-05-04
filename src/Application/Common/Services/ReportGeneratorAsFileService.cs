@@ -1,12 +1,14 @@
 ﻿using System.Drawing;
 using Application.Common.Exceptions;
-using Application.Common.Interfaces.External.CurrencyExchange;
+using Application.Common.Interfaces.Services;
+using Application.ExportReports.ExportReportsToFile;
+using Application.ExportReports.ExportReportsToFile.Request;
 using Aspose.Cells;
 using Domain.Entities;
 
-namespace Application.ExportReports.ExportReportsToFile.FileGenerators;
+namespace Application.Common.Services;
 
-public class ExcelFileGenerator()
+public class ReportGeneratorAsFileService : IReportGeneratorAsFileService
 {
     private readonly Style headerStyle = new SheetStyle().CreateHeaderStyle();
     private readonly Style cellBorderSyle = new SheetStyle().CreateBorderStyle();
@@ -174,7 +176,7 @@ public class ExcelFileGenerator()
             cells[row, 1].Value = invoice.InvoiceNumber.ToString("D6");
             cells[row, 2].Value = string.Format("{0:MM/dd/yyyy}", invoice.IssueDate);
             cells[row, 3].Value = string.Format("{0:MM/dd/yyyy}", invoice.DueDate);
-            cells[row, 4].Value = string.Format("{0:#.00}", Convert.ToDecimal(invoice.Amount) / 100); ;
+            cells[row, 4].Value = string.Format("{0:#.00}", Convert.ToDecimal(invoice.Amount) / 100);
             cells[row, 5].Value = invoice.CurrencyCode;
             cells[row, 6].Value = invoice.PaymentStatus.ToString();
 

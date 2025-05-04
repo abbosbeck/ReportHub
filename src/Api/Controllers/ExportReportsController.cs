@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Application.ExportReports.ExportReportsToFile;
+using Application.ExportReports.ExportReportsToFile.Request;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
