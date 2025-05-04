@@ -39,6 +39,8 @@ public class AppDbContext(
 
     public DbSet<PlanItem> PlanItems { get; set; }
 
+    public DbSet<ReportSchedule> ReportSchedules { get; set; }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -86,6 +88,11 @@ public class AppDbContext(
                 !t.IsDeleted));
 
         builder.Entity<Plan>(entity => entity
+            .HasQueryFilter(t =>
+                t.ClientId == clientProvider.ClientId &&
+                !t.IsDeleted));
+
+        builder.Entity<ReportSchedule>(entity => entity
             .HasQueryFilter(t =>
                 t.ClientId == clientProvider.ClientId &&
                 !t.IsDeleted));
