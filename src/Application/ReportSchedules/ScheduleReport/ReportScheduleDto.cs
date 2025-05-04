@@ -11,4 +11,6 @@ public class ReportScheduleDto
     public string CronExpression { get; init; }
 
     public Guid UserId { get; init; }
+
+    public Guid ClientId { get; init; }
 }
