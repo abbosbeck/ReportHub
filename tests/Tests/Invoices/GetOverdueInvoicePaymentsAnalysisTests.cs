@@ -39,7 +39,7 @@ public class GetOverdueInvoicePaymentsAnalysisTests
     }
 
     [Test]
-    public async Task ShouldReturnCorrectOverdueInvoicePaymentsAnalysisAsync()
+    public async Task Should_Return_ValidInvoicePaymentsAnalysis()
     {
         // Arrange
         var clientId = Guid.NewGuid();
@@ -155,7 +155,7 @@ public class GetOverdueInvoicePaymentsAnalysisTests
     }
 
     [Test]
-    public async Task ShouldThrowNotFoundExceptionWhenNoOverdueInvoicesFoundAsync()
+    public async Task Should_Throw_NotFoundException_WhenNoInvoicesFound()
     {
         // Arrange
         var clientId = Guid.NewGuid();

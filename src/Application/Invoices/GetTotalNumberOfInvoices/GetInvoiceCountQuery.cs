@@ -23,9 +23,8 @@ public class GetInvoiceCountQuery(
 }
 
 [RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin, ClientRoles.Operator)]
-public class GetInvoiceCountQueryHandler
-    (IInvoiceRepository invoiceRepository,
-    ICustomerRepository customerRepository,
+public class GetInvoiceCountQueryHandler(
+    IInvoiceRepository invoiceRepository,
     IValidator<GetInvoiceCountQuery> validator)
     : IRequestHandler<GetInvoiceCountQuery, int>
 {
@@ -33,22 +32,10 @@ public class GetInvoiceCountQueryHandler
     {
         await validator.ValidateAndThrowAsync(request, cancellationToken);
 
-        if (request.CustomerId.HasValue)
-        {
-            bool customerExists = await customerRepository
-                .GetAll()
-                .AnyAsync(c => c.Id == request.CustomerId.Value, cancellationToken);
-
-            if (!customerExists)
-            {
-                throw new NotFoundException($"Customer with ID {request.CustomerId} not found for this client.");
-            }
-        }
-
-        var query = invoiceRepository.GetAll()
-                    .Where(i => i.IssueDate <= request.EndDate &&
-                    i.DueDate >= request.StartDate &&
-                    (!request.CustomerId.HasValue || i.CustomerId == request.CustomerId.Value));
+        var query = invoiceRepository
+            .GetAll()
+            .Where(invoice => invoice.IssueDate <= request.EndDate && invoice.DueDate >= request.StartDate &&
+                              (!request.CustomerId.HasValue || invoice.CustomerId == request.CustomerId.Value));
 
         var count = await query.CountAsync(cancellationToken);
 
