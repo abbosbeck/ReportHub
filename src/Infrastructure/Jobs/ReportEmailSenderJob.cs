@@ -22,10 +22,10 @@ public class ReportEmailSenderJob(
         var request = new ExportReportsToFileQuery(clientId, ExportReportsFileType.Excel, null);
         var report = await fileQueryHandler.Handle(request, CancellationToken.None);
 
-        string message = $"<p><strong>Hi {user.FirstName}," +
-            $"</strong></p>\r\n\r\n<p>Your weekly report is ready and waiting for you!</p>" +
-            $"\r\n\r\n<p>\r\n<p>Have a productive week ahead!</p>" +
-            $"\r\n\r\n<p>Best regards,<br>ReportHub!</p>\r\n";
+        var message = $"<p><strong>Hi {user!.FirstName}," +
+                      $"</strong></p>\r\n\r\n<p>Your weekly report is ready and waiting for you!</p>" +
+                      $"\r\n\r\n<p>\r\n<p>Have a productive week ahead!</p>" +
+                      $"\r\n\r\n<p>Best regards,<br>ReportHub!</p>\r\n";
 
         await emailService.SendEmailWithFileAsync(
             user!.Email,
