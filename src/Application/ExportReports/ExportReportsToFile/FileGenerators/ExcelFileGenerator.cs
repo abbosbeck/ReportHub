@@ -1,5 +1,4 @@
-﻿using System.Data;
-using System.Drawing;
+﻿using System.Drawing;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces.External.CurrencyExchange;
 using Aspose.Cells;
@@ -9,6 +8,9 @@ namespace Application.ExportReports.ExportReportsToFile.FileGenerators;
 
 public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService)
 {
+    private readonly Style headerStyle = new SheetStyle().CreateHeaderStyle();
+    private readonly Style cellBorderSyle = new SheetStyle().CreateBorderStyle();
+
     public ExportReportsToFileDto GenerateExcelFile(
         List<Invoice> invoices,
         List<Item> items,
@@ -66,7 +68,7 @@ public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService
                 "Reports");
     }
 
-    private static void AddPlanSheet(Worksheet worksheet, List<PlanDto> plans)
+    private void AddPlanSheet(Worksheet worksheet, List<PlanDto> plans)
     {
         var cells = worksheet.Cells;
         cells[0, 0].Value = "No";
@@ -78,7 +80,7 @@ public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService
 
         for (int col = 0; col < 6; col++)
         {
-            cells[0, col].SetStyle(SheetStyle.CreateHeaderStyle());
+            cells[0, col].SetStyle(headerStyle);
             worksheet.Cells.SetColumnWidth(col, 18);
         }
 
@@ -95,7 +97,7 @@ public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService
 
             for (int col = 0; col < 6; col++)
             {
-                cells[row, col].SetStyle(SheetStyle.CreateBorderStyle());
+                cells[row, col].SetStyle(cellBorderSyle);
             }
 
             row++;
@@ -117,7 +119,7 @@ public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService
 
         for (int col = 0; col < 6; col++)
         {
-            cells[0, col].SetStyle(SheetStyle.CreateHeaderStyle());
+            cells[0, col].SetStyle(headerStyle);
             worksheet.Cells.SetColumnWidth(col, 18);
         }
 
@@ -136,7 +138,7 @@ public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService
             for (int col = 0; col < 6; col++)
             {
                 var cell = cells[row, col];
-                cell.SetStyle(SheetStyle.CreateBorderStyle());
+                cell.SetStyle(cellBorderSyle);
                 if (row % 2 == 0)
                 {
                     cell.GetStyle().BackgroundColor = Color.WhiteSmoke;
@@ -168,7 +170,7 @@ public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService
 
         for (int col = 0; col < 7; col++)
         {
-            cells[0, col].SetStyle(SheetStyle.CreateHeaderStyle());
+            cells[0, col].SetStyle(headerStyle);
             worksheet.Cells.SetColumnWidth(col, 18);
         }
 
@@ -188,7 +190,7 @@ public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService
             for (int col = 0; col < 7; col++)
             {
                 var cell = cells[row, col];
-                cell.SetStyle(SheetStyle.CreateBorderStyle());
+                cell.SetStyle(cellBorderSyle);
                 if (worksheet.Cells[0, col].StringValue == nameof(Invoice.PaymentStatus))
                 {
                     string status = cell.StringValue;
@@ -211,11 +213,13 @@ public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService
     }
 }
 
-public static class SheetStyle
+public class SheetStyle
 {
-    public static Style CreateHeaderStyle()
+    private readonly CellsFactory cellsFactory = new CellsFactory();
+
+    public Style CreateHeaderStyle()
     {
-        Style style = new Style();
+        Style style = cellsFactory.CreateStyle();
         style.HorizontalAlignment = TextAlignmentType.Center;
         style.VerticalAlignment = TextAlignmentType.Center;
         style.Font.IsBold = true;
@@ -225,9 +229,9 @@ public static class SheetStyle
         return style;
     }
 
-    public static Style CreateBorderStyle()
+    public Style CreateBorderStyle()
     {
-        Style style = new Style();
+        Style style = cellsFactory.CreateStyle();
         style.Borders[BorderType.TopBorder].LineStyle = CellBorderType.Thin;
         style.Borders[BorderType.BottomBorder].LineStyle = CellBorderType.Thin;
         style.Borders[BorderType.LeftBorder].LineStyle = CellBorderType.Thin;
