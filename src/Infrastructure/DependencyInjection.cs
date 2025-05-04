@@ -1,6 +1,5 @@
 ﻿using Application.Common.Configurations;
 using Application.Common.Interfaces.Authorization;
-using Application.Common.Interfaces.External;
 using Application.Common.Interfaces.External.Countries;
 using Application.Common.Interfaces.External.CurrencyExchange;
 using Application.Common.Interfaces.Repositories;
@@ -9,6 +8,7 @@ using Domain.Entities;
 using Infrastructure.Authentication;
 using Infrastructure.Authentication.Extensions;
 using Infrastructure.External;
+using Infrastructure.Jobs;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Extensions;
 using Infrastructure.Persistence.Repositories;
@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Quartz;
 
 namespace Infrastructure;
 
@@ -50,6 +51,8 @@ public static class DependencyInjection
         services.AddScoped<IPlanRepository, PlanRepository>();
         services.AddScoped<IPlanItemRepository, PlanItemRepository>();
         services.AddScoped<ILogRepository, LogRepository>();
+        services.AddScoped<IReportScheduleRepository, ReportScheduleRepository>();
+        services.AddSingleton<IReportScheduleService, ReportScheduleService>();
         services.AddSingleton<IDateTimeService, DateTimeService>();
         services.AddHttpClient<ICountryService, CountryService>(httpClient =>
         {
@@ -68,6 +71,10 @@ public static class DependencyInjection
         services.AddDataProtection()
             .PersistKeysToDbContext<AppDbContext>()
             .SetApplicationName("ReportHub");
+
+        services.AddQuartz();
+
+        services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
 
         return services;
     }
