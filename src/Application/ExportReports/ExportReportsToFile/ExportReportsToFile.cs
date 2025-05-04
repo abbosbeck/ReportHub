@@ -62,7 +62,7 @@ public class ExportReportsToFileQueryHandler(
             }
         }
 
-        var result = new ExcelFileGenerator(currencyExchangeService)
+        var result = new ExcelFileGenerator()
                 .GenerateExcelFile(invoices, items, planDtos, request.ExportReportsFileType, request.ReportType);
 
         return result;
@@ -101,7 +101,7 @@ public class ExportReportsToFileQueryHandler(
                 return exchangedValue * item.Amount;
             }))).Sum();
 
-            planDto.TotalPrice = currencyExchangeService.GetAmountWithSymbol(totalPrice, clientCurrency);
+            planDto.TotalPrice = string.Format("{0:#.00}", Convert.ToDecimal(totalPrice) / 100);
             planDto.CurrencyCode = clientCurrency;
             planDtos.Add(planDto);
         }

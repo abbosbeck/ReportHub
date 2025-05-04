@@ -7,8 +7,8 @@ using Application.Invoices.GetExportLogsList;
 using Application.Invoices.GetInvoiceById;
 using Application.Invoices.GetInvoicesList;
 using Application.Invoices.GetOverdueInvoicePaymentsAnalysis;
-using Application.Invoices.TotalNumberOfInvoices.GetInvoiceCount;
-using Application.Invoices.TotalRevenueCalculation;
+using Application.Invoices.GetTotalNumberOfInvoices;
+using Application.Invoices.GetTotalRevenueCalculation;
 using Application.Invoices.UpdateInvoice;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -96,7 +96,7 @@ namespace Api.Controllers
             [FromQuery, Required] DateTime startDate,
             [FromQuery, Required] DateTime endDate)
         {
-            var result = await Mediator.Send(new TotalRevenueCalculationQuery(clientId, startDate, endDate));
+            var result = await Mediator.Send(new GetTotalRevenueCalculationQuery(clientId, startDate, endDate));
 
             return Ok(result);
         }
