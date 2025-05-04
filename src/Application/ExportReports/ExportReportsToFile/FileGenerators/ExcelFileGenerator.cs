@@ -6,7 +6,7 @@ using Domain.Entities;
 
 namespace Application.ExportReports.ExportReportsToFile.FileGenerators;
 
-public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService)
+public class ExcelFileGenerator()
 {
     private readonly Style headerStyle = new SheetStyle().CreateHeaderStyle();
     private readonly Style cellBorderSyle = new SheetStyle().CreateBorderStyle();
@@ -55,28 +55,30 @@ public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService
                 "text/csv",
                 reportType.ToString());
         }
+        else
+        {
+            AddInvoiceSheet(sheets.Add("Invoices"), invoices);
+            AddItemSheet(sheets.Add("Items"), items);
+            AddPlanSheet(sheets.Add("Plans"), plans);
 
-        AddInvoiceSheet(sheets.Add("Invoices"), invoices);
-        AddItemSheet(sheets.Add("Items"), items);
-        AddPlanSheet(sheets.Add("Plans"), plans);
+            mainWorkbook.Save(ms, SaveFormat.Xlsx);
 
-        mainWorkbook.Save(ms, SaveFormat.Xlsx);
-
-        return new ExportReportsToFileDto(
-                ms.ToArray(),
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                "Reports");
+            return new ExportReportsToFileDto(
+                    ms.ToArray(),
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    "Reports");
+        }
     }
 
     private void AddPlanSheet(Worksheet worksheet, List<PlanDto> plans)
     {
         var cells = worksheet.Cells;
         cells[0, 0].Value = "No";
-        cells[0, 1].Value = nameof(PlanDto.Title);
-        cells[0, 2].Value = nameof(PlanDto.StartDate);
-        cells[0, 3].Value = nameof(PlanDto.EndDate);
-        cells[0, 4].Value = nameof(PlanDto.TotalPrice);
-        cells[0, 5].Value = nameof(PlanDto.CurrencyCode);
+        cells[0, 1].Value = "Title";
+        cells[0, 2].Value = "Start Date";
+        cells[0, 3].Value = "End Date";
+        cells[0, 4].Value = "Total Price";
+        cells[0, 5].Value = "Currency Code";
 
         for (int col = 0; col < 6; col++)
         {
@@ -90,8 +92,8 @@ public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService
         {
             cells[row, 0].Value = counter++;
             cells[row, 1].Value = plan.Title;
-            cells[row, 2].Value = plan.StartDate;
-            cells[row, 3].Value = plan.EndDate;
+            cells[row, 2].Value = string.Format("{0:MM/dd/yyyy}", plan.StartDate);
+            cells[row, 3].Value = string.Format("{0:MM/dd/yyyy}", plan.EndDate);
             cells[row, 4].Value = plan.TotalPrice;
             cells[row, 5].Value = plan.CurrencyCode;
 
@@ -111,10 +113,10 @@ public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService
     {
         var cells = worksheet.Cells;
         cells[0, 0].Value = "No";
-        cells[0, 1].Value = nameof(Item.Name);
-        cells[0, 2].Value = nameof(Item.Description);
-        cells[0, 3].Value = nameof(Item.Price);
-        cells[0, 4].Value = nameof(Item.CurrencyCode);
+        cells[0, 1].Value = "Name";
+        cells[0, 2].Value = "Description";
+        cells[0, 3].Value = "Price";
+        cells[0, 4].Value = "Currency Code";
         cells[0, 5].Value = "Invoice Number";
 
         for (int col = 0; col < 6; col++)
@@ -127,11 +129,10 @@ public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService
         int counter = 1;
         foreach (var item in items)
         {
-            string price = currencyExchangeService.GetAmountWithSymbol(item.Price, item.CurrencyCode);
             cells[row, 0].Value = counter++;
             cells[row, 1].Value = item.Name;
             cells[row, 2].Value = item.Description;
-            cells[row, 3].Value = price;
+            cells[row, 3].Value = string.Format("{0:#.00}", Convert.ToDecimal(item.Price) / 100);
             cells[row, 4].Value = item.CurrencyCode;
             cells[row, 5].Value = item.Invoice.InvoiceNumber.ToString("D6");
 
@@ -139,15 +140,6 @@ public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService
             {
                 var cell = cells[row, col];
                 cell.SetStyle(cellBorderSyle);
-                if (row % 2 == 0)
-                {
-                    cell.GetStyle().BackgroundColor = Color.WhiteSmoke;
-                }
-
-                if (col == 0 || worksheet.Cells[0, col].StringValue == "Price")
-                {
-                    cell.GetStyle().HorizontalAlignment = TextAlignmentType.Right;
-                }
             }
 
             row++;
@@ -161,12 +153,12 @@ public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService
     {
         var cells = worksheet.Cells;
         cells[0, 0].Value = "No";
-        cells[0, 1].Value = nameof(Invoice.InvoiceNumber);
-        cells[0, 2].Value = nameof(Invoice.IssueDate);
-        cells[0, 3].Value = nameof(Invoice.DueDate);
-        cells[0, 4].Value = nameof(Invoice.Amount);
-        cells[0, 5].Value = nameof(Invoice.CurrencyCode);
-        cells[0, 6].Value = nameof(Invoice.PaymentStatus);
+        cells[0, 1].Value = "Invoice Number";
+        cells[0, 2].Value = "Issue Date";
+        cells[0, 3].Value = "Due Date";
+        cells[0, 4].Value = "Amount";
+        cells[0, 5].Value = "Currency Code";
+        cells[0, 6].Value = "Payment Status";
 
         for (int col = 0; col < 7; col++)
         {
@@ -178,12 +170,11 @@ public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService
         int counter = 1;
         foreach (var invoice in invoices)
         {
-            string amount = currencyExchangeService.GetAmountWithSymbol(invoice.Amount, invoice.CurrencyCode);
             cells[row, 0].Value = counter++;
             cells[row, 1].Value = invoice.InvoiceNumber.ToString("D6");
-            cells[row, 2].Value = invoice.IssueDate;
-            cells[row, 3].Value = invoice.DueDate;
-            cells[row, 4].Value = amount;
+            cells[row, 2].Value = string.Format("{0:MM/dd/yyyy}", invoice.IssueDate);
+            cells[row, 3].Value = string.Format("{0:MM/dd/yyyy}", invoice.DueDate);
+            cells[row, 4].Value = string.Format("{0:#.00}", Convert.ToDecimal(invoice.Amount) / 100); ;
             cells[row, 5].Value = invoice.CurrencyCode;
             cells[row, 6].Value = invoice.PaymentStatus.ToString();
 
@@ -191,18 +182,6 @@ public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService
             {
                 var cell = cells[row, col];
                 cell.SetStyle(cellBorderSyle);
-                if (worksheet.Cells[0, col].StringValue == nameof(Invoice.PaymentStatus))
-                {
-                    string status = cell.StringValue;
-                    if (status == "Paid")
-                    {
-                        cell.GetStyle().Font.Color = Color.ForestGreen;
-                    }
-                    else if (status == "Unpaid")
-                    {
-                        cell.GetStyle().Font.Color = Color.Crimson;
-                    }
-                }
             }
 
             row++;
