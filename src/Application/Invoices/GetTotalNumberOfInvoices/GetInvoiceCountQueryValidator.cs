@@ -4,7 +4,7 @@ public class GetInvoiceCountQueryValidator : AbstractValidator<GetInvoiceCountQu
 {
     public GetInvoiceCountQueryValidator()
     {
-        RuleFor(i => i.StartDate).NotEmpty();
-        RuleFor(i => i.EndDate).NotEmpty().GreaterThan(i => i.StartDate);
+        RuleFor(query => query.StartDate).NotEmpty();
+        RuleFor(query => query.EndDate).NotEmpty().GreaterThan(query => query.StartDate);
     }
 }
