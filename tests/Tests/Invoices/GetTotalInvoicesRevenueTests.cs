@@ -5,14 +5,13 @@ using Application.Common.Interfaces.Repositories;
 using Application.Invoices.GetTotalRevenueCalculation;
 using Domain.Entities;
 using Domain.Enums;
-using Infrastructure.Persistence.Repositories;
 using MockQueryable;
 using Moq;
 
 namespace Tests.Invoices;
 
 [TestFixture]
-public class GetTotalRevenueCalculationTests
+public class GetTotalInvoicesRevenueTests
 {
     private Mock<IClientRepository> mockClientRepository;
     private Mock<IInvoiceRepository> mockInvoiceRepository;
