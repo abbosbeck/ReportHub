@@ -10,9 +10,13 @@ public class ReportSchedule : BaseAuditableEntity, ISoftDeletable
 
     public string CronExpression { get; init; }
 
-    public Guid UserId { get; init; }
+    public Guid UserId { get; set; }
 
     public User User { get; init; }
+
+    public Guid ClientId { get; init; }
+
+    public Client Client { get; init; }
 
     public bool IsDeleted { get; set; }
 
