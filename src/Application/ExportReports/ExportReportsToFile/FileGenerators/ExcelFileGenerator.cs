@@ -26,7 +26,7 @@ public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService
             Worksheet dataSheet = sheets[0];
             if (reportType == ExportReportsReportTableType.Invoices)
             {
-                GenerateInvoice(dataSheet, invoices);
+                AddInvoiceSheet(dataSheet, invoices);
                 dataSheet.Name = "Invoices";
             }
             else if (reportType == ExportReportsReportTableType.Items)
@@ -54,7 +54,7 @@ public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService
                 reportType.ToString());
         }
 
-        GenerateInvoice(sheets.Add("Invoices"), invoices);
+        AddInvoiceSheet(sheets.Add("Invoices"), invoices);
         AddItemSheet(sheets.Add("Items"), items);
         AddPlanSheet(sheets.Add("Plans"), plans);
 
@@ -155,7 +155,7 @@ public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService
         worksheet.AutoFitColumns();
     }
 
-    private void GenerateInvoice(Worksheet worksheet, List<Invoice> invoices)
+    private void AddInvoiceSheet(Worksheet worksheet, List<Invoice> invoices)
     {
         var cells = worksheet.Cells;
         cells[0, 0].Value = "No";
