@@ -8,13 +8,13 @@ public class ReportSchedule : BaseAuditableEntity, ISoftDeletable
 
     public string TriggerKey { get; init; }
 
-    public string CronExpression { get; init; }
+    public string CronExpression { get; set; }
 
     public Guid UserId { get; set; }
 
     public User User { get; init; }
 
-    public Guid ClientId { get; init; }
+    public Guid ClientId { get; set; }
 
     public Client Client { get; init; }
 

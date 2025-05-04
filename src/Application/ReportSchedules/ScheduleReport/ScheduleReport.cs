@@ -29,6 +29,7 @@ public class ScheduleReportCommandHandler(
 
         var reportSchedule = mapper.Map<ReportSchedule>(request.ReportSchedule);
         reportSchedule.UserId = currentUserService.UserId;
+        reportSchedule.ClientId = request.ClientId;
 
         await scheduleService.ScheduleAsync(reportSchedule);
         await repository.AddAsync(reportSchedule);

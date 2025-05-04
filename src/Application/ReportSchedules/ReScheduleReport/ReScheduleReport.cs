@@ -31,6 +31,7 @@ public class ReScheduleReportCommandHandler(
             ?? throw new NotFoundException("Report Schedule is not found");
 
         mapper.Map(request.ReportSchedule, reportSchedule);
+        reportSchedule.ClientId = request.ClientId;
 
         await reportScheduleService.ReScheduleAsync(reportSchedule);
         await repository.UpdateAsync(reportSchedule);
