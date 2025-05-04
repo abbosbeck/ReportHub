@@ -34,7 +34,7 @@ public class ReportSchedulesController(ISender mediator) : ApiControllerBase(med
         return Ok(result);
     }
 
-    [HttpGet("stop")]
+    [HttpDelete("stop")]
     public async Task<IActionResult> StopAsync([FromRoute] Guid clientId)
     {
         var result = await Mediator.Send(new StopReportScheduleCommand(clientId));
