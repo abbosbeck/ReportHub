@@ -4,7 +4,7 @@ using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.External.Countries;
 using Application.Common.Interfaces.External.CurrencyExchange;
 using Application.Common.Interfaces.Repositories;
-using Application.ExportReports.ExportReportsToFile.FileGenerators;
+using Application.Common.Services;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -62,7 +62,7 @@ public class ExportReportsToFileQueryHandler(
             }
         }
 
-        var result = new ExcelFileGenerator()
+        var result = new ReportGeneratorAsFileService()
                 .GenerateExcelFile(invoices, items, planDtos, request.ExportReportsFileType, request.ReportType);
 
         return result;

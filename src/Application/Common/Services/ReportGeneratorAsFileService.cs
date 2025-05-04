@@ -1,11 +1,13 @@
 ﻿using System.Drawing;
 using Application.Common.Exceptions;
+using Application.Common.Interfaces.Services;
+using Application.ExportReports.ExportReportsToFile;
 using Aspose.Cells;
 using Domain.Entities;
 
-namespace Application.ExportReports.ExportReportsToFile.FileGenerators;
+namespace Application.Common.Services;
 
-public class ExcelFileGenerator()
+public class ReportGeneratorAsFileService : IReportGeneratorAsFileService
 {
     private readonly Style headerStyle = new SheetStyle().CreateHeaderStyle();
     private readonly Style cellBorderSyle = new SheetStyle().CreateBorderStyle();
