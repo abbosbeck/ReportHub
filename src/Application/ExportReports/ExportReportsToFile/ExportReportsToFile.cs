@@ -5,7 +5,6 @@ using Application.Common.Interfaces.External.Countries;
 using Application.Common.Interfaces.External.CurrencyExchange;
 using Application.Common.Interfaces.Repositories;
 using Application.Common.Interfaces.Services;
-using Application.Common.Services;
 using Application.ExportReports.ExportReportsToFile.Request;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -35,7 +34,7 @@ public class ExportReportsToFileQueryHandler(
     ICountryService countryService,
     IReportGeneratorAsFileService fileGenerator,
     IMapper mapper)
-    : IRequestHandler<ExportReportsToFileQuery, ExportReportsToFileDto>
+    : IRequestHandler<ExportReportsToFileQuery, ExportReportsToFileDto>, IExportReportsToFileQueryHandler
 {
     public async Task<ExportReportsToFileDto> Handle(ExportReportsToFileQuery request, CancellationToken cancellationToken)
     {
@@ -45,8 +44,16 @@ public class ExportReportsToFileQueryHandler(
 
         if (request.ExportReportsFileType.Equals(ExportReportsFileType.Excel))
         {
-            invoices = await invoiceRepository.GetAll().ToListAsync(cancellationToken);
-            items = await itemRepository.GetAll().ToListAsync(cancellationToken);
+            invoices = await invoiceRepository.GetAll()
+                .IgnoreQueryFilters()
+                .Where(i => i.ClientId == request.ClientId)
+                .ToListAsync(cancellationToken);
+
+            items = await itemRepository.GetAll()
+                .IgnoreQueryFilters()
+                .Where(i => i.ClientId == request.ClientId)
+                .ToListAsync(cancellationToken);
+
             planDtos = await GetPlansAsync(request.ClientId, cancellationToken);
         }
         else
@@ -77,7 +84,10 @@ public class ExportReportsToFileQueryHandler(
 
     public async Task<List<PlanDto>> GetPlansAsync(Guid clientId, CancellationToken cancellationToken)
     {
-        var plans = await planRepository.GetAll().ToListAsync(cancellationToken);
+        var plans = await planRepository.GetAll()
+            .IgnoreQueryFilters()
+            .Where(p => p.ClientId == clientId)
+            .ToListAsync(cancellationToken);
 
         var client = await clientRepository.GetByIdAsync(clientId);
         var clientCurrency = await countryService.GetCurrencyCodeByCountryCodeAsync(client.CountryCode);

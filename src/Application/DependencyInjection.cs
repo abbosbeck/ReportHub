@@ -4,6 +4,7 @@ using Application.Common.Configurations;
 using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.Services;
 using Application.Common.Services;
+using Application.ExportReports.ExportReportsToFile;
 using Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -37,6 +38,7 @@ public static class DependencyInjection
         services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddScoped<IReportGeneratorAsFileService, ReportGeneratorAsFileService>();
+        services.AddScoped<IExportReportsToFileQueryHandler, ExportReportsToFileQueryHandler>();
         services.AddHttpContextAccessor();
 
         services.AddScoped<IClientIdProvider, ClientIdProvider>();
