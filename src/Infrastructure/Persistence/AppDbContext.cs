@@ -92,6 +92,11 @@ public class AppDbContext(
                 t.ClientId == clientProvider.ClientId &&
                 !t.IsDeleted));
 
+        builder.Entity<ReportSchedule>(entity => entity
+            .HasQueryFilter(t =>
+                t.ClientId == clientProvider.ClientId &&
+                !t.IsDeleted));
+
         builder.Entity<SystemRole>(entity => entity
             .HasQueryFilter(t => !t.IsDeleted));
 
