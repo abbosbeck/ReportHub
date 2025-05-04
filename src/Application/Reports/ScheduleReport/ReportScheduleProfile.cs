@@ -1,6 +1,6 @@
 ﻿using Domain.Entities;
 
-namespace Application.ReportSchedules.ScheduleReport;
+namespace Application.Reports.ScheduleReport;
 
 public class ReportScheduleProfile : Profile
 {

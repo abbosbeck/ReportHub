@@ -1,14 +1,17 @@
-﻿using Application.ReportSchedules.GetCurrentUserReportSchedule;
-using Application.ReportSchedules.ReScheduleReport;
-using Application.ReportSchedules.ScheduleReport;
-using Application.ReportSchedules.StopReportSchedule;
+﻿using System.ComponentModel.DataAnnotations;
+using Application.Reports.ExportReportsToFile;
+using Application.Reports.ExportReportsToFile.Request;
+using Application.Reports.GetCurrentUserReportSchedule;
+using Application.Reports.ReScheduleReport;
+using Application.Reports.ScheduleReport;
+using Application.Reports.StopReportSchedule;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
 
 [Route("clients/{clientId:guid}/[controller]")]
-public class ReportSchedulesController(ISender mediator) : ApiControllerBase(mediator)
+public class ReportsController(ISender mediator) : ApiControllerBase(mediator)
 {
     [HttpPost("schedule")]
     public async Task<IActionResult> ScheduleAsync([FromRoute] Guid clientId, [FromBody] ScheduleReportRequest request)
@@ -24,6 +27,17 @@ public class ReportSchedulesController(ISender mediator) : ApiControllerBase(med
         var result = await Mediator.Send(new ReScheduleReportCommand(clientId, request));
 
         return Ok(result);
+    }
+
+    [HttpGet("download-report")]
+    public async Task<IActionResult> GetFileAsync(
+        [FromRoute] Guid clientId,
+        [FromQuery, Required] ExportReportsFileType fileType,
+        [FromQuery] ExportReportsReportTableType? reportTableType)
+    {
+        var result = await Mediator.Send(new ExportReportsToFileQuery(clientId, fileType, reportTableType));
+
+        return File(result.ByteArray, result.ContentType, result.FileName);
     }
 
     [HttpGet("me")]

@@ -5,11 +5,11 @@ using Application.Common.Interfaces.External.Countries;
 using Application.Common.Interfaces.External.CurrencyExchange;
 using Application.Common.Interfaces.Repositories;
 using Application.Common.Interfaces.Services;
-using Application.ExportReports.ExportReportsToFile.Request;
+using Application.Reports.ExportReportsToFile.Request;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.ExportReports.ExportReportsToFile;
+namespace Application.Reports.ExportReportsToFile;
 
 public class ExportReportsToFileQuery(
     Guid clinetId,

@@ -4,7 +4,7 @@ using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
 
-namespace Application.ReportSchedules.ScheduleReport;
+namespace Application.Reports.ScheduleReport;
 
 public class ScheduleReportCommand(Guid clientId, ScheduleReportRequest request)
     : IRequest<ReportScheduleDto>, IClientRequest

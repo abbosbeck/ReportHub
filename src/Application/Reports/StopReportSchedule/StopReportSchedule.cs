@@ -4,7 +4,7 @@ using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.Repositories;
 
-namespace Application.ReportSchedules.StopReportSchedule;
+namespace Application.Reports.StopReportSchedule;
 
 public class StopReportScheduleCommand(Guid clientId) : IRequest<bool>, IClientRequest
 {

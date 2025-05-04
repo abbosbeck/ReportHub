@@ -1,4 +1,4 @@
-﻿namespace Application.ReportSchedules.GetCurrentUserReportSchedule;
+﻿namespace Application.Reports.ScheduleReport;
 
 public class ReportScheduleDto
 {

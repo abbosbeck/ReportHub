@@ -1,4 +1,4 @@
-﻿namespace Application.ReportSchedules.ScheduleReport;
+﻿namespace Application.Reports.ScheduleReport;
 
 public class ScheduleReportRequest
 {

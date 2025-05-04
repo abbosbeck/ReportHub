@@ -1,6 +1,6 @@
 ﻿using Quartz;
 
-namespace Application.ReportSchedules.ReScheduleReport;
+namespace Application.Reports.ReScheduleReport;
 
 public class ReScheduleReportRequestValidator : AbstractValidator<ReScheduleReportRequest>
 {

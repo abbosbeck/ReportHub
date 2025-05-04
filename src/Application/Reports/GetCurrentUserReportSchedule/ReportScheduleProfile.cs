@@ -1,12 +1,11 @@
 ﻿using Domain.Entities;
 
-namespace Application.ReportSchedules.ReScheduleReport;
+namespace Application.Reports.GetCurrentUserReportSchedule;
 
 public class ReportScheduleProfile : Profile
 {
     public ReportScheduleProfile()
     {
         CreateMap<ReportSchedule, ReportScheduleDto>();
-        CreateMap<ReScheduleReportRequest, ReportSchedule>();
     }
 }

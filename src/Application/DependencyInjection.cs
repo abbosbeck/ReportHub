@@ -4,7 +4,7 @@ using Application.Common.Configurations;
 using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.Services;
 using Application.Common.Services;
-using Application.ExportReports.ExportReportsToFile;
+using Application.Reports.ExportReportsToFile;
 using Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
