@@ -2,6 +2,7 @@
 using Application.Common.Exceptions;
 using Application.Common.Interfaces.Services;
 using Application.ExportReports.ExportReportsToFile;
+using Application.ExportReports.ExportReportsToFile.Request;
 using Aspose.Cells;
 using Domain.Entities;
 

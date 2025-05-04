@@ -1,4 +1,4 @@
-﻿namespace Application.ExportReports.ExportReportsToFile;
+﻿namespace Application.ExportReports.ExportReportsToFile.Request;
 
 public class ExportReportsToFileDto(byte[] byteArray, string contentType, string fileName)
 {
