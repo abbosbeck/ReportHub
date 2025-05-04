@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250504110946_AddClientIdToReportSchedule")]
-    partial class AddClientIdToReportSchedule
+    [Migration("20250504115344_ReportSchedule")]
+    partial class ReportSchedule
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
