@@ -1,4 +1,4 @@
-﻿namespace Application.ExportReports.ExportReportsToFile;
+﻿namespace Application.Reports.ExportReportsToFile;
 
 public class PlanDto
 {

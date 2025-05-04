@@ -1,6 +1,6 @@
 ﻿using Application.Common.Interfaces.Authorization;
-using Application.ExportReports.ExportReportsToFile;
-using Application.ExportReports.ExportReportsToFile.Request;
+using Application.Reports.ExportReportsToFile;
+using Application.Reports.ExportReportsToFile.Request;
 using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Quartz;

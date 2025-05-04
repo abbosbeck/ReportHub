@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Application.ExportReports.ExportReportsToFile.Request;
+namespace Application.Reports.ExportReportsToFile.Request;
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ExportReportsReportTableType

@@ -4,7 +4,7 @@ using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.Repositories;
 
-namespace Application.ReportSchedules.ReScheduleReport;
+namespace Application.Reports.ReScheduleReport;
 
 public class ReScheduleReportCommand(Guid clientId, ReScheduleReportRequest reportSchedule) 
     : IRequest<ReportScheduleDto>, IClientRequest

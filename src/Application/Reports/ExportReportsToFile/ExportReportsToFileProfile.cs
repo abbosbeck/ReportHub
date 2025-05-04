@@ -1,6 +1,6 @@
 ﻿using Domain.Entities;
 
-namespace Application.ExportReports.ExportReportsToFile;
+namespace Application.Reports.ExportReportsToFile;
 
 public class ExportReportsToFileProfile : Profile
 {

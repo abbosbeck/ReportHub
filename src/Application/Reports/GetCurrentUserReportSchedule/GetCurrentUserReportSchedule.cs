@@ -4,7 +4,7 @@ using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.Repositories;
 
-namespace Application.ReportSchedules.GetCurrentUserReportSchedule;
+namespace Application.Reports.GetCurrentUserReportSchedule;
 
 public class GetCurrentUserReportScheduleQuery(Guid clientId)
     : IRequest<ReportScheduleDto>, IClientRequest

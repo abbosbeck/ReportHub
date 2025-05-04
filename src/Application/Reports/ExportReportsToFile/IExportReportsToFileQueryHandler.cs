@@ -1,6 +1,6 @@
-﻿using Application.ExportReports.ExportReportsToFile.Request;
+﻿using Application.Reports.ExportReportsToFile.Request;
 
-namespace Application.ExportReports.ExportReportsToFile;
+namespace Application.Reports.ExportReportsToFile;
 
 public interface IExportReportsToFileQueryHandler
 {

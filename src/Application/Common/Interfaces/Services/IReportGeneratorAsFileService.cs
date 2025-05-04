@@ -1,5 +1,5 @@
-﻿using Application.ExportReports.ExportReportsToFile;
-using Application.ExportReports.ExportReportsToFile.Request;
+﻿using Application.Reports.ExportReportsToFile;
+using Application.Reports.ExportReportsToFile.Request;
 using Domain.Entities;
 
 namespace Application.Common.Interfaces.Services;

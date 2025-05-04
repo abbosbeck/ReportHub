@@ -1,8 +1,9 @@
 ﻿using System.Drawing;
+using System.Numerics;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces.Services;
-using Application.ExportReports.ExportReportsToFile;
-using Application.ExportReports.ExportReportsToFile.Request;
+using Application.Reports.ExportReportsToFile;
+using Application.Reports.ExportReportsToFile.Request;
 using Aspose.Cells;
 using Domain.Entities;
 
@@ -22,6 +23,11 @@ public class ReportGeneratorAsFileService : IReportGeneratorAsFileService
     {
         Workbook mainWorkbook = new Workbook();
         WorksheetCollection sheets = mainWorkbook.Worksheets;
+        sheets[0].Name = "About Report";
+        var cells = sheets[0].Cells;
+        cells[0, 0].Value = "Reported Time: ";
+        cells[0, 1].Value = string.Format("{0:MM/dd/yyyy}", DateTime.Today);
+        sheets[0].AutoFitColumns();
 
         MemoryStream ms = new MemoryStream();
 
