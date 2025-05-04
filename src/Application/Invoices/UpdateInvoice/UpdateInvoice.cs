@@ -2,7 +2,6 @@
 using Application.Common.Constants;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
-using Application.Common.Interfaces.External.Countries;
 using Application.Common.Interfaces.External.CurrencyExchange;
 using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
@@ -39,7 +38,7 @@ public class UpdateInvoiceCommandHandler(
             throw new BadRequestException("Due Date should be greater than Issue Date");
         }
 
-        var customer = await customerRepository.GetByIdAsync(invoice.CustomerId)
+        _ = await customerRepository.GetByIdAsync(invoice.CustomerId)
             ?? throw new NotFoundException($"Customer is not found wirt this id: {invoice.CustomerId}");
         mapper.Map(request.Invoice, invoice);
 

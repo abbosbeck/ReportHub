@@ -5,7 +5,7 @@ using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.Invoices.TotalNumberOfInvoices.GetInvoiceCount;
+namespace Application.Invoices.GetTotalNumberOfInvoices;
 
 public class GetInvoiceCountQuery(
     Guid clientId,

@@ -1,5 +1,4 @@
-﻿using System.Data;
-using System.Drawing;
+﻿using System.Drawing;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces.External.CurrencyExchange;
 using Aspose.Cells;
@@ -7,8 +6,11 @@ using Domain.Entities;
 
 namespace Application.ExportReports.ExportReportsToFile.FileGenerators;
 
-public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService)
+public class ExcelFileGenerator()
 {
+    private readonly Style headerStyle = new SheetStyle().CreateHeaderStyle();
+    private readonly Style cellBorderSyle = new SheetStyle().CreateBorderStyle();
+
     public ExportReportsToFileDto GenerateExcelFile(
         List<Invoice> invoices,
         List<Item> items,
@@ -23,23 +25,21 @@ public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService
 
         if (fileType == ExportReportsFileType.CSV)
         {
+            Worksheet dataSheet = sheets[0];
             if (reportType == ExportReportsReportTableType.Invoices)
             {
-                Worksheet invoiceWorkbookForCsv = GenerateInvoice(invoices);
-                sheets[0].Copy(invoiceWorkbookForCsv);
-                sheets[0].Name = "Invoices";
+                AddInvoiceSheet(dataSheet, invoices);
+                dataSheet.Name = "Invoices";
             }
             else if (reportType == ExportReportsReportTableType.Items)
             {
-                Worksheet itemWorkbookForCsv = GenerateItems(items);
-                sheets[0].Copy(itemWorkbookForCsv);
-                sheets[0].Name = "Items";
+                AddItemSheet(dataSheet, items);
+                dataSheet.Name = "Items";
             }
             else if (reportType == ExportReportsReportTableType.Plans)
             {
-                Worksheet planWorkbookForCsv = GeneratePlans(plans);
-                sheets[0].Copy(planWorkbookForCsv);
-                sheets[0].Name = "Plans";
+                AddPlanSheet(dataSheet, plans);
+                dataSheet.Name = "Plans";
             }
             else
             {
@@ -55,277 +55,167 @@ public class ExcelFileGenerator(ICurrencyExchangeService currencyExchangeService
                 "text/csv",
                 reportType.ToString());
         }
+        else
+        {
+            AddInvoiceSheet(sheets.Add("Invoices"), invoices);
+            AddItemSheet(sheets.Add("Items"), items);
+            AddPlanSheet(sheets.Add("Plans"), plans);
 
-        Worksheet invoiceWorkbook = GenerateInvoice(invoices);
-        Worksheet itemWorkBook = GenerateItems(items);
-        Worksheet planWorkBook = GeneratePlans(plans);
+            mainWorkbook.Save(ms, SaveFormat.Xlsx);
 
-        sheets[0].Copy(invoiceWorkbook);
-        sheets[0].Name = "Invoices";
-
-        sheets.Add();
-        sheets[1].Copy(itemWorkBook);
-        sheets[1].Name = "Items";
-
-        sheets.Add();
-        sheets[2].Copy(planWorkBook);
-        sheets[2].Name = "Plans";
-
-        mainWorkbook.Save(ms, SaveFormat.Xlsx);
-
-        return new ExportReportsToFileDto(
-                ms.ToArray(),
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                "Reports");
+            return new ExportReportsToFileDto(
+                    ms.ToArray(),
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    "Reports");
+        }
     }
 
-    private static Worksheet GeneratePlans(List<PlanDto> plans)
+    private void AddPlanSheet(Worksheet worksheet, List<PlanDto> plans)
     {
-        Workbook workbook = new Workbook();
-        DataTable planTable = new DataTable("Item");
+        var cells = worksheet.Cells;
+        cells[0, 0].Value = "No";
+        cells[0, 1].Value = "Title";
+        cells[0, 2].Value = "Start Date";
+        cells[0, 3].Value = "End Date";
+        cells[0, 4].Value = "Total Price";
+        cells[0, 5].Value = "Currency Code";
 
-        planTable.Columns.Add("No", typeof(long));
-        planTable.Columns.Add(nameof(PlanDto.Title), typeof(string));
-        planTable.Columns.Add(nameof(PlanDto.StartDate), typeof(DateTime));
-        planTable.Columns.Add(nameof(PlanDto.EndDate), typeof(DateTime));
-        planTable.Columns.Add(nameof(PlanDto.TotalPrice), typeof(string));
-        planTable.Columns.Add(nameof(PlanDto.CurrencyCode), typeof(string));
+        for (int col = 0; col < 6; col++)
+        {
+            cells[0, col].SetStyle(headerStyle);
+            worksheet.Cells.SetColumnWidth(col, 18);
+        }
 
+        int row = 1;
         int counter = 1;
         foreach (var plan in plans)
         {
-            DataRow invoiceRecord = planTable.NewRow();
+            cells[row, 0].Value = counter++;
+            cells[row, 1].Value = plan.Title;
+            cells[row, 2].Value = string.Format("{0:MM/dd/yyyy}", plan.StartDate);
+            cells[row, 3].Value = string.Format("{0:MM/dd/yyyy}", plan.EndDate);
+            cells[row, 4].Value = plan.TotalPrice;
+            cells[row, 5].Value = plan.CurrencyCode;
 
-            invoiceRecord["No"] = counter;
-            invoiceRecord[nameof(PlanDto.Title)] = plan.Title;
-            invoiceRecord[nameof(PlanDto.StartDate)] = plan.StartDate;
-            invoiceRecord[nameof(PlanDto.EndDate)] = plan.EndDate;
-            invoiceRecord[nameof(PlanDto.TotalPrice)] = plan.TotalPrice;
-            invoiceRecord[nameof(PlanDto.CurrencyCode)] = plan.CurrencyCode;
-            counter++;
-
-            planTable.Rows.Add(invoiceRecord);
-        }
-
-        ImportTableOptions importOptions = new ImportTableOptions();
-
-        Worksheet dataTableWorksheet = workbook.Worksheets[0];
-        dataTableWorksheet.Name = "Item";
-        dataTableWorksheet.Cells.ImportData(planTable, 0, 0, importOptions);
-
-        var cells = dataTableWorksheet.Cells;
-        var headerStyle = cells["A1"].GetStyle();
-        headerStyle.HorizontalAlignment = TextAlignmentType.Center;
-        headerStyle.VerticalAlignment = TextAlignmentType.Center;
-        headerStyle.Font.IsBold = true;
-        headerStyle.ForegroundColor = Color.MediumSlateBlue;
-        headerStyle.Pattern = BackgroundType.Solid;
-        headerStyle.Font.Color = Color.White;
-
-        for (int col = 0; col < planTable.Columns.Count; col++)
-        {
-            cells[0, col].SetStyle(headerStyle);
-            cells.SetColumnWidth(col, 18);
-        }
-
-        for (int row = 1; row <= planTable.Rows.Count; row++)
-        {
-            for (int col = 0; col < planTable.Columns.Count; col++)
+            for (int col = 0; col < 6; col++)
             {
-                Cell currentCell = cells[row, col];
-                Style cellStyle = currentCell.GetStyle();
-
-                cellStyle.Borders[BorderType.TopBorder].LineStyle = CellBorderType.Thin;
-                cellStyle.Borders[BorderType.BottomBorder].LineStyle = CellBorderType.Thin;
-                cellStyle.Borders[BorderType.LeftBorder].LineStyle = CellBorderType.Thin;
-                cellStyle.Borders[BorderType.RightBorder].LineStyle = CellBorderType.Thin;
-
-                cellStyle.Pattern = BackgroundType.Solid;
-
-                currentCell.SetStyle(cellStyle);
+                cells[row, col].SetStyle(cellBorderSyle);
             }
+
+            row++;
         }
 
-        dataTableWorksheet.FreezePanes(1, 0, 1, planTable.Columns.Count);
-        dataTableWorksheet.AutoFitColumns();
-
-        return dataTableWorksheet;
+        worksheet.FreezePanes(1, 0, 1, 6);
+        worksheet.AutoFitColumns();
     }
 
-    private Worksheet GenerateItems(List<Item> items)
+    private void AddItemSheet(Worksheet worksheet, List<Item> items)
     {
-        Workbook workbook = new Workbook();
-        DataTable itemTable = new DataTable("Item");
+        var cells = worksheet.Cells;
+        cells[0, 0].Value = "No";
+        cells[0, 1].Value = "Name";
+        cells[0, 2].Value = "Description";
+        cells[0, 3].Value = "Price";
+        cells[0, 4].Value = "Currency Code";
+        cells[0, 5].Value = "Invoice Number";
 
-        itemTable.Columns.Add("No", typeof(long));
-        itemTable.Columns.Add(nameof(Item.Name), typeof(string));
-        itemTable.Columns.Add(nameof(Item.Description), typeof(string));
-        itemTable.Columns.Add(nameof(Item.Price), typeof(string));
-        itemTable.Columns.Add(nameof(Item.CurrencyCode), typeof(string));
-        itemTable.Columns.Add("Invoice Number", typeof(string));
+        for (int col = 0; col < 6; col++)
+        {
+            cells[0, col].SetStyle(headerStyle);
+            worksheet.Cells.SetColumnWidth(col, 18);
+        }
 
+        int row = 1;
         int counter = 1;
         foreach (var item in items)
         {
-            DataRow invoiceRecord = itemTable.NewRow();
-            string price = currencyExchangeService.GetAmountWithSymbol(item.Price, item.CurrencyCode);
+            cells[row, 0].Value = counter++;
+            cells[row, 1].Value = item.Name;
+            cells[row, 2].Value = item.Description;
+            cells[row, 3].Value = string.Format("{0:#.00}", Convert.ToDecimal(item.Price) / 100);
+            cells[row, 4].Value = item.CurrencyCode;
+            cells[row, 5].Value = item.Invoice.InvoiceNumber.ToString("D6");
 
-            invoiceRecord["No"] = counter;
-            invoiceRecord[nameof(Item.Name)] = item.Name;
-            invoiceRecord[nameof(Item.Description)] = item.Description;
-            invoiceRecord[nameof(Item.Price)] = price;
-            invoiceRecord[nameof(Item.CurrencyCode)] = item.CurrencyCode;
-            invoiceRecord["Invoice Number"] = item.Invoice.InvoiceNumber.ToString("D6");
-            counter++;
-
-            itemTable.Rows.Add(invoiceRecord);
-        }
-
-        ImportTableOptions importOptions = new ImportTableOptions();
-
-        Worksheet dataTableWorksheet = workbook.Worksheets[0];
-        dataTableWorksheet.Name = "Item";
-        dataTableWorksheet.Cells.ImportData(itemTable, 0, 0, importOptions);
-
-        var cells = dataTableWorksheet.Cells;
-        var headerStyle = cells["A1"].GetStyle();
-        headerStyle.HorizontalAlignment = TextAlignmentType.Center;
-        headerStyle.VerticalAlignment = TextAlignmentType.Center;
-        headerStyle.Font.IsBold = true;
-        headerStyle.ForegroundColor = Color.MediumSlateBlue;
-        headerStyle.Pattern = BackgroundType.Solid;
-        headerStyle.Font.Color = Color.White;
-
-        for (int col = 0; col < itemTable.Columns.Count; col++)
-        {
-            cells[0, col].SetStyle(headerStyle);
-            cells.SetColumnWidth(col, 18);
-        }
-
-        for (int row = 1; row <= itemTable.Rows.Count; row++)
-        {
-            for (int col = 0; col < itemTable.Columns.Count; col++)
+            for (int col = 0; col < 6; col++)
             {
-                Cell currentCell = cells[row, col];
-                Style cellStyle = currentCell.GetStyle();
-
-                cellStyle.Borders[BorderType.TopBorder].LineStyle = CellBorderType.Thin;
-                cellStyle.Borders[BorderType.BottomBorder].LineStyle = CellBorderType.Thin;
-                cellStyle.Borders[BorderType.LeftBorder].LineStyle = CellBorderType.Thin;
-                cellStyle.Borders[BorderType.RightBorder].LineStyle = CellBorderType.Thin;
-
-                if (row % 2 == 0)
-                {
-                    cellStyle.BackgroundColor = Color.WhiteSmoke;
-                }
-                else
-                {
-                    cellStyle.BackgroundColor = Color.White;
-                }
-
-                cellStyle.Pattern = BackgroundType.Solid;
-
-                if (col == 0 || itemTable.Columns[col].ColumnName == "Price")
-                {
-                    cellStyle.HorizontalAlignment = TextAlignmentType.Right;
-                }
-
-                currentCell.SetStyle(cellStyle);
+                var cell = cells[row, col];
+                cell.SetStyle(cellBorderSyle);
             }
+
+            row++;
         }
 
-        dataTableWorksheet.FreezePanes(1, 0, 1, itemTable.Columns.Count);
-        dataTableWorksheet.AutoFitColumns();
-
-        return dataTableWorksheet;
+        worksheet.FreezePanes(1, 0, 1, 6);
+        worksheet.AutoFitColumns();
     }
 
-    private Worksheet GenerateInvoice(List<Invoice> invoices)
+    private void AddInvoiceSheet(Worksheet worksheet, List<Invoice> invoices)
     {
-        Workbook workbook = new Workbook();
-        DataTable invoiceTable = new DataTable("Invoice");
+        var cells = worksheet.Cells;
+        cells[0, 0].Value = "No";
+        cells[0, 1].Value = "Invoice Number";
+        cells[0, 2].Value = "Issue Date";
+        cells[0, 3].Value = "Due Date";
+        cells[0, 4].Value = "Amount";
+        cells[0, 5].Value = "Currency Code";
+        cells[0, 6].Value = "Payment Status";
 
-        invoiceTable.Columns.Add("No", typeof(long));
-        invoiceTable.Columns.Add(nameof(Invoice.InvoiceNumber), typeof(string));
-        invoiceTable.Columns.Add(nameof(Invoice.IssueDate), typeof(DateTime));
-        invoiceTable.Columns.Add(nameof(Invoice.DueDate), typeof(DateTime));
-        invoiceTable.Columns.Add(nameof(Invoice.Amount), typeof(string));
-        invoiceTable.Columns.Add(nameof(Invoice.CurrencyCode), typeof(string));
-        invoiceTable.Columns.Add(nameof(Invoice.PaymentStatus), typeof(string));
+        for (int col = 0; col < 7; col++)
+        {
+            cells[0, col].SetStyle(headerStyle);
+            worksheet.Cells.SetColumnWidth(col, 18);
+        }
 
+        int row = 1;
         int counter = 1;
         foreach (var invoice in invoices)
         {
-            DataRow invoiceRecord = invoiceTable.NewRow();
-            string amount = currencyExchangeService.GetAmountWithSymbol(invoice.Amount, invoice.CurrencyCode);
+            cells[row, 0].Value = counter++;
+            cells[row, 1].Value = invoice.InvoiceNumber.ToString("D6");
+            cells[row, 2].Value = string.Format("{0:MM/dd/yyyy}", invoice.IssueDate);
+            cells[row, 3].Value = string.Format("{0:MM/dd/yyyy}", invoice.DueDate);
+            cells[row, 4].Value = string.Format("{0:#.00}", Convert.ToDecimal(invoice.Amount) / 100); ;
+            cells[row, 5].Value = invoice.CurrencyCode;
+            cells[row, 6].Value = invoice.PaymentStatus.ToString();
 
-            invoiceRecord["No"] = counter;
-            invoiceRecord[nameof(Invoice.InvoiceNumber)] = invoice.InvoiceNumber.ToString("D6");
-            invoiceRecord[nameof(Invoice.IssueDate)] = invoice.IssueDate;
-            invoiceRecord[nameof(Invoice.DueDate)] = invoice.DueDate;
-            invoiceRecord[nameof(Invoice.Amount)] = amount;
-            invoiceRecord[nameof(Invoice.CurrencyCode)] = invoice.CurrencyCode;
-            invoiceRecord[nameof(Invoice.PaymentStatus)] = invoice.PaymentStatus.ToString();
-            counter++;
-
-            invoiceTable.Rows.Add(invoiceRecord);
-        }
-
-        ImportTableOptions importOptions = new ImportTableOptions();
-
-        Worksheet dataTableWorksheet = workbook.Worksheets[0];
-        dataTableWorksheet.Name = "Invoice";
-        dataTableWorksheet.Cells.ImportData(invoiceTable, 0, 0, importOptions);
-
-        var cells = dataTableWorksheet.Cells;
-        var headerStyle = cells["A1"].GetStyle();
-        headerStyle.HorizontalAlignment = TextAlignmentType.Center;
-        headerStyle.VerticalAlignment = TextAlignmentType.Center;
-        headerStyle.Font.IsBold = true;
-        headerStyle.ForegroundColor = Color.MediumSlateBlue;
-        headerStyle.Pattern = BackgroundType.Solid;
-        headerStyle.Font.Color = Color.White;
-
-        for (int col = 0; col < invoiceTable.Columns.Count; col++)
-        {
-            cells[0, col].SetStyle(headerStyle);
-            cells.SetColumnWidth(col, 18);
-        }
-
-        for (int row = 1; row <= invoiceTable.Rows.Count; row++)
-        {
-            for (int col = 0; col < invoiceTable.Columns.Count; col++)
+            for (int col = 0; col < 7; col++)
             {
-                Cell currentCell = cells[row, col];
-                Style cellStyle = currentCell.GetStyle();
-
-                cellStyle.Borders[BorderType.TopBorder].LineStyle = CellBorderType.Thin;
-                cellStyle.Borders[BorderType.BottomBorder].LineStyle = CellBorderType.Thin;
-                cellStyle.Borders[BorderType.LeftBorder].LineStyle = CellBorderType.Thin;
-                cellStyle.Borders[BorderType.RightBorder].LineStyle = CellBorderType.Thin;
-
-                cellStyle.Pattern = BackgroundType.Solid;
-
-                if (invoiceTable.Columns[col].ColumnName == "PaymentStatus")
-                {
-                    string status = currentCell.StringValue;
-                    if (status == "Paid")
-                    {
-                        cellStyle.Font.Color = Color.ForestGreen;
-                    }
-                    else if (status == "Unpaid")
-                    {
-                        cellStyle.Font.Color = Color.Crimson;
-                    }
-                }
-
-                currentCell.SetStyle(cellStyle);
+                var cell = cells[row, col];
+                cell.SetStyle(cellBorderSyle);
             }
+
+            row++;
         }
 
-        dataTableWorksheet.FreezePanes(1, 0, 1, invoiceTable.Columns.Count);
-        dataTableWorksheet.AutoFitColumns();
+        worksheet.FreezePanes(1, 0, 1, 7);
+        worksheet.AutoFitColumns();
+    }
+}
 
-        return dataTableWorksheet;
+public class SheetStyle
+{
+    private readonly CellsFactory cellsFactory = new CellsFactory();
+
+    public Style CreateHeaderStyle()
+    {
+        Style style = cellsFactory.CreateStyle();
+        style.HorizontalAlignment = TextAlignmentType.Center;
+        style.VerticalAlignment = TextAlignmentType.Center;
+        style.Font.IsBold = true;
+        style.ForegroundColor = Color.MediumSlateBlue;
+        style.Pattern = BackgroundType.Solid;
+        style.Font.Color = Color.White;
+        return style;
+    }
+
+    public Style CreateBorderStyle()
+    {
+        Style style = cellsFactory.CreateStyle();
+        style.Borders[BorderType.TopBorder].LineStyle = CellBorderType.Thin;
+        style.Borders[BorderType.BottomBorder].LineStyle = CellBorderType.Thin;
+        style.Borders[BorderType.LeftBorder].LineStyle = CellBorderType.Thin;
+        style.Borders[BorderType.RightBorder].LineStyle = CellBorderType.Thin;
+        style.Pattern = BackgroundType.Solid;
+        return style;
     }
 }

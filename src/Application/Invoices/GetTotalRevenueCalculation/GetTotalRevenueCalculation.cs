@@ -7,10 +7,10 @@ using Application.Common.Interfaces.External.CurrencyExchange;
 using Application.Common.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.Invoices.TotalRevenueCalculation;
+namespace Application.Invoices.GetTotalRevenueCalculation;
 
-public class TotalRevenueCalculationQuery(Guid clientId, DateTime startDate, DateTime endDate)
-    : IClientRequest, IRequest<TotalRevenueCalculationDto>
+public class GetTotalRevenueCalculationQuery(Guid clientId, DateTime startDate, DateTime endDate)
+    : IClientRequest, IRequest<GetTotalRevenueCalculationDto>
 {
     public DateTime StartDate { get; set; } = startDate;
 
@@ -20,14 +20,14 @@ public class TotalRevenueCalculationQuery(Guid clientId, DateTime startDate, Dat
 }
 
 [RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin, ClientRoles.Operator)]
-public class TotalRevenueCalculationQueryHandler(
+public class GetTotalRevenueCalculationQueryHandler(
     IClientRepository clientRepository,
     IInvoiceRepository invoiceRepository,
     ICountryService countryService,
     ICurrencyExchangeService currencyExchangeService)
-    : IRequestHandler<TotalRevenueCalculationQuery, TotalRevenueCalculationDto>
+    : IRequestHandler<GetTotalRevenueCalculationQuery, GetTotalRevenueCalculationDto>
 {
-    public async Task<TotalRevenueCalculationDto> Handle(TotalRevenueCalculationQuery request, CancellationToken cancellationToken)
+    public async Task<GetTotalRevenueCalculationDto> Handle(GetTotalRevenueCalculationQuery request, CancellationToken cancellationToken)
     {
         var client = await clientRepository.GetByIdAsync(request.ClientId)
             ?? throw new NotFoundException($"Client is not found with this id: {request.ClientId}");
@@ -57,7 +57,7 @@ public class TotalRevenueCalculationQueryHandler(
 
         var totalRevenue = currencyExchangeService.GetAmountWithSymbol(result.Sum(), clientCurrencyCode);
 
-        return new TotalRevenueCalculationDto(
+        return new GetTotalRevenueCalculationDto(
             totalRevenue, clientCurrencyCode, request.StartDate, request.EndDate);
     }
 }
