@@ -25,10 +25,7 @@ public class AppDbContextInitializer(AppDbContext context, IPasswordHasher<User>
     {
         try
         {
-            if (context.Database.HasPendingModelChanges())
-            {
-                await context.Database.MigrateAsync();
-            }
+            await context.Database.MigrateAsync();
         }
         catch (Exception ex)
         {
