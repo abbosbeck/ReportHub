@@ -7,16 +7,24 @@ using Application.Common.Interfaces.Repositories;
 using Application.Common.Interfaces.Services;
 using Application.Reports.ExportReportsToFile.Request;
 using Domain.Entities;
+using MediatR;
+using Microsoft.AspNetCore.Routing.Constraints;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Reports.ExportReportsToFile;
 
 public class ExportReportsToFileQuery(
     Guid clinetId,
+    DateTime startDate,
+    DateTime endDate,
     ExportReportsFileType fileType,
     ExportReportsReportTableType? reportType)
     : IRequest<ExportReportsToFileDto>, IClientRequest
 {
+    public DateTime StartDate { get; set; } = startDate;
+
+    public DateTime EndDate { get; set; } = endDate;
+
     public ExportReportsFileType ExportReportsFileType { get; set; } = fileType;
 
     public ExportReportsReportTableType? ReportType { get; set; } = reportType;
@@ -46,7 +54,11 @@ public class ExportReportsToFileQueryHandler(
         {
             invoices = await invoiceRepository.GetAll()
                 .IgnoreQueryFilters()
-                .Where(i => i.ClientId == request.ClientId)
+                .Where(invoice =>
+                    invoice.ClientId == request.ClientId
+                    && !invoice.IsDeleted &&
+                    invoice.IssueDate > request.StartDate
+                    && invoice.IssueDate < request.EndDate)
                 .ToListAsync(cancellationToken);
 
             items = await itemRepository.GetAll()
@@ -54,7 +66,7 @@ public class ExportReportsToFileQueryHandler(
                 .Where(i => i.ClientId == request.ClientId)
                 .ToListAsync(cancellationToken);
 
-            planDtos = await GetPlansAsync(request.ClientId, cancellationToken);
+            planDtos = await GetPlansAsync(request, cancellationToken);
         }
         else
         {
@@ -68,7 +80,7 @@ public class ExportReportsToFileQueryHandler(
             }
             else if (request.ReportType.Equals(ExportReportsReportTableType.Plans))
             {
-                planDtos = await GetPlansAsync(request.ClientId, cancellationToken);
+                planDtos = await GetPlansAsync(request, cancellationToken);
             }
         }
 
@@ -82,14 +94,18 @@ public class ExportReportsToFileQueryHandler(
         return result;
     }
 
-    public async Task<List<PlanDto>> GetPlansAsync(Guid clientId, CancellationToken cancellationToken)
+    public async Task<List<PlanDto>> GetPlansAsync(ExportReportsToFileQuery request, CancellationToken cancellationToken)
     {
         var plans = await planRepository.GetAll()
             .IgnoreQueryFilters()
-            .Where(p => p.ClientId == clientId)
+            .Where(plan =>
+                    plan.ClientId == request.ClientId
+                    && !plan.IsDeleted
+                    && plan.StartDate > request.StartDate
+                    && plan.EndDate < request.EndDate)
             .ToListAsync(cancellationToken);
 
-        var client = await clientRepository.GetByIdAsync(clientId);
+        var client = await clientRepository.GetByIdAsync(request.ClientId);
         var clientCurrency = await countryService.GetCurrencyCodeByCountryCodeAsync(client.CountryCode);
 
         List<PlanDto> planDtos = new List<PlanDto>();
