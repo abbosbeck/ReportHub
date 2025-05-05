@@ -1,3 +1,4 @@
+using Api.Extensions;
 using Api.Middlewares;
 using Api.SerilogConfigurations;
 using Application;
@@ -68,7 +69,7 @@ if (app.Environment.IsDevelopment())
     await app.Services.InitialiseDatabaseAsync();
 }
 
-/*await app.RestoreScheduledJobsAsync();*/
+await app.RestoreScheduledJobsAsync();
 
 app.UseSerilogRequestLogging();
 
