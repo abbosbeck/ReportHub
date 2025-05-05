@@ -32,10 +32,13 @@ public class ReportsController(ISender mediator) : ApiControllerBase(mediator)
     [HttpGet("download-report")]
     public async Task<IActionResult> GetFileAsync(
         [FromRoute] Guid clientId,
+        [FromQuery, Required] DateTime startDate,
+        [FromQuery, Required] DateTime endDate,
         [FromQuery, Required] ExportReportsFileType fileType,
         [FromQuery] ExportReportsReportTableType? reportTableType)
     {
-        var result = await Mediator.Send(new ExportReportsToFileQuery(clientId, fileType, reportTableType));
+        var result = await Mediator
+            .Send(new ExportReportsToFileQuery(clientId, startDate, endDate, fileType, reportTableType));
 
         return File(result.ByteArray, result.ContentType, result.FileName);
     }

@@ -15,11 +15,19 @@ public class ReportEmailSenderJob(
 {
     public async Task Execute(IJobExecutionContext context)
     {
+        var today = DateTime.Today;
+
         var dataMap = context.MergedJobDataMap;
         var userId = dataMap.GetGuid("UserId").ToString();
         var user = await userManager.FindByIdAsync(userId);
         var clientId = dataMap.GetGuid("ClientId");
-        var request = new ExportReportsToFileQuery(clientId, ExportReportsFileType.Excel, null);
+        var request = new ExportReportsToFileQuery(
+            clientId,
+            today.AddDays(-7),
+            today,
+            ExportReportsFileType.Excel,
+            null);
+
         var report = await fileQueryHandler.Handle(request, CancellationToken.None);
 
         var message = $"<p><strong>Hi {user!.FirstName}," +
