@@ -4,6 +4,7 @@ using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.Repositories;
 using Application.Common.Interfaces.Services;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Customers.ImportCustomerList;
 
@@ -28,6 +29,16 @@ public class ImportCustomerListCommandHandler(
     {
         var customers = importDataFromFileService
             .ImportCustomerListFromExcel(request.CustomersData);
+
+        var oldCustomers = await repository.GetAll()
+            .ToListAsync(cancellationToken);
+
+        customers = customers
+            .Where(newCust => !oldCustomers.Any(existing =>
+                existing.Name == newCust.Name &&
+                existing.Email == newCust.Email &&
+                existing.CountryCode == newCust.CountryCode))
+            .ToList();
 
         await repository.AddBulkAsync(customers);
 
