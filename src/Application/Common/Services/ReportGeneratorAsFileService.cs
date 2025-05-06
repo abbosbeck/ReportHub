@@ -1,5 +1,4 @@
 ﻿using System.Drawing;
-using System.Numerics;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces.Services;
 using Application.Reports.ExportReportsToFile;
