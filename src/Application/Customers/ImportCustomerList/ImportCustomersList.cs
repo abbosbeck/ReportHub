@@ -1,8 +1,10 @@
 ﻿using Application.Common.Attributes;
 using Application.Common.Constants;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.Repositories;
 using Application.Common.Interfaces.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,6 +31,14 @@ public class ImportCustomerListCommandHandler(
     {
         var customers = importDataFromFileService
             .ImportCustomerListFromExcel(request.CustomersData);
+
+        customers.ForEach(customer =>
+        {
+            if (customer.ClientId != request.ClientId)
+            {
+                throw new ForbiddenException("Givin ClientId(s) is invalid. Please check and try again!");
+            }
+        });
 
         var oldCustomers = await repository.GetAll()
             .ToListAsync(cancellationToken);
