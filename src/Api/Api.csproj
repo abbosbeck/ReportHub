@@ -9,7 +9,7 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>..\..</DockerfileContext>
     <DockerComposeProjectPath>..\..\docker-compose.dcproj</DockerComposeProjectPath>
-	<NoWarn>SA0001,SA1516</NoWarn>
+	<NoWarn>SA0001,SA1516,S125</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

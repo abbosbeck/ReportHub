@@ -66,11 +66,11 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    await app.Services.InitialiseDatabaseAsync();
+
+    // await app.Services.InitialiseDatabaseAsync();
 }
 
-await app.RestoreScheduledJobsAsync();
-
+// await app.RestoreScheduledJobsAsync();
 app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
