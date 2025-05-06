@@ -29,7 +29,7 @@ public class ReportsController(ISender mediator) : ApiControllerBase(mediator)
         return Ok(result);
     }
 
-    [HttpGet("download-report")]
+    [HttpGet("download")]
     public async Task<IActionResult> GetFileAsync(
         [FromRoute] Guid clientId,
         [FromQuery, Required] DateTime startDate,
