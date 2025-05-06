@@ -1,4 +1,6 @@
-﻿using Application.Common.Interfaces.Authorization;
+﻿using Application.Common.Attributes;
+using Application.Common.Constants;
+using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.Repositories;
 using Application.Common.Interfaces.Services;
 using Microsoft.AspNetCore.Http;
@@ -15,6 +17,7 @@ public class ImportCustomersDataCommand(
     public Guid ClientId { get; set; } = clientId;
 }
 
+[RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin)]
 public class ImportCustomersDataCommandHandler(
     IImportDataFromFileService importDataFromFileService,
     ICustomerRepository repository,
