@@ -5,9 +5,9 @@ using Application.Common.Interfaces.Repositories;
 using Application.Common.Interfaces.Services;
 using Microsoft.AspNetCore.Http;
 
-namespace Application.Customers.ImportCustomersData;
+namespace Application.Customers.ImportCustomerList;
 
-public class ImportCustomersDataCommand(
+public class ImportCustomerListCommand(
     Guid clientId,
     IFormFile customersData)
     : IRequest<List<CustomerDto>>, IClientRequest
@@ -18,16 +18,16 @@ public class ImportCustomersDataCommand(
 }
 
 [RequiresClientRole(ClientRoles.Owner, ClientRoles.ClientAdmin)]
-public class ImportCustomersDataCommandHandler(
+public class ImportCustomerListCommandHandler(
     IImportDataFromFileService importDataFromFileService,
     ICustomerRepository repository,
     IMapper mapper)
-    : IRequestHandler<ImportCustomersDataCommand, List<CustomerDto>>
+    : IRequestHandler<ImportCustomerListCommand, List<CustomerDto>>
 {
-    public async Task<List<CustomerDto>> Handle(ImportCustomersDataCommand request, CancellationToken cancellationToken)
+    public async Task<List<CustomerDto>> Handle(ImportCustomerListCommand request, CancellationToken cancellationToken)
     {
         var customers = importDataFromFileService
-            .ImportCustomersDataFromExcel(request.CustomersData);
+            .ImportCustomerListFromExcel(request.CustomersData);
 
         await repository.AddBulkAsync(customers);
 

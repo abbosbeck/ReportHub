@@ -1,6 +1,6 @@
 ﻿using Domain.Entities;
 
-namespace Application.Customers.ImportCustomersData;
+namespace Application.Customers.ImportCustomerList;
 
 public class CustomerProfile : Profile
 {

@@ -8,7 +8,7 @@ namespace Application.Common.Services;
 
 public class ImportDataFromFileServic : IImportDataFromFileService
 {
-    public List<Customer> ImportCustomersDataFromExcel(IFormFile file)
+    public List<Customer> ImportCustomerListFromExcel(IFormFile file)
     {
         Workbook workbook = ReadExcelDataFromIFormFile(file);
         Worksheet worksheet = workbook.Worksheets[0];

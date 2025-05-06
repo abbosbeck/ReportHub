@@ -3,7 +3,7 @@ using Application.Customers.CreateCustomer;
 using Application.Customers.DeleteCustomer;
 using Application.Customers.GetCustomerById;
 using Application.Customers.GetCustomerList;
-using Application.Customers.ImportCustomersData;
+using Application.Customers.ImportCustomerList;
 using Application.Customers.UpdateCustomer;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +24,7 @@ public class CustomersController(ISender mediator) : ApiControllerBase(mediator)
     [HttpPost("import")]
     public async Task<IActionResult> ImportAsync([FromRoute] Guid clientId, [Required] IFormFile file)
     {
-        var result = await Mediator.Send(new ImportCustomersDataCommand(clientId, file));
+        var result = await Mediator.Send(new ImportCustomerListCommand(clientId, file));
 
         return Ok(result);
     }

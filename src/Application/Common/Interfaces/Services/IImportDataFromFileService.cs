@@ -5,5 +5,5 @@ namespace Application.Common.Interfaces.Services;
 
 public interface IImportDataFromFileService
 {
-    List<Customer> ImportCustomersDataFromExcel(IFormFile file);
+    List<Customer> ImportCustomerListFromExcel(IFormFile file);
 }
