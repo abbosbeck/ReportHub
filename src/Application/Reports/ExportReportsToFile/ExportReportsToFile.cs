@@ -7,8 +7,6 @@ using Application.Common.Interfaces.Repositories;
 using Application.Common.Interfaces.Services;
 using Application.Reports.ExportReportsToFile.Request;
 using Domain.Entities;
-using MediatR;
-using Microsoft.AspNetCore.Routing.Constraints;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Reports.ExportReportsToFile;

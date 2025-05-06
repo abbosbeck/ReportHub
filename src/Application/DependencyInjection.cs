@@ -38,6 +38,7 @@ public static class DependencyInjection
         services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddScoped<IReportGeneratorAsFileService, ReportGeneratorAsFileService>();
+        services.AddScoped<IImportDataFromFileService, ImportDataFromFileServic>();
         services.AddScoped<IExportReportsToFileQueryHandler, ExportReportsToFileQueryHandler>();
         services.AddHttpContextAccessor();
 

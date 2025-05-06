@@ -1,9 +1,7 @@
-using Api.Extensions;
 using Api.Middlewares;
 using Api.SerilogConfigurations;
 using Application;
 using Infrastructure;
-using Infrastructure.Persistence;
 using Microsoft.OpenApi.Models;
 using QuestPDF.Infrastructure;
 using Serilog;
