@@ -4,11 +4,11 @@ namespace Domain.Entities;
 
 public class Customer : BaseAuditableEntity, ISoftDeletable
 {
-    public string Name { get; init; }
+    public string Name { get; set; }
 
-    public string Email { get; init; }
+    public string Email { get; set; }
 
-    public string CountryCode { get; init; }
+    public string CountryCode { get; set; }
 
     public Guid ClientId { get; set; }
 
