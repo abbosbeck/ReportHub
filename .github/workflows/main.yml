@@ -88,7 +88,7 @@ jobs:
           
       - name: Run the API tests
         run: |
-          postman collection run "${{ github.workspace }}/tests/IntegrationTests/users.json" -e "40646021-0eb0a767-64e5-4d43-945f-f71d42d7fa70" --integration-id "177179-${{ github.run_id }}"
+          postman collection run "${{ github.workspace }}/tests/IntegrationTests/*.json" -e "40646021-0eb0a767-64e5-4d43-945f-f71d42d7fa70" --integration-id "177179-${{ github.run_id }}"
       
       - name: Stop the API
         run: kill $(cat api_pid.txt)
