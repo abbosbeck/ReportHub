@@ -51,6 +51,7 @@ builder.Host.UseSerilog((context, loggerConfiguration) =>
 {
     loggerConfiguration
         .WriteTo.Console()
+        .MinimumLevel.Error()
         .WriteTo.Telegram(configuration);
 });
 
