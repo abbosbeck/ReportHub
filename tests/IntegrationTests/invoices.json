@@ -1,0 +1,184 @@
+{
+	"info": {
+		"_postman_id": "4ad46e4a-43a4-49ef-a42e-3b768b699a52",
+		"name": "invoices",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_uid": "44742947-4ad46e4a-43a4-49ef-a42e-3b768b699a52"
+	},
+	"item": [
+		{
+			"name": "get-invoice-by-id",
+			"item": [
+				{
+					"name": "Client Admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "38793097-8d0a-4eaa-a170-57480a0b9a0f",
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response has the required fields - accessToken and refreshToken\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.accessToken).to.exist;\r",
+									"    pm.expect(responseData.refreshToken).to.exist;\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"AccessToken and refreshToken are non-empty strings\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseData.accessToken).to.be.a('string').and.to.have.lengthOf.at.least(1, \"AccessToken should not be empty\");\r",
+									"    pm.expect(responseData.refreshToken).to.be.a('string').and.to.have.lengthOf.at.least(1, \"RefreshToken should not be empty\");\r",
+									"\r",
+									"    pm.environment.set(\"bearerToken\", responseData.accessToken);\r",
+									"    pm.environment.set(\"refreshToken\", responseData.refreshToken);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "4c81a06f-7bed-4343-9fd0-e23076ededa7",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"a.abduqayumov@tuit.uz\",\n  \"password\": \"Password1234!\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Invoice by Id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d05c0f4b-c4c0-4843-a6f9-60f6e2de8431",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "4cbb33c7-9d0c-42f0-9e87-4c87e14b5967",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"<string>\",\n  \"password\": \"<string>\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients/:clientId/invoices/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"clients",
+								":clientId",
+								"invoices",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "clientId",
+									"value": "019662d2-e182-72c6-920a-ccc466f66b76"
+								},
+								{
+									"key": "id",
+									"value": "0196874b-8682-76c2-8566-a4b24825ea1b"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "3e6dbc8a-3ba3-4fc9-a7dd-e4a3fedc2113"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "27488914-a7a5-481e-9268-6e8441e445d0",
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "bdd3d0e4-d75f-4a56-a1a9-392558ff090b",
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "5f2c5283-6323-488f-b2db-f8b19ef5cca4",
+			"key": "baseUrl",
+			"value": "http://localhost:5297",
+			"type": "string"
+		}
+	]
+}
