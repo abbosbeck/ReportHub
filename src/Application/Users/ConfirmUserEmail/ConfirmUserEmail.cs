@@ -1,4 +1,5 @@
 ﻿using Application.Common.Exceptions;
+using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
 using Microsoft.AspNetCore.DataProtection;
 
@@ -11,7 +12,7 @@ public sealed class ConfirmUserEmailQuery(string token) : IRequest<string>
 
 public class ConfirmUserEmailQueryHandler(
     IDataProtectionProvider dataProtectionProvider,
-    UserManager<User> userManager)
+    IUserRepository repository)
     : IRequestHandler<ConfirmUserEmailQuery, string>
 {
     public async Task<string> Handle(ConfirmUserEmailQuery request, CancellationToken cancellationToken)
@@ -19,11 +20,11 @@ public class ConfirmUserEmailQueryHandler(
         var dataProtector = dataProtectionProvider.CreateProtector("EmailConfirmation");
 
         var userId = dataProtector.Unprotect(request.Token);
-        var user = await userManager.FindByIdAsync(userId)
+        var user = await repository.GetByIdAsync(Guid.Parse(userId))
             ?? throw new NotFoundException($"User is not found.");
 
         user.EmailConfirmed = true;
-        await userManager.UpdateAsync(user);
+        await repository.UpdateAsync(user);
 
         return "Welcome to ReportHub!";
     }
