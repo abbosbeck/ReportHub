@@ -20,6 +20,11 @@ public class UserRepository(AppDbContext context) : IUserRepository
         return await context.SaveChangesAsync() > 0;
     }
 
+    public async Task<User> GetByEmailAsync(string email)
+    {
+        return await context.Users.FirstOrDefaultAsync(u => u.Email == email);
+    }
+
     public async Task<User> GetByIdAsync(Guid userId)
     {
         return await context.Users.FindAsync(userId);

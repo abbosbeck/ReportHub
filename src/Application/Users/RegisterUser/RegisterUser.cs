@@ -22,7 +22,8 @@ public sealed class RegisterUserCommand : IRequest<UserDto>
 }
 
 public class RegisterUserCommandHandler(
-        UserManager<User> userManager,
+        IUserRepository userRepository,
+        IPasswordHasher<User> passwordHasher,
         IValidator<RegisterUserCommand> validator,
         IConfiguration configuration,
         IEmailService emailService,
@@ -38,12 +39,11 @@ public class RegisterUserCommandHandler(
 
         var user = mapper.Map<User>(request);
         user.UserName = user.Email;
+        user.NormalizedEmail = user.Email.ToUpper();
+        user.SecurityStamp = Guid.NewGuid().ToString();
+        user.PasswordHash = passwordHasher.HashPassword(user, request.Password);
 
-        var result = await userManager.CreateAsync(user, request.Password);
-        if (!result.Succeeded)
-        {
-            throw new UnauthorizedException(string.Join(", ", result.Errors.Select(e => e.Description)));
-        }
+        _ = await userRepository.AddAsync(user);
 
         await AssignSystemRoleAsync(user, SystemRoles.Regular);
 
