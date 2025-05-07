@@ -10,6 +10,222 @@
 			"name": "get-invoice-by-id",
 			"item": [
 				{
+					"name": "Register Client Admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2801ef8e-ce42-431a-85ee-0d696fee2789",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body contains expected fields\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.id).to.exist;\r",
+									"    pm.expect(response.firstName).to.exist;\r",
+									"    pm.expect(response.lastName).to.exist;\r",
+									"    pm.expect(response.department).to.exist;\r",
+									"    pm.execution(response.email).to.exist;\r",
+									"    pm.execution(response.confirmEmailToken).to.exist;\r",
+									"\r",
+									"    pm.environment.set(\"clientUserId\", responseData.id);\r",
+									"    pm.environment.set(\"email\", responseData.email);\r",
+									"    pm.environment.set(\"confirmEmailToken\", responseData.confirmEmailToken);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body contains expected values\", function (){\r",
+									"    const responseData = pm.response.json();\r",
+									"    const requestData = pm.request.json();\r",
+									"\r",
+									"    pm.expect(responseData.firstName).to.equal(requestData.firstName);\r",
+									"    pm.expect(responseData.lastName).to.equal(requestData.lastName);\r",
+									"    pm.expect(responseData.department).to.equal(responseData.department);\r",
+									"    pm.expect(responseData.email).to.equal(responseData.email);\r",
+									"    pm.expect(responseData.confirmEmailToken).to.equal(responseData.confirmEmailToken);\r",
+									"\r",
+									"    pm.environment.set(\"password\", requestData.password);\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "6d4e0e05-caa5-44a4-a9d9-218f183dc6be",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"firstName\": \"{{$randomFirstName}}\",\r\n  \"lastName\": \"{{$randomLastName}}\",\r\n  \"department\": \"{{$randomDepartment}}\",\r\n  \"email\": \"{{$randomEmail}}\",\r\n  \"password\": \"{{$randomPassword}}1!\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"id": "39abae36-69f7-4d34-9373-132637f01d33",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/confirm-email?token={{confirmEmailToken}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"confirm-email"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{confirmEmailToken}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Super Admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e76e4e12-d09d-4525-868d-de3ec28fa1e1",
+								"exec": [
+									"pm.test(\"AccessToken and refreshToken are non-empty strings\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseData.accessToken).to.be.a('string').and.to.have.lengthOf.at.least(1, \"AccessToken should not be empty\");\r",
+									"    pm.expect(responseData.refreshToken).to.be.a('string').and.to.have.lengthOf.at.least(1, \"RefreshToken should not be empty\");\r",
+									"\r",
+									"    pm.environment.set(\"adminBearerToken\", responseData.accessToken);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "ed73ec78-77ea-4557-b350-45139917fccb",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"admin@gmail.com\",\r\n  \"password\": \"Password1234!\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Client",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "ec5ab53c-cadc-4de6-86ae-9b3e675c5951",
+								"exec": [
+									"pm.test(\"AccessToken and refreshToken are non-empty strings\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    pm.environment.set(\"clientId\", responseData.clientId);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "3351f71e-d778-4b6f-b13e-4043d444587c",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminBearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"{{$randomFullName}}\",\r\n  \"countryCode\": \"{{$randomCountryCode}}\",\r\n  \"ownerId\": \"{{clientUserId}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/client/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"client",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Client Admin",
 					"event": [
 						{
@@ -37,7 +253,7 @@
 									"    pm.expect(responseData.accessToken).to.be.a('string').and.to.have.lengthOf.at.least(1, \"AccessToken should not be empty\");\r",
 									"    pm.expect(responseData.refreshToken).to.be.a('string').and.to.have.lengthOf.at.least(1, \"RefreshToken should not be empty\");\r",
 									"\r",
-									"    pm.environment.set(\"bearerToken\", responseData.accessToken);\r",
+									"    pm.environment.set(\"clientAdminbearerToken\", responseData.accessToken);\r",
 									"    pm.environment.set(\"refreshToken\", responseData.refreshToken);\r",
 									"});\r",
 									""
@@ -61,7 +277,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"email\": \"a.abduqayumov@tuit.uz\",\n  \"password\": \"Password1234!\"\n}"
+							"raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}!\"\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/users/login",
@@ -104,7 +320,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{bearerToken}}",
+									"value": "{{clientAdminbearerToken}}",
 									"type": "string"
 								}
 							]
