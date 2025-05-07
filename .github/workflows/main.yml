@@ -58,13 +58,6 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v4
-      
-      - name: Install Postman CLI
-        run: |
-          curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
-          
-      - name: Login to Postman CLI
-        run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
 
       - name: Run docker compose
         uses: hoverkraft-tech/compose-action@v2.0.1
@@ -75,10 +68,14 @@ jobs:
           up-flags: '--build -d'
 
       - name: Wait for API to be ready
+        run: sleep 20
+      
+      - name: Install Postman CLI
         run: |
-          until curl -s http://localhost:8082/swagger; do
-            sleep 20
-          done
+          curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
+          
+      - name: Login to Postman CLI
+        run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
           
       - name: Run API tests
         run: |
