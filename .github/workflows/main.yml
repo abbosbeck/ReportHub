@@ -74,6 +74,7 @@ jobs:
         run: |
           nohup dotnet run --project ./src/Api/Api.csproj --urls=http://localhost:5297 > api.log 2>&1 &
           echo $! > api_pid.txt
+          
       - name: Wait for API to be ready
         run: sleep 60
         
@@ -87,6 +88,9 @@ jobs:
       - name: Run API tests
         run: |
           postman collection run "${{ github.workspace }}/tests/IntegrationTests/users.json" -e "40646021-0eb0a767-64e5-4d43-945f-f71d42d7fa70" --integration-id "177179-${{ github.run_id }}"
+      
+      - name: Stop api
+        run: kill $(cat api_pid.txt)
 
   deploy:
     needs: run-integration-tests
