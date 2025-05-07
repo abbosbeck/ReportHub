@@ -788,8 +788,8 @@
 							"script": {
 								"id": "68c5b5a3-f9ba-4780-96ae-cc3f0db82e35",
 								"exec": [
-									"pm.test(\"Status code is 401\", function () {\r",
-									"    pm.response.to.have.status(401);\r",
+									"pm.test(\"Status code is 409\", function () {\r",
+									"    pm.response.to.have.status(409);\r",
 									"});\r",
 									"\r",
 									"\r",
@@ -805,8 +805,8 @@
 									"});\r",
 									"\r",
 									"\r",
-									"pm.test(\"Response body contains 'UnauthorizedException'\", function () {\r",
-									"    pm.expect(pm.response.text()).to.include('UnauthorizedException');\r",
+									"pm.test(\"Response body contains 'ConflictException'\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include('ConflictException');\r",
 									"});"
 								],
 								"type": "text/javascript",
