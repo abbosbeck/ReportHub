@@ -68,7 +68,7 @@ jobs:
         run: dotnet restore ./src/Api/Api.csproj
 
       - name: Build the API
-          dotnet build ./src/Api/Api.csproj --no-restore
+        run: dotnet build ./src/Api/Api.csproj --no-restore
 
       - name: Run API in background
         run: |
