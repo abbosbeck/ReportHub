@@ -62,10 +62,26 @@ jobs:
       - name: Install Postman CLI
         run: |
           curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
           
       - name: Login to Postman CLI
         run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
-        
+
+      - name: Run docker compose
+        uses: hoverkraft-tech/compose-action@v2.0.1
+        with:
+          compose-file: './docker-compose.yml'
+          services: |
+            api
+          up-flags: '--build -d'
+
+      - name: Run project
+        run: dotnet run ./src/Api/Api.csproj
+      
       - name: Run API tests
         run: |
           postman collection run "${{ github.workspace }}/tests/IntegrationTests/users.json" -e "40646021-0eb0a767-64e5-4d43-945f-f71d42d7fa70" --integration-id "177179-${{ github.run_id }}"
