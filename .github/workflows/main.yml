@@ -4,6 +4,7 @@ on:
   pull_request:
     branches: ['main']
     types: ['closed']
+    
   workflow_dispatch:
 
 env:
@@ -51,8 +52,49 @@ jobs:
       - name: Run tests
         run: dotnet test ./tests/Tests/Tests.csproj
 
-  deploy:
+  run-integration-tests:
     needs: run-unit-tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore the API
+        run: dotnet restore ./src/Api/Api.csproj
+
+      - name: Build the API
+        run: dotnet build ./src/Api/Api.csproj --no-restore
+
+      - name: Run the API in background
+        run: |
+          nohup dotnet run --project ./src/Api/Api.csproj --urls=http://localhost:5297 > api.log 2>&1 &
+          echo $! > api_pid.txt
+          
+      - name: Wait for the API to be ready
+        run: sleep 60
+        
+      - name: Install Postman CLI
+        run: |
+          curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
+          
+      - name: Login to Postman CLI
+        run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
+          
+      - name: Run the API tests
+        run: |
+          postman collection run "${{ github.workspace }}/tests/IntegrationTests/users.json" -e "40646021-0eb0a767-64e5-4d43-945f-f71d42d7fa70" --integration-id "177179-${{ github.run_id }}"
+      
+      - name: Stop the API
+        run: kill $(cat api_pid.txt)
+
+  deploy:
+    needs: run-integration-tests
     runs-on: ubuntu-latest
 
     steps:
