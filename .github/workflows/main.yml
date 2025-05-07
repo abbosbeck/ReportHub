@@ -80,7 +80,7 @@ jobs:
           up-flags: '--build -d'
 
       - name: Run project
-        run: dotnet run ./src/Api/Api.csproj
+        run: dotnet run --project ./src/Api/Api.csproj
       
       - name: Run API tests
         run: |
