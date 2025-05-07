@@ -1,5 +1,6 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
+using Application.Common.Interfaces.Repositories;
 using Application.Common.Interfaces.Time;
 using Application.Users.LoginUser;
 using Domain.Entities;
@@ -11,7 +12,8 @@ namespace Tests.Users;
 
 public class LoginUserTests
 {
-    private Mock<UserManager<User>> mockUserManager;
+    private Mock<IUserRepository> userRepository;
+    private Mock<IPasswordHasher<User>> passwordHasher;
     private Mock<IJwtTokenGenerator> mockJwtTokenGenerator;
     private Mock<IValidator<LoginUserCommand>> mockValidator;
     private Mock<IDateTimeService> mockDateTimeService;
@@ -20,22 +22,15 @@ public class LoginUserTests
     [SetUp]
     public void Setup()
     {
-        mockUserManager = new Mock<UserManager<User>>(
-            Mock.Of<IUserStore<User>>(),
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null);
+        userRepository = new Mock<IUserRepository>();
+        passwordHasher = new Mock<IPasswordHasher<User>>();
         mockJwtTokenGenerator = new Mock<IJwtTokenGenerator>();
         mockValidator = new Mock<IValidator<LoginUserCommand>>();
         mockDateTimeService = new Mock<IDateTimeService>();
 
         handler = new LoginUserCommandHandler(
-            mockUserManager.Object,
+            userRepository.Object,
+            passwordHasher.Object,
             mockDateTimeService.Object,
             mockJwtTokenGenerator.Object,
             mockValidator.Object);
@@ -59,13 +54,13 @@ public class LoginUserTests
             Password = "password123",
         };
 
-        mockUserManager
-            .Setup(r => r.FindByEmailAsync(user.Email))
+        userRepository
+            .Setup(r => r.GetByEmailAsync(user.Email))
             .ReturnsAsync(user);
 
-        mockUserManager
-            .Setup(h => h.CheckPasswordAsync(user, command.Password))
-            .ReturnsAsync(true);
+        passwordHasher
+            .Setup(h => h.VerifyHashedPassword(user, user.PasswordHash, command.Password))
+            .Returns(PasswordVerificationResult.Success);
 
         mockJwtTokenGenerator
             .Setup(j => j.GenerateAccessTokenAsync(user))
@@ -75,9 +70,9 @@ public class LoginUserTests
             .Setup(j => j.GenerateRefreshToken())
             .Returns("refresh_token");
 
-        mockUserManager
+        userRepository
             .Setup(r => r.UpdateAsync(user))
-            .ReturnsAsync(IdentityResult.Success);
+            .ReturnsAsync(user);
 
         // Act
         var result = await handler.Handle(command, CancellationToken.None);
@@ -103,13 +98,13 @@ public class LoginUserTests
             Password = "wrong_password",
         };
 
-        mockUserManager
-            .Setup(r => r.FindByEmailAsync(user.Email))
+        userRepository
+            .Setup(r => r.GetByEmailAsync(user.Email))
             .ReturnsAsync(user);
 
-        mockUserManager
-            .Setup(h => h.CheckPasswordAsync(user, command.Password))
-            .ReturnsAsync(false);
+        passwordHasher
+            .Setup(h => h.VerifyHashedPassword(user, user.PasswordHash, command.Password))
+            .Returns(PasswordVerificationResult.Failed);
 
         Assert.ThrowsAsync<UnauthorizedException>(async () =>
         {
