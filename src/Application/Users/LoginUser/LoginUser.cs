@@ -1,6 +1,7 @@
 ﻿using Application.Common.Attributes;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
+using Application.Common.Interfaces.Repositories;
 using Application.Common.Interfaces.Time;
 using Domain.Entities;
 
@@ -14,7 +15,8 @@ public sealed class LoginUserCommand : IRequest<LoginDto>
 }
 
 public class LoginUserCommandHandler(
-        UserManager<User> userManager,
+        IUserRepository userRepository,
+        IPasswordHasher<User> passwordHasher,
         IDateTimeService dateTimeService,
         IJwtTokenGenerator jwtTokenGenerator,
         IValidator<LoginUserCommand> validator)
@@ -24,7 +26,7 @@ public class LoginUserCommandHandler(
     {
         await validator.ValidateAndThrowAsync(request, cancellationToken: cancellationToken);
 
-        var user = await userManager.FindByEmailAsync(request.Email)
+        var user = await userRepository.GetByEmailAsync(request.Email)
             ?? throw new UnauthorizedException("Invalid email or password");
 
         if (!user.EmailConfirmed)
@@ -32,9 +34,9 @@ public class LoginUserCommandHandler(
             throw new UnauthorizedException("Email is not confirmed");
         }
 
-        var passwordVerificationResult = await userManager.CheckPasswordAsync(user, request.Password);
+        var passwordVerificationResult = passwordHasher.VerifyHashedPassword(user, user.PasswordHash, request.Password);
 
-        if (!passwordVerificationResult)
+        if (passwordVerificationResult == PasswordVerificationResult.Failed)
         {
             throw new UnauthorizedException("Invalid email or password");
         }
@@ -45,11 +47,7 @@ public class LoginUserCommandHandler(
         user.RefreshToken = refreshToken;
         user.RefreshTokenExpiryTime = dateTimeService.UtcNow.AddDays(7);
 
-        var result = await userManager.UpdateAsync(user);
-        if (!result.Succeeded)
-        {
-            throw new UnauthorizedAccessException(string.Join(", ", result.Errors.Select(e => e.Description)));
-        }
+        _ = await userRepository.UpdateAsync(user);
 
         return new LoginDto
         {
