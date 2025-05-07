@@ -43,6 +43,13 @@ public class RegisterUserCommandHandler(
         user.SecurityStamp = Guid.NewGuid().ToString();
         user.PasswordHash = passwordHasher.HashPassword(user, request.Password);
 
+        var existUser = await userRepository.GetByEmailAsync(request.Email);
+
+        if (existUser is not null)
+        {
+            throw new ConflictException("Email Already Exists");
+        }
+
         _ = await userRepository.AddAsync(user);
 
         await AssignSystemRoleAsync(user, SystemRoles.Regular);
