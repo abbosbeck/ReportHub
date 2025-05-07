@@ -53,6 +53,13 @@ public class ImportDataFromFileServic : IImportDataFromFileService
             return null;
         }
 
+        string extension = Path.GetExtension(file.FileName);
+        if (!(string.Equals(extension, ".xlsx", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(extension, ".xls", StringComparison.OrdinalIgnoreCase)))
+        {
+            throw new BadRequestException("You have to provide an Excel file!");
+        }
+
         try
         {
             using (var memoryStream = new MemoryStream())
