@@ -58,18 +58,25 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v4
-
-      - name: Run docker compose
-        uses: hoverkraft-tech/compose-action@v2.0.1
+        
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
         with:
-          compose-file: './docker-compose.yml'
-          services: |
-            api
-          up-flags: '--build -d'
+          dotnet-version: '9.0.x'
 
+      - name: Restore the API
+        run: dotnet restore ./src/Api/Api.csproj
+
+      - name: Build the API
+          dotnet build ./src/Api/Api.csproj --no-restore
+
+      - name: Run API in background
+        run: |
+          nohup dotnet run --project ./src/Api/Api.csproj --urls=http://localhost:5297 > api.log 2>&1 &
+          echo $! > api_pid.txt
       - name: Wait for API to be ready
-        run: sleep 20
-      
+        run: sleep 60
+        
       - name: Install Postman CLI
         run: |
           curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
