@@ -1,4 +1,8 @@
 ﻿@inherits LayoutComponentBase
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject ITokenProviderService tokenProvier
+@using Microsoft.AspNetCore.Components.Authorization
+@using Web.Services
 
 <div class="page">
     <div class="sidebar">
@@ -7,7 +11,14 @@
 
     <main>
         <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+            @if (isAuthenticated)
+            {
+                <span>Hi, @email!</span>
+            }
+            else
+            {
+                <a href="/login">Login</a> <b>/</b> <a href="/register">Register</a>
+            }
         </div>
 
         <article class="content px-4">
@@ -21,3 +32,19 @@
     <a href="." class="reload">Reload</a>
     <span class="dismiss">🗙</span>
 </div>
+
+@code {
+    private bool isAuthenticated = false;
+    private string email = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        string userEmail = tokenProvier.GetUserEmail();
+
+        if (userEmail != null)
+        {
+            isAuthenticated = true;
+            email = userEmail;
+        }
+    }
+}
