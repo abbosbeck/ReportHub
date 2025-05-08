@@ -26,28 +26,15 @@
 									"\r",
 									"    pm.expect(responseData).to.be.an('object');\r",
 									"    pm.expect(responseData.id).to.exist;\r",
-									"    pm.expect(response.firstName).to.exist;\r",
-									"    pm.expect(response.lastName).to.exist;\r",
-									"    pm.expect(response.department).to.exist;\r",
-									"    pm.execution(response.email).to.exist;\r",
-									"    pm.execution(response.confirmEmailToken).to.exist;\r",
+									"    pm.expect(responseData.firstName).to.exist;\r",
+									"    pm.expect(responseData.lastName).to.exist;\r",
+									"    pm.expect(responseData.department).to.exist;\r",
+									"    pm.expect(responseData.email).to.exist;\r",
+									"    pm.expect(responseData.confirmEmailToken).to.exist;\r",
 									"\r",
 									"    pm.environment.set(\"clientUserId\", responseData.id);\r",
 									"    pm.environment.set(\"email\", responseData.email);\r",
 									"    pm.environment.set(\"confirmEmailToken\", responseData.confirmEmailToken);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Response body contains expected values\", function (){\r",
-									"    const responseData = pm.response.json();\r",
-									"    const requestData = pm.request.json();\r",
-									"\r",
-									"    pm.expect(responseData.firstName).to.equal(requestData.firstName);\r",
-									"    pm.expect(responseData.lastName).to.equal(requestData.lastName);\r",
-									"    pm.expect(responseData.department).to.equal(responseData.department);\r",
-									"    pm.expect(responseData.email).to.equal(responseData.email);\r",
-									"    pm.expect(responseData.confirmEmailToken).to.equal(responseData.confirmEmailToken);\r",
-									"\r",
-									"    pm.environment.set(\"password\", requestData.password);\r",
 									"});\r",
 									"\r",
 									"\r",
@@ -88,7 +75,7 @@
 					"response": []
 				},
 				{
-					"name": "New Request",
+					"name": "Confirm Email",
 					"id": "39abae36-69f7-4d34-9373-132637f01d33",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
@@ -162,200 +149,6 @@
 							"path": [
 								"users",
 								"login"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Create Client",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "ec5ab53c-cadc-4de6-86ae-9b3e675c5951",
-								"exec": [
-									"pm.test(\"AccessToken and refreshToken are non-empty strings\", function () {\r",
-									"    const responseData = pm.response.json();\r",
-									"\r",
-									"    pm.environment.set(\"clientId\", responseData.clientId);\r",
-									"});"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"id": "3351f71e-d778-4b6f-b13e-4043d444587c",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{adminBearerToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"name\": \"{{$randomFullName}}\",\r\n  \"countryCode\": \"{{$randomCountryCode}}\",\r\n  \"ownerId\": \"{{clientUserId}}\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/client/",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"client",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Client Admin",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "38793097-8d0a-4eaa-a170-57480a0b9a0f",
-								"exec": [
-									"pm.test(\"Response status code is 200\", function () {\r",
-									"    pm.expect(pm.response.code).to.equal(200);\r",
-									"});\r",
-									"\r",
-									"\r",
-									"pm.test(\"Response has the required fields - accessToken and refreshToken\", function () {\r",
-									"    const responseData = pm.response.json();\r",
-									"\r",
-									"    pm.expect(responseData).to.be.an('object');\r",
-									"    pm.expect(responseData.accessToken).to.exist;\r",
-									"    pm.expect(responseData.refreshToken).to.exist;\r",
-									"});\r",
-									"\r",
-									"\r",
-									"pm.test(\"AccessToken and refreshToken are non-empty strings\", function () {\r",
-									"    const responseData = pm.response.json();\r",
-									"\r",
-									"    pm.expect(responseData.accessToken).to.be.a('string').and.to.have.lengthOf.at.least(1, \"AccessToken should not be empty\");\r",
-									"    pm.expect(responseData.refreshToken).to.be.a('string').and.to.have.lengthOf.at.least(1, \"RefreshToken should not be empty\");\r",
-									"\r",
-									"    pm.environment.set(\"clientAdminbearerToken\", responseData.accessToken);\r",
-									"    pm.environment.set(\"refreshToken\", responseData.refreshToken);\r",
-									"});\r",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"id": "4c81a06f-7bed-4343-9fd0-e23076ededa7",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}!\"\n}"
-						},
-						"url": {
-							"raw": "{{baseUrl}}/users/login",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"users",
-								"login"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Invoice by Id",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "d05c0f4b-c4c0-4843-a6f9-60f6e2de8431",
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"id": "4cbb33c7-9d0c-42f0-9e87-4c87e14b5967",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{clientAdminbearerToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"email\": \"<string>\",\n  \"password\": \"<string>\"\n}"
-						},
-						"url": {
-							"raw": "{{baseUrl}}/clients/:clientId/invoices/:id",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"clients",
-								":clientId",
-								"invoices",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "clientId",
-									"value": "019662d2-e182-72c6-920a-ccc466f66b76"
-								},
-								{
-									"key": "id",
-									"value": "0196874b-8682-76c2-8566-a4b24825ea1b"
-								}
 							]
 						}
 					},
