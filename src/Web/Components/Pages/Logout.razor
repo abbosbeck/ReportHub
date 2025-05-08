@@ -1,6 +1,18 @@
 ﻿@page "/logout"
-<h3>Logout</h3>
+@using Web.Services
+@inject NavigationManager Navigation
+@inject ITokenProviderService TokenProvider
+
 
 @code {
-    
+    protected override void OnInitialized()
+    {
+        this.LogOut();
+    }
+
+    private void LogOut()
+    {
+        TokenProvider.RemoveToken();
+        Navigation.NavigateTo("/login", forceLoad: true);
+    }
 }

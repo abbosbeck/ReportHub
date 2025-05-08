@@ -19,7 +19,9 @@ public class TokenProviderService : ITokenProviderService
 
         var handler = new JwtSecurityTokenHandler();
         var jwt = handler.ReadJwtToken(token);
-        
+
         return jwt.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
     }
+
+    public void RemoveToken() => _accessToken = null;
 }
