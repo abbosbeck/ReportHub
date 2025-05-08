@@ -1,6 +1,5 @@
 ﻿using Application.Common.Attributes;
 using Application.Common.Constants;
-using Application.Common.Exceptions;
 using Application.Common.Interfaces.Authorization;
 using Application.Common.Interfaces.Repositories;
 using Application.Common.Interfaces.Services;
@@ -33,10 +32,7 @@ public class ImportCustomerListCommandHandler(
 
         customers.ForEach(customer =>
         {
-            if (customer.ClientId != request.ClientId)
-            {
-                throw new ForbiddenException("Givin ClientId(s) is invalid. Please check and try again!");
-            }
+            customer.ClientId = request.ClientId;
         });
 
         var oldCustomers = await repository.GetAll()
