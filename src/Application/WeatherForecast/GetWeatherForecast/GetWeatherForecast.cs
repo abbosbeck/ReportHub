@@ -8,8 +8,7 @@ public class GetWeatherForecastRequest : IRequest<IEnumerable<WeatherForecast>>
 {
 }
 
-public class GetWeatherForecastRequestHandler(
-    ICurrencyExchangeService currencyExchangeService)
+public class GetWeatherForecastRequestHandler
     : IRequestHandler<GetWeatherForecastRequest, IEnumerable<WeatherForecast>>
 {
     private static readonly string[] Summaries =
@@ -19,10 +18,6 @@ public class GetWeatherForecastRequestHandler(
 
     public async Task<IEnumerable<WeatherForecast>> Handle(GetWeatherForecastRequest request, CancellationToken cancellationToken)
     {
-        var currency = await currencyExchangeService.ExchangeCurrencyAsync("USD", "UZS", 100, DateTime.Now);
-
-        Console.WriteLine(currency);
-
         var result = Enumerable.Range(1, 5).Select(index => new WeatherForecast
         {
             Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
