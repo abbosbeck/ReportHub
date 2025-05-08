@@ -1,18 +1,24 @@
 ﻿@page "/weather"
+@inject IHttpClientFactory ClientFactory
 @attribute [StreamRendering]
 
 <PageTitle>Weather</PageTitle>
 
-<h1>Weather</h1>
-
-<p>This component demonstrates showing data.</p>
-
-@if (forecasts == null)
+@if (showError)
 {
-    <p><em>Loading...</em></p>
+    <Snackbar Visible="@showError" 
+              VisibleChanged="@((bool value) => showError = value)" 
+              Color="Color.Danger" 
+              AutohideInterval="3000">
+        @errorMessage
+    </Snackbar>
 }
 else
 {
+    <h1>Weather</h1>
+
+    <p>This component demonstrates showing data.</p>
+
     <table class="table">
         <thead>
             <tr>
@@ -37,21 +43,26 @@ else
 }
 
 @code {
-    private WeatherForecast[]? forecasts;
+    private List<WeatherForecast> forecasts = new List<WeatherForecast>();
+    private bool showError = false;
+    private string errorMessage = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
-        // Simulate asynchronous loading to demonstrate streaming rendering
-        await Task.Delay(500);
-
-        var startDate = DateOnly.FromDateTime(DateTime.Now);
-        var summaries = new[] { "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching" };
-        forecasts = Enumerable.Range(1, 5).Select(index => new WeatherForecast
+        var client = ClientFactory.CreateClient("api");
+        var httpResponse = await client.GetAsync("weatherforecast");
+        if (httpResponse.IsSuccessStatusCode)
         {
-            Date = startDate.AddDays(index),
-            TemperatureC = Random.Shared.Next(-20, 55),
-            Summary = summaries[Random.Shared.Next(summaries.Length)]
-        }).ToArray();
+            var response = await client.GetFromJsonAsync<List<WeatherForecast>>("weatherforecast");
+            var startDate = DateOnly.FromDateTime(DateTime.Now);
+            var summaries = response;
+            forecasts = response.ToList();
+        }
+        else
+        {
+            showError = true;
+            errorMessage = "You don't have access to this page!";
+        }
     }
 
     private class WeatherForecast

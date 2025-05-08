@@ -1,9 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+	<NoWarn>RZ10012</NoWarn>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Blazorise.Bootstrap5" Version="1.7.6" />
+    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.7.6" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.9.0" />
+  </ItemGroup>
 
 </Project>
