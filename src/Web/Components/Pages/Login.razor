@@ -1,0 +1,44 @@
+﻿<Div Margin="Margin.IsAuto.OnX" Width="Width.Is50">
+    <Heading Size="HeadingSize.Is2" Margin="Margin.Is3.FromBottom" TextAlignment="TextAlignment.Center">
+        Sign in to your account
+    </Heading>
+
+    <Card Shadow="Shadow.Default">
+        <CardBody>
+            <Form>
+                <Field>
+                    <FieldLabel>
+                        Email
+                    </FieldLabel>
+                    <FieldBody>
+                        <TextEdit Placeholder="name@blazorise.com" Role="TextRole.Email" />
+                    </FieldBody>
+                </Field>
+                <Field>
+                    <FieldLabel>
+                        Password
+                    </FieldLabel>
+                    <FieldBody>
+                        <TextEdit Placeholder="********" Role="TextRole.Password" autocomplete="new-password" />
+                    </FieldBody>
+                </Field>
+                <Field Flex="Flex.Wrap.JustifyContent.Between">
+                    <Check TValue="bool">
+                        Remember me
+                    </Check>
+                    <Anchor To="#" TextColor="TextColor.Primary">
+                        Forgot your password?
+                    </Anchor>
+                </Field>
+                <Field>
+                    <Button Color="Color.Primary" Block>
+                        Sign in
+                    </Button>
+                </Field>
+                <Field>
+                    Don’t have an account yet? <Anchor To="#" TextColor="TextColor.Primary">Sign up</Anchor>
+                </Field>
+            </Form>
+        </CardBody>
+    </Card>
+</Div>
