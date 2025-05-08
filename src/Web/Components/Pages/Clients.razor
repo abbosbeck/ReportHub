@@ -1,19 +1,38 @@
 ﻿@page "/clients"
+@using Web.Models.Clients
+@using Web.Services.Clients
+@inject IClientService ClientService
 @rendermode InteractiveServer
 
-<PageTitle>Counter</PageTitle>
+<PageTitle>Clients</PageTitle>
 
-<h1>Counter</h1>
+<Table Striped ResponsiveMode="TableResponsiveMode.Mobile" Bordered Hoverable FixedHeader FixedHeaderTableHeight="100%">
+    <TableHeader>
+        <TableRow>
+            <TableHeaderCell>#</TableHeaderCell>
+            <TableHeaderCell>Name</TableHeaderCell>
+            <TableHeaderCell>Currency Code</TableHeaderCell>
+        </TableRow>
+    </TableHeader>
+    <TableBody>
+        @for (var i = 0; i < _clients.Count; i++)
+        {
+            var index = i;
+            <TableRow>
+                <TableRowHeader>@(index + 1)</TableRowHeader>
+                <TableRowCell>@_clients[index].Name</TableRowCell>
+                <TableRowCell>@_clients[index].CountryCode</TableRowCell>
+            </TableRow>
+        }    
+    </TableBody>
+</Table>
 
-<p role="status">Current count: @currentCount</p>
-
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
 @code {
-    private int currentCount = 0;
+    private List<ClientResponse> _clients = [];
 
-    private void IncrementCount()
+    protected override async Task OnInitializedAsync()
     {
-        currentCount++;
+        _clients = await ClientService.GetListAsync();
     }
 }

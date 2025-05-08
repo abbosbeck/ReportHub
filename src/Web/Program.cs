@@ -4,6 +4,7 @@ using Blazorise.Icons.FontAwesome;
 using Web.Authentication;
 using Web.Components;
 using Web.Services;
+using Web.Services.Clients;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +29,7 @@ builder.Services
     .AddHttpMessageHandler<AuthHeaderHandler>();
 
 builder.Services.AddSingleton<ITokenProviderService, TokenProviderService>();
+builder.Services.AddScoped<IClientService, ClientService>();
 
 var app = builder.Build();
 
