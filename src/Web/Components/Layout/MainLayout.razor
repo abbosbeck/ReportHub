@@ -1,6 +1,6 @@
 ﻿@inherits LayoutComponentBase
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@inject ITokenProviderService tokenProvier
+@inject ITokenProviderService TokenProvider
 @using Microsoft.AspNetCore.Components.Authorization
 @using Web.Services
 
@@ -13,11 +13,13 @@
         <div class="top-row px-4">
             @if (isAuthenticated)
             {
-                <span>Hi, @email!</span>
+                <span class="rounded-2 border border-light p-2 text-light">Hi, @email!</span>
+                <a href="/logout" class="btn btn btn-outline-light text-decoration-none" role="button">Logout</a>
             }
             else
             {
-                <a href="/login">Login</a> <b>/</b> <a href="/register">Register</a>
+                <a href="/login" class="btn btn btn-outline-light text-decoration-none" role="button">Login</a>
+                <a href="/register" class="btn btn btn-outline-light text-decoration-none" role="button">Register</a>
             }
         </div>
 
@@ -39,7 +41,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        string userEmail = tokenProvier.GetUserEmail();
+        string userEmail = TokenProvider.GetUserEmail();
 
         if (userEmail != null)
         {
