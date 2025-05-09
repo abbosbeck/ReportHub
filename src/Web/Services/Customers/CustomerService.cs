@@ -4,6 +4,17 @@ public class CustomerService(IHttpClientFactory httpClientFactory) : ICustomerSe
 {
     private readonly HttpClient _httpClient = httpClientFactory.CreateClient("api");
 
+    public async Task<bool> DeleteAsync(Guid id, Guid clientId)
+    {
+        var response = await _httpClient.DeleteAsync($"clients/{clientId}/customers/{id}");
+        if (response.IsSuccessStatusCode)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
     public async Task<CustomerResponse> GetByIdAsync(Guid id, Guid clientId)
     {
         var response = await _httpClient.GetAsync($"clients/{clientId}/customers/{id}");
