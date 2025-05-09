@@ -1,42 +1,64 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@using Web.Models
+@using Web.Services
+@inject IUserProviderService TokenProviderService
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">Report Hub</a>
     </div>
 </div>
 
 <input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+@if (roleList is null){
 
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="nav flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span aria-hidden="true"><Icon Name="IconName.Home" class="me-2" />Dashboard</span>
-            </NavLink>
-        </div>
+}
+else{
+    <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
+        <nav class="nav flex-column">
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                    <span aria-hidden="true"><Icon Name="IconName.Home" class="me-2" />Dashboard</span>
+                </NavLink>
+            </div>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="clients">
-                <span aria-hidden="true"><Icon Name="IconName.Users" class="me-2" /></span> Clients
-            </NavLink>
-        </div>
+            @if (roleList.SystemRoles.Contains("SuperAdmin"))
+            {
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="clients">
+                        <span aria-hidden="true"><Icon Name="IconName.Users" class="me-2" /></span> Clients
+                    </NavLink>
+                </div>
+            }
+            else if (roleList.ClientRoles.Contains("Owner"))
+            {
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="invoices">
+                        <span aria-hidden="true"><Icon Name="IconName.File" class="me-3" />Invoices</span>
+                    </NavLink>
+                </div>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="invoices">
-                <span aria-hidden="true"><Icon Name="IconName.File" class="me-3" />Invoices</span>
-            </NavLink>
-        </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="items">
+                        <span aria-hidden="true"><Icon Name="IconName.Book" class="me-3" />Items</span>
+                    </NavLink>
+                </div>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="items">
-                <span aria-hidden="true"><Icon Name="IconName.Book" class="me-3" />Items</span>
-            </NavLink>
-        </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="plans">
+                        <span aria-hidden="true"><Icon Name="IconName.CalendarDay" class="me-3" />Plans</span>
+                    </NavLink>
+                </div>
+            }
+        </nav>
+    </div>
+}
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="plans">
-                <span aria-hidden="true"><Icon Name="IconName.CalendarDay" class="me-3" />Plans</span>
-            </NavLink>
-        </div>
-    </nav>
-</div>
 
+@code{
+    private UserRoles roleList;
+
+    protected override void OnInitialized()
+    {
+        roleList = TokenProviderService.GetRoles();
+    }
+}

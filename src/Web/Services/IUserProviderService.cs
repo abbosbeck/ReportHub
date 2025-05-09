@@ -1,6 +1,8 @@
-﻿namespace Web.Services;
+﻿using Web.Models;
 
-public interface ITokenProviderService
+namespace Web.Services;
+
+public interface IUserProviderService
 {
     void SetToken(string token);
 
@@ -9,4 +11,6 @@ public interface ITokenProviderService
     string GetToken();
 
     string GetUserEmail();
+
+    UserRoles GetRoles();
 }

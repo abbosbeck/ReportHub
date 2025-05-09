@@ -4,9 +4,9 @@ namespace Web.Authentication;
 
 public class AuthHeaderHandler : DelegatingHandler
 {
-    private readonly ITokenProviderService _tokenProvider;
+    private readonly IUserProviderService _tokenProvider;
 
-    public AuthHeaderHandler(ITokenProviderService tokenProvider)
+    public AuthHeaderHandler(IUserProviderService tokenProvider)
     {
         _tokenProvider = tokenProvider;
     }
