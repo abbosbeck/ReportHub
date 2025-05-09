@@ -18,6 +18,7 @@
                 <TableHeaderCell>#</TableHeaderCell>
                 <TableHeaderCell>Name</TableHeaderCell>
                 <TableHeaderCell>Currency Code</TableHeaderCell>
+                <TableHeaderCell></TableHeaderCell>
             </TableRow>
         </TableHeader>
         <TableBody>
@@ -28,6 +29,13 @@
                     <TableRowHeader>@(index + 1)</TableRowHeader>
                     <TableRowCell>@_clients[index].Name</TableRowCell>
                     <TableRowCell>@_clients[index].CountryCode</TableRowCell>
+                    <TableRowCell class="icon-cell">
+                        <div class="d-flex justify-content-center align-items-center gap-2">
+                            <Icon Name="IconName.Eye" class="text-primary" />
+                            <Icon Name="IconName.Edit" class="text-warning" />
+                            <Icon Name="IconName.Delete" class="text-danger cursor-pointer" />
+                        </div>
+                    </TableRowCell>
                 </TableRow>
             }
         </TableBody>
