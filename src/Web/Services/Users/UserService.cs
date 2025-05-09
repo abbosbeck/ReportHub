@@ -18,5 +18,17 @@ namespace Web.Services.Users
 
             return new RegisterResponse();
         }
+
+        public async Task<List<UserResponse>> UserListAsync()
+        {
+            var response = await _httpClient.GetAsync("users");
+
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<List<UserResponse>>();
+            }
+
+            return new List<UserResponse>();
+        }
     }
 }
