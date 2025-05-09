@@ -4,5 +4,5 @@ public interface ICurrentUserService
 {
     Guid UserId { get; }
 
-    List<string> SystemRoles { get; }
+    List<string> SystemRoles();
 }
