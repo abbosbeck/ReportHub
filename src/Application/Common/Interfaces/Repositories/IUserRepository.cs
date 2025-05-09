@@ -8,6 +8,8 @@ public interface IUserRepository
 
     Task<User> GetByEmailAsync(string email);
 
+    IQueryable<User> GetAll();
+
     Task<User> AddAsync(User user);
 
     Task<User> UpdateAsync(User user);
