@@ -6,6 +6,17 @@ public class ClientService(IHttpClientFactory httpClientFactory) : IClientServic
 {
     private readonly HttpClient _httpClient = httpClientFactory.CreateClient("api");
 
+    public async Task<bool> CreateAsync(ClientCreateRequest client)
+    {
+        var respone = await _httpClient.PostAsJsonAsync("clients", client);
+        if (respone.IsSuccessStatusCode)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
     public async Task<List<ClientResponse>> GetListAsync()
     {
         var response = await _httpClient.GetAsync("clients");
