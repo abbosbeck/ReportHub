@@ -30,6 +30,8 @@ builder.Services
 
 builder.Services.AddSingleton<ITokenProviderService, TokenProviderService>();
 builder.Services.AddScoped<IClientService, ClientService>();
+builder.Services.AddScoped<IRegisterService, RegisterService>();
+
 
 var app = builder.Build();
 
