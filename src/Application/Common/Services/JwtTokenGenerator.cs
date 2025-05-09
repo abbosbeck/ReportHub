@@ -16,12 +16,14 @@ public class JwtTokenGenerator(
         IUserRepository userRepository,
         IOptions<JwtOptions> jwtOptions,
         IDateTimeService dateTimeService,
-        ISystemRoleAssignmentRepository systemRoleAssignmentRepository)
+        ISystemRoleAssignmentRepository systemRoleAssignmentRepository,
+        IClientRoleAssignmentRepository clientRoleAssignmentRepository)
         : IJwtTokenGenerator
     {
         public async Task<string> GenerateAccessTokenAsync(User user)
         {
             var systemRoles = await systemRoleAssignmentRepository.GetRolesByUserIdAsync(user.Id);
+            var clientRoles = await clientRoleAssignmentRepository.GetByUserIdAsync(user.Id);
 
             var claims = new List<Claim>
             {
@@ -29,7 +31,8 @@ public class JwtTokenGenerator(
                 new (JwtRegisteredClaimNames.Email, user.Email!),
             };
 
-            claims.AddRange(systemRoles.Select(role => new Claim(ClaimTypes.Role, role)));
+            claims.AddRange(systemRoles.Select(role => new Claim("SystemRoles", role)));
+            claims.AddRange(clientRoles.Select(role => new Claim("ClientRoles", role)));
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Value.Key));
             var signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

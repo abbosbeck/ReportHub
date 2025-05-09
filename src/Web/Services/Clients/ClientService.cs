@@ -9,8 +9,11 @@ public class ClientService(IHttpClientFactory httpClientFactory) : IClientServic
     public async Task<List<ClientResponse>> GetListAsync()
     {
         var response = await _httpClient.GetAsync("clients");
-        response.EnsureSuccessStatusCode();
+        if (response.IsSuccessStatusCode)
+        {
+            return await response.Content.ReadFromJsonAsync<List<ClientResponse>>();
+        }
         
-        return await response.Content.ReadFromJsonAsync<List<ClientResponse>>();
+        return new List<ClientResponse>();
     }
 }

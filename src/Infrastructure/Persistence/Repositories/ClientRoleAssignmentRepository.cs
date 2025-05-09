@@ -12,6 +12,16 @@ public class ClientRoleAssignmentRepository(AppDbContext context) : IClientRoleA
         await context.SaveChangesAsync();
     }
 
+    public async Task<List<string>> GetByUserIdAsync(Guid userId)
+    {
+        return await context.ClientRoleAssignments
+                .Where(cr => cr.UserId == userId)
+                .Include(cr => cr.ClientRole)
+                .Select(cr => cr.ClientRole.Name)
+                .Distinct()
+                .ToListAsync();
+    }
+
     public async Task<List<string>> GetRolesByUserIdAndClientIdAsync(Guid userId, Guid clientId)
     {
         return await context.ClientRoleAssignments

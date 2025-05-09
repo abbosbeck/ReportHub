@@ -67,11 +67,6 @@ public class AppDbContext(
                 t.ClientId == clientProvider.ClientId &&
                 !t.IsDeleted));
 
-        builder.Entity<ClientRoleAssignment>(entity => entity
-            .HasQueryFilter(t =>
-                t.ClientId == clientProvider.ClientId &&
-                !t.IsDeleted));
-
         builder.Entity<Customer>(entity => entity
             .HasQueryFilter(t =>
                 t.ClientId == clientProvider.ClientId &&
