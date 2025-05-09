@@ -32,6 +32,8 @@ builder.Services
 builder.Services.AddSingleton<IUserProviderService, UserProviderService>();
 builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<IRegisterService, RegisterService>();
+
 
 var app = builder.Build();
 

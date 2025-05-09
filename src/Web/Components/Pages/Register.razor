@@ -1,0 +1,116 @@
+﻿@page "/register"
+@using Web.Models
+@using Web.Services
+@inject IRegisterService RegisterService
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+
+<PageTitle>Register</PageTitle>
+
+<Layout>
+    <Div Margin="Margin.IsAuto.OnX" Width="Width.Is50">
+        <Heading Size="HeadingSize.Is2" Margin="Margin.Is3.FromBottom" TextAlignment="TextAlignment.Center">
+            Create Account
+        </Heading>
+
+        <Card Shadow="Shadow.Default">
+            <CardBody>
+                <Validations @ref="validations" Model="@registerModel">
+                    <Form>
+                        <Field>
+                            <FieldLabel>First Name</FieldLabel>
+                            <FieldBody>
+                                <TextEdit @bind-Text="registerModel.FirstName" Placeholder="Enter first name" />
+                                <ValidationError For="@(() => registerModel.FirstName)" />
+                            </FieldBody>
+                        </Field>
+
+                        <Field>
+                            <FieldLabel>Last Name</FieldLabel>
+                            <FieldBody>
+                                <TextEdit @bind-Text="registerModel.LastName" Placeholder="Enter last name" />
+                                <ValidationError For="@(() => registerModel.LastName)" />
+                            </FieldBody>
+                        </Field>
+
+                        <Field>
+                            <FieldLabel>Department</FieldLabel>
+                            <FieldBody>
+                                <TextEdit @bind-Text="registerModel.Department" Placeholder="Enter department" />
+                                <ValidationError For="@(() => registerModel.Department)" />
+                            </FieldBody>
+                        </Field>
+
+                        <Field>
+                            <FieldLabel>Email</FieldLabel>
+                            <FieldBody>
+                                <TextEdit @bind-Text="registerModel.Email" Role="TextRole.Email" Placeholder="Enter your email" />
+                                <ValidationError For="@(() => registerModel.Email)" />
+                            </FieldBody>
+                        </Field>
+
+                        <Field>
+                            <FieldLabel>Password</FieldLabel>
+                            <FieldBody>
+                                <TextEdit @bind-Text="registerModel.Password" Role="TextRole.Password" TextEditType="TextEditType.Password" Placeholder="Enter password" />
+                                <ValidationError For="@(() => registerModel.Password)" />
+                            </FieldBody>
+                        </Field>
+
+                        <Field>
+                            <Button Type="ButtonType.Button" Color="Color.Primary" Block Clicked="HandleRegister">
+                                Register
+                            </Button>
+                        </Field>
+                    </Form>
+                </Validations>
+            </CardBody>
+        </Card>
+    </Div>
+
+    <Snackbar 
+    Visible="@showSnackbar"
+    VisibleChanged="@((bool value) => showSnackbar = value)"
+    Color="@snackbarColor"
+    AutohideInterval="5000">
+        @snackbarMessage
+    </Snackbar>
+</Layout>
+
+@code {
+    private RegisterModel registerModel = new(); 
+    private Validations validations;
+    private bool showSnackbar = false;
+    private string snackbarMessage = string.Empty;
+    private Color snackbarColor = Color.Danger;
+
+    private async Task HandleRegister()
+    {
+        if (await validations.ValidateAll())
+        {
+            try
+            {
+                var result = await RegisterService.RegisterAsync(registerModel);
+
+                snackbarMessage = "✅ Registered successfully! Check your email.";
+                snackbarColor = Color.Success;
+                showSnackbar = true;
+
+                await Task.Delay(30000);
+                Navigation.NavigateTo("/email-confirmation-info");
+            }
+            catch (ApplicationException ex)
+            {
+                snackbarMessage = $"❌ {ex.Message}";
+                snackbarColor = Color.Danger;
+                showSnackbar = true;
+            }
+            catch (Exception ex)
+            {
+                snackbarMessage = $"❌ Unexpected error: {ex.Message}";
+                snackbarColor = Color.Danger;
+                showSnackbar = true;
+            }
+        }
+    }
+}
