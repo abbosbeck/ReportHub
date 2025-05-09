@@ -45,7 +45,7 @@ public class AuthorizationPipelineBehavior<TRequest, TResponse>(
     {
         if (request is not IClientRequest clientRequest)
         {
-            return new List<string>();
+            return await clientRoleAssignmentRepository.GetByUserIdAsync(currentUserService.UserId);
         }
 
         clientIdProvider.ClientId = clientRequest.ClientId;
