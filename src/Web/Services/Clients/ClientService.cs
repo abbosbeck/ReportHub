@@ -13,7 +13,7 @@ public class ClientService(IHttpClientFactory httpClientFactory) : IClientServic
         {
             return await response.Content.ReadFromJsonAsync<List<ClientResponse>>();
         }
-
+        
         return new List<ClientResponse>();
     }
 }

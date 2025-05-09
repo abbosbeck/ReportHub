@@ -10,6 +10,7 @@ on:
 env:
   AZURE_CONTAINER_REGISTRY: reporthub
   CONTAINER_APP_NAME: reporthub
+  FRONTEND_CONTAINER_APP_NAME: frontend
   RESOURCE_GROUP: ExadelBootcamp
 
 jobs: 
@@ -96,7 +97,7 @@ jobs:
       - name: Stop the API
         run: kill $(cat api_pid.txt)
 
-  deploy:
+  deploy-backend:
     needs: run-integration-tests
     runs-on: ubuntu-latest
 
@@ -131,5 +132,43 @@ jobs:
           imageToDeploy: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_APP_NAME }}:${{ github.sha }}
           resourceGroup: ${{ env.RESOURCE_GROUP }}
           containerAppName: ${{ env.CONTAINER_APP_NAME }}
+          environmentVariables: |
+            ASPNETCORE_ENVIRONMENT=Development
+            
+  deploy-frontend:
+    needs: deploy-backend
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to ACR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io
+          username: ${{ secrets.AZURE_REGISTRY_USERNAME }}
+          password: ${{ secrets.AZURE_REGISTRY_PASSWORD }}
+
+      - name: Build and push container image to ACR
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          tags: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.FRONTEND_CONTAINER_APP_NAME }}:${{ github.sha }}
+          file: src/Web/Dockerfile
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy to Azure Container Apps
+        uses: azure/container-apps-deploy-action@v1
+        with:
+          imageToDeploy: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.FRONTEND_CONTAINER_APP_NAME }}:${{ github.sha }}
+          resourceGroup: ${{ env.RESOURCE_GROUP }}
+          containerAppName: ${{ env.FRONTEND_CONTAINER_APP_NAME }}
           environmentVariables: |
             ASPNETCORE_ENVIRONMENT=Development

@@ -1,0 +1,38 @@
+﻿@page "/clients"
+@using Web.Models.Clients
+@using Web.Services.Clients
+@inject IClientService ClientService
+@rendermode InteractiveServer
+
+<PageTitle>Clients</PageTitle>
+
+<Table Striped ResponsiveMode="TableResponsiveMode.Mobile" Bordered Hoverable FixedHeader FixedHeaderTableHeight="100%">
+    <TableHeader>
+        <TableRow>
+            <TableHeaderCell>#</TableHeaderCell>
+            <TableHeaderCell>Name</TableHeaderCell>
+            <TableHeaderCell>Currency Code</TableHeaderCell>
+        </TableRow>
+    </TableHeader>
+    <TableBody>
+        @for (var i = 0; i < _clients.Count; i++)
+        {
+            var index = i;
+            <TableRow>
+                <TableRowHeader>@(index + 1)</TableRowHeader>
+                <TableRowCell>@_clients[index].Name</TableRowCell>
+                <TableRowCell>@_clients[index].CountryCode</TableRowCell>
+            </TableRow>
+        }    
+    </TableBody>
+</Table>
+
+
+@code {
+    private List<ClientResponse> _clients = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        _clients = await ClientService.GetListAsync();
+    }
+}

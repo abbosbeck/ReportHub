@@ -4,14 +4,14 @@
 @inject HttpClient Http
 @inject NavigationManager Navigation
 @inject IHttpClientFactory ClientFactory
-@inject ITokenProviderService tokenProvider
+@inject ITokenProviderService TokenProvider
 @rendermode InteractiveServer
 
 <PageTitle>Login</PageTitle>
 <Layout>
     <Div Margin="Margin.IsAuto.OnX" Width="Width.Is50">
         <Heading Size="HeadingSize.Is2" Margin="Margin.Is3.FromBottom" TextAlignment="TextAlignment.Center">
-            Sign in to your account
+            Sign In
         </Heading>
 
         <Card Shadow="Shadow.Default">
@@ -21,20 +21,20 @@
                         <Field>
                             <FieldLabel>Email</FieldLabel>
                             <FieldBody>
-                                <TextEdit @bind-Text="loginModel.Email" Role="TextRole.Email" Placeholder="your@email.com" />
+                                <TextEdit @bind-Text="loginModel.Email" Role="@TextRole.Email" Placeholder="Enter your email" />
                             </FieldBody>
                         </Field>
 
                         <Field>
                             <FieldLabel>Password</FieldLabel>
                             <FieldBody>
-                                <TextEdit @bind-Text="loginModel.Password" Role="TextRole.Password" TextEditType="TextEditType.Password" />
+                                <TextEdit @bind-Text="loginModel.Password" Role="@TextRole.Password" Placeholder="Enter your password" TextEditType="TextEditType.Password" />
                             </FieldBody>
                         </Field>
 
                         <Field>
                             <Button Color="Color.Primary" Block Clicked="HandleValidSubmit">
-                                Sign in
+                                Sign In
                             </Button>
                         </Field>
                     </Form>
@@ -68,7 +68,7 @@
             if (response.IsSuccessStatusCode)
             {
                 var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
-                tokenProvider.SetToken(result.AccessToken);
+                TokenProvider.SetToken(result.AccessToken);
                 Navigation.NavigateTo("/dashboard");
             }
             else

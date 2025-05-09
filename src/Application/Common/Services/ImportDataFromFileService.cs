@@ -35,11 +35,6 @@ public class ImportDataFromFileServic : IImportDataFromFileService
                 customer.CountryCode = worksheet.Cells[row, 3].Value.ToString();
             }
 
-            if (worksheet.Cells[row, 4].Value != null)
-            {
-                customer.ClientId = Guid.Parse(worksheet.Cells[row, 4].Value.ToString());
-            }
-
             customers.Add(customer);
         }
 

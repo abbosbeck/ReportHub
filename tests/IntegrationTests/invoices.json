@@ -1,0 +1,193 @@
+{
+	"info": {
+		"_postman_id": "4ad46e4a-43a4-49ef-a42e-3b768b699a52",
+		"name": "invoices",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_uid": "44742947-4ad46e4a-43a4-49ef-a42e-3b768b699a52"
+	},
+	"item": [
+		{
+			"name": "get-invoice-by-id",
+			"item": [
+				{
+					"name": "Register Client Admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2801ef8e-ce42-431a-85ee-0d696fee2789",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body contains expected fields\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.id).to.exist;\r",
+									"    pm.expect(responseData.firstName).to.exist;\r",
+									"    pm.expect(responseData.lastName).to.exist;\r",
+									"    pm.expect(responseData.department).to.exist;\r",
+									"    pm.expect(responseData.email).to.exist;\r",
+									"    pm.expect(responseData.confirmEmailToken).to.exist;\r",
+									"\r",
+									"    pm.environment.set(\"clientUserId\", responseData.id);\r",
+									"    pm.environment.set(\"email\", responseData.email);\r",
+									"    pm.environment.set(\"confirmEmailToken\", responseData.confirmEmailToken);\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "6d4e0e05-caa5-44a4-a9d9-218f183dc6be",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"firstName\": \"{{$randomFirstName}}\",\r\n  \"lastName\": \"{{$randomLastName}}\",\r\n  \"department\": \"{{$randomDepartment}}\",\r\n  \"email\": \"{{$randomEmail}}\",\r\n  \"password\": \"{{$randomPassword}}1!\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Confirm Email",
+					"id": "39abae36-69f7-4d34-9373-132637f01d33",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/confirm-email?token={{confirmEmailToken}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"confirm-email"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{confirmEmailToken}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Super Admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e76e4e12-d09d-4525-868d-de3ec28fa1e1",
+								"exec": [
+									"pm.test(\"AccessToken and refreshToken are non-empty strings\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseData.accessToken).to.be.a('string').and.to.have.lengthOf.at.least(1, \"AccessToken should not be empty\");\r",
+									"    pm.expect(responseData.refreshToken).to.be.a('string').and.to.have.lengthOf.at.least(1, \"RefreshToken should not be empty\");\r",
+									"\r",
+									"    pm.environment.set(\"adminBearerToken\", responseData.accessToken);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "ed73ec78-77ea-4557-b350-45139917fccb",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"admin@gmail.com\",\r\n  \"password\": \"Password1234!\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "3e6dbc8a-3ba3-4fc9-a7dd-e4a3fedc2113"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "27488914-a7a5-481e-9268-6e8441e445d0",
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "bdd3d0e4-d75f-4a56-a1a9-392558ff090b",
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "5f2c5283-6323-488f-b2db-f8b19ef5cca4",
+			"key": "baseUrl",
+			"value": "http://localhost:5297",
+			"type": "string"
+		}
+	]
+}

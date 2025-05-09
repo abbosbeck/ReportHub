@@ -5,12 +5,17 @@
     <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
 	<NoWarn>RZ10012</NoWarn>
+	<UserSecretsId>2b329ea2-3304-4312-92a2-899a03a6442e</UserSecretsId>
+	<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+	<DockerfileContext>..\..</DockerfileContext>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Blazorise.Bootstrap5" Version="1.7.6" />
     <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.7.6" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.9.0" />
+    <PackageReference Include="TinyMCE.Blazor" Version="2.1.0" />
   </ItemGroup>
 
 </Project>

@@ -6,6 +6,6 @@ public class ClientProfile : Profile
 {
     public ClientProfile()
     {
-        CreateMap<Client, GetClientById.ClientDto>();
+        CreateMap<Client, ClientDto>();
     }
 }
