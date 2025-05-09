@@ -28,7 +28,7 @@ builder.Services
         })
     .AddHttpMessageHandler<AuthHeaderHandler>();
 
-builder.Services.AddSingleton<ITokenProviderService, TokenProviderService>();
+builder.Services.AddSingleton<IUserProviderService, UserProviderService>();
 builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<IRegisterService, RegisterService>();
 
