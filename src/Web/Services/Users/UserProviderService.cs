@@ -1,7 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
-using Web.Models;
+using Web.Models.Users;
 
-namespace Web.Services;
+namespace Web.Services.Users;
 
 public class UserProviderService : IUserProviderService
 {

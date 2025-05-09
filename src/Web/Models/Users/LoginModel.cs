@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Web.Models;
+namespace Web.Models.Users;
 
 public class LoginModel
 {

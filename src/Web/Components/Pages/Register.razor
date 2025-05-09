@@ -1,7 +1,8 @@
 ﻿@page "/register"
 @using Web.Models
 @using Web.Services
-@inject IRegisterService RegisterService
+@using Web.Services.Users
+@inject IUserService RegisterService
 @inject NavigationManager Navigation
 @rendermode InteractiveServer
 
@@ -78,7 +79,7 @@
 </Layout>
 
 @code {
-    private RegisterModel registerModel = new(); 
+    private readonly RegisterModel registerModel = new(); 
     private Validations validations;
     private bool showSnackbar = false;
     private string snackbarMessage = string.Empty;
@@ -92,22 +93,11 @@
             {
                 var result = await RegisterService.RegisterAsync(registerModel);
 
-                snackbarMessage = "✅ Registered successfully! Check your email.";
-                snackbarColor = Color.Success;
-                showSnackbar = true;
-
-                await Task.Delay(30000);
-                Navigation.NavigateTo("/email-confirmation-info");
+                Navigation.NavigateTo("/email-confirmation");
             }
-            catch (ApplicationException ex)
+            catch (Exception)
             {
-                snackbarMessage = $"❌ {ex.Message}";
-                snackbarColor = Color.Danger;
-                showSnackbar = true;
-            }
-            catch (Exception ex)
-            {
-                snackbarMessage = $"❌ Unexpected error: {ex.Message}";
+                snackbarMessage = $"Something went wrong!";
                 snackbarColor = Color.Danger;
                 showSnackbar = true;
             }

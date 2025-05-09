@@ -3,8 +3,9 @@ using Blazorise.Bootstrap5;
 using Blazorise.Icons.FontAwesome;
 using Web.Authentication;
 using Web.Components;
-using Web.Services;
 using Web.Services.Clients;
+using Web.Services.Customers;
+using Web.Services.Users;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,7 +31,8 @@ builder.Services
 
 builder.Services.AddSingleton<IUserProviderService, UserProviderService>();
 builder.Services.AddScoped<IClientService, ClientService>();
-builder.Services.AddScoped<IRegisterService, RegisterService>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 
 var app = builder.Build();
