@@ -5,6 +5,7 @@ using Web.Authentication;
 using Web.Components;
 using Web.Services;
 using Web.Services.Clients;
+using Web.Services.Customers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +31,7 @@ builder.Services
 
 builder.Services.AddSingleton<IUserProviderService, UserProviderService>();
 builder.Services.AddScoped<IClientService, ClientService>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
 
 var app = builder.Build();
 

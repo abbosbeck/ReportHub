@@ -10,38 +10,46 @@
 @rendermode InteractiveServer
 
 <h3>Customers</h3>
-@if (userRoles.ClientRoles is not null && userRoles.ClientRoles.Contains("Owner") && clients is not null)
+@if (userRoles.ClientRoles is not null && userRoles.ClientRoles.Contains("Owner"))
 {
-    <select @bind="selectedClientId" class="form-select">
-        <option value="">-- Select a Client --</option>
-        @foreach (var client in clients)
-        {
-            <option value="@client.Id">@client.Name</option>
-        }
-    </select>
-    <button class="btn btn-primary mt-2" @onclick="OnClientSelected">Load Customers</button>
-    <Table Striped ResponsiveMode="TableResponsiveMode.Mobile" Bordered Hoverable>
-        <TableHeader>
-            <TableRow>
-                <TableHeaderCell>#</TableHeaderCell>
-                <TableHeaderCell>Name</TableHeaderCell>
-                <TableHeaderCell>Email</TableHeaderCell>
-                <TableHeaderCell>Country Code</TableHeaderCell>
-            </TableRow>
-        </TableHeader>
-        <TableBody>
-            @for (var i = 0; i < customers.Count; i++)
+    @if (clients is not null)
+    {
+        <select @bind="selectedClientId" class="form-select">
+            <option value="">-- Select a Client --</option>
+            @foreach (var client in clients)
             {
-                var index = i;
-                <TableRow>
-                    <TableRowHeader>@(index + 1)</TableRowHeader>
-                    <TableRowCell>@customers[index].Name</TableRowCell>
-                    <TableRowCell>@customers[index].Email</TableRowCell>
-                    <TableRowCell>@customers[index].CountryCode</TableRowCell>
-                </TableRow>
+                <option value="@client.Id">@client.Name</option>
             }
-        </TableBody>
-    </Table>
+        </select>
+        <button class="btn btn-primary mt-2" @onclick="OnClientSelected">Load Customers</button>
+        <Table Striped ResponsiveMode="TableResponsiveMode.Mobile" Bordered Hoverable>
+            <TableHeader>
+                <TableRow>
+                    <TableHeaderCell>#</TableHeaderCell>
+                    <TableHeaderCell>Name</TableHeaderCell>
+                    <TableHeaderCell>Email</TableHeaderCell>
+                    <TableHeaderCell>Country Code</TableHeaderCell>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                @for (var i = 0; i < customers.Count; i++)
+                {
+                    var index = i;
+                    <TableRow>
+                        <TableRowHeader>@(index + 1)</TableRowHeader>
+                        <TableRowCell>@customers[index].Name</TableRowCell>
+                        <TableRowCell>@customers[index].Email</TableRowCell>
+                        <TableRowCell>@customers[index].CountryCode</TableRowCell>
+                    </TableRow>
+                }
+            </TableBody>
+        </Table>
+    }
+    else
+    {
+        <p>You don`t have any client!</p>
+    }
+
 }
 else
 {
