@@ -1,75 +1,87 @@
 ﻿@page "/invoices"
+@using Web.Models.Clients
+@using Web.Models.Invoices
+@using Web.Models.Users
+@using Web.Services.Clients
+@using Web.Services.Invoices
+@using Web.Services.Users
 @inject IHttpClientFactory ClientFactory
-@attribute [StreamRendering]
+@inject IUserProviderService UserProvider;
+@inject IInvoiceService InvoiceService;
+@inject IClientService ClientService;
+@rendermode InteractiveServer
 
-<PageTitle>Weather</PageTitle>
+<PageTitle>Invoices</PageTitle>
 
-@if (showError)
+<h3>Invoices</h3>
+@if (userRoles.ClientRoles is not null && userRoles.ClientRoles.Contains("Owner"))
 {
-    <Snackbar Visible="@showError" 
-              VisibleChanged="@((bool value) => showError = value)" 
-              Color="Color.Danger" 
-              AutohideInterval="3000">
-        @errorMessage
-    </Snackbar>
+    @if (clients is not null)
+    {
+        <select @bind="selectedClientId" class="form-select">
+            <option value="">-- Select a Client --</option>
+            @foreach (var client in clients)
+            {
+                <option value="@client.Id">@client.Name</option>
+            }
+        </select>
+        <button class="btn btn-primary mt-2" @onclick="OnClientSelected">Load Customers</button>
+        <Table Striped ResponsiveMode="TableResponsiveMode.Mobile" Bordered Hoverable>
+            <TableHeader>
+                <TableRow>
+                    <TableHeaderCell>#</TableHeaderCell>
+                    <TableHeaderCell>Issue Date</TableHeaderCell>
+                    <TableHeaderCell>Due Date</TableHeaderCell>
+                    <TableHeaderCell>Customer Name</TableHeaderCell>
+                    <TableHeaderCell>Payment Status</TableHeaderCell>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                @for (var i = 0; i < customers.Count; i++)
+                {
+                    var index = i;
+                    <TableRow>
+                        <TableRowHeader>@(index + 1)</TableRowHeader>
+                        <TableRowCell>@customers[index].IssueDate</TableRowCell>
+                        <TableRowCell>@customers[index].DueDate</TableRowCell>
+                        <TableRowCell>@customers[index].CustomerName</TableRowCell>
+                        <TableRowCell>@customers[index].PaymentStatus</TableRowCell>
+                    </TableRow>
+                }
+            </TableBody>
+        </Table>
+    }
+    else
+    {
+        <p>You don`t have any client!</p>
+    }
+
 }
 else
 {
-    <h1>Weather</h1>
-
-    <p>This component demonstrates showing data.</p>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th aria-label="Temperature in Celsius">Temp. (C)</th>
-                <th aria-label="Temperature in Farenheit">Temp. (F)</th>
-                <th>Summary</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var forecast in forecasts)
-            {
-                <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <p>You are not allowed to this page!</p>
 }
 
+
 @code {
-    private List<WeatherForecast> forecasts = new List<WeatherForecast>();
-    private bool showError = false;
-    private string errorMessage = string.Empty;
+    private List<InvoiceResponse> customers = [];
+    private List<ClientResponse> clients;
+    private UserRoles userRoles;
+    private Guid? selectedClientId;
 
     protected override async Task OnInitializedAsync()
     {
-        var client = ClientFactory.CreateClient("api");
-        var httpResponse = await client.GetAsync("weatherforecast");
-        if (httpResponse.IsSuccessStatusCode)
-        {
-            var response = await client.GetFromJsonAsync<List<WeatherForecast>>("weatherforecast");
-            var startDate = DateOnly.FromDateTime(DateTime.Now);
-            var summaries = response;
-            forecasts = response.ToList();
-        }
-        else
-        {
-            showError = true;
-            errorMessage = "You don't have access to this page!";
-        }
+        userRoles = UserProvider.GetRoles()
+            ?? new UserRoles();
+
+        clients = await ClientService.GetUserClients();
     }
 
-    private class WeatherForecast
+    private async Task OnClientSelected()
     {
-        public DateOnly Date { get; set; }
-        public int TemperatureC { get; set; }
-        public string? Summary { get; set; }
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+        if (selectedClientId is not null)
+        {
+            customers = await InvoiceService.GetAllAsync(selectedClientId.Value);
+        }
     }
 }
