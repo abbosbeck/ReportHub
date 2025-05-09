@@ -1,0 +1,29 @@
+﻿<Modal @bind-Visible="IsVisible" Size="ModalSize.Small" Centered>
+    <ModalHeader>
+        Confirm Delete
+    </ModalHeader>
+    <ModalBody>
+        Do you want to delete this item?
+    </ModalBody>
+    <ModalFooter>
+        <Button Color="Color.Danger" Clicked="OnConfirmClicked">Yes</Button>
+        <Button Color="Color.Secondary" Clicked="OnCancelClicked">No</Button>
+    </ModalFooter>
+</Modal>
+
+@code {
+    [Parameter] public EventCallback OnConfirm { get; set; }
+
+    private bool IsVisible { get; set; }
+
+    public void Show() => IsVisible = true;
+    public void Hide() => IsVisible = false;
+
+    private async Task OnConfirmClicked()
+    {
+        await OnConfirm.InvokeAsync();
+        Hide();
+    }
+
+    private void OnCancelClicked() => Hide();
+}

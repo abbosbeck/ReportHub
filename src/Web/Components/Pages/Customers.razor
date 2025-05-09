@@ -24,6 +24,7 @@
             }
         </select>
         <button class="btn btn-primary mt-2" @onclick="OnClientSelected">Load Customers</button>
+        <p></p>
         <Table Striped ResponsiveMode="TableResponsiveMode.Mobile" Bordered Hoverable>
             <TableHeader>
                 <TableRow>
@@ -31,6 +32,7 @@
                     <TableHeaderCell>Name</TableHeaderCell>
                     <TableHeaderCell>Email</TableHeaderCell>
                     <TableHeaderCell>Country Code</TableHeaderCell>
+                    <TableHeaderCell></TableHeaderCell>
                 </TableRow>
             </TableHeader>
             <TableBody>
@@ -40,8 +42,16 @@
                     <TableRow>
                         <TableRowHeader>@(index + 1)</TableRowHeader>
                         <TableRowCell>@customers[index].Name</TableRowCell>
-                        <TableRowCell>@customers[index].Email</TableRowCell>
+                        <TableRowCell>@customers[index].Email</TableRowCell>    
                         <TableRowCell>@customers[index].CountryCode</TableRowCell>
+                        <Delete @ref="deleteModal" OnConfirm="ConfirmDelete" />
+                        <TableRowCell class="icon-cell">
+                            <div class="d-flex justify-content-center align-items-center gap-2">
+                                <Icon Name="IconName.Eye" class="text-primary" />
+                                <Icon Name="IconName.Edit" class="text-warning" />
+                                <Icon Name="IconName.Delete" class="text-danger cursor-pointer" @onclick="() => PromptDelete(customers[index].Id)" />
+                            </div>
+                        </TableRowCell>
                     </TableRow>
                 }
             </TableBody>
@@ -64,6 +74,22 @@ else
     private List<ClientResponse> clients;
     private UserRoles userRoles;
     private Guid? selectedClientId;
+
+    private Delete deleteModal;
+    private Guid selectedCustomerId;
+
+    private void PromptDelete(Guid id)
+    {
+        selectedCustomerId = id;
+        deleteModal.Show();
+    }
+
+    private async Task ConfirmDelete()
+    {
+        await CustomerService.DeleteAsync(selectedCustomerId, selectedClientId.Value);
+        customers = await CustomerService.GetListAsync(selectedClientId.Value);
+        StateHasChanged();
+    }
 
     protected override async Task OnInitializedAsync()
     {

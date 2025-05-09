@@ -26,6 +26,7 @@
             }
         </select>
         <button class="btn btn-primary mt-2" @onclick="OnClientSelected">Load Customers</button>
+        <p></p>
         <Table Striped ResponsiveMode="TableResponsiveMode.Mobile" Bordered Hoverable>
             <TableHeader>
                 <TableRow>
@@ -45,7 +46,18 @@
                         <TableRowCell>@customers[index].IssueDate</TableRowCell>
                         <TableRowCell>@customers[index].DueDate</TableRowCell>
                         <TableRowCell>@customers[index].CustomerName</TableRowCell>
-                        <TableRowCell>@customers[index].PaymentStatus</TableRowCell>
+                        <TableRowCell>
+                            <span style="@(customers[index].PaymentStatus == PaymentStatus.Paid ? "color: green;" : "color: red;")">
+                                @customers[index].PaymentStatus
+                            </span>
+                        </TableRowCell>
+                        <TableRowCell class="icon-cell">
+                            <div class="d-flex justify-content-center align-items-center gap-2">
+                                <Icon Name="IconName.Eye" class="text-primary" />
+                                <Icon Name="IconName.Edit" class="text-warning" />
+                                <Icon Name="IconName.Delete" class="text-danger" />
+                            </div>
+                        </TableRowCell>
                     </TableRow>
                 }
             </TableBody>
