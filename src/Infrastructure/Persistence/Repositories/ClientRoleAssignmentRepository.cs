@@ -12,6 +12,11 @@ public class ClientRoleAssignmentRepository(AppDbContext context) : IClientRoleA
         await context.SaveChangesAsync();
     }
 
+    public IQueryable<ClientRoleAssignment> GetAll()
+    {
+        return (IQueryable<ClientRoleAssignment>)context.ClientRoleAssignments.AsQueryable();
+    }
+
     public async Task<List<string>> GetByUserIdAsync(Guid userId)
     {
         return await context.ClientRoleAssignments
