@@ -21,14 +21,14 @@
                         <Field>
                             <FieldLabel>Email</FieldLabel>
                             <FieldBody>
-                                <TextEdit @bind-Text="loginModel.Email" Role="TextRole.Email" Placeholder="Enter your email" />
+                                <TextEdit @bind-Text="loginModel.Email" Role="@TextRole.Email" Placeholder="Enter your email" />
                             </FieldBody>
                         </Field>
 
                         <Field>
                             <FieldLabel>Password</FieldLabel>
                             <FieldBody>
-                                <TextEdit @bind-Text="loginModel.Password" Role="TextRole.Password" Placeholder="Enter your password" TextEditType="TextEditType.Password" />
+                                <TextEdit @bind-Text="loginModel.Password" Role="@TextRole.Password" Placeholder="Enter your password" TextEditType="TextEditType.Password" />
                             </FieldBody>
                         </Field>
 
