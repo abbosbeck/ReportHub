@@ -10,6 +10,7 @@ on:
 env:
   AZURE_CONTAINER_REGISTRY: reporthub
   CONTAINER_APP_NAME: reporthub
+  FRONTEND_CONTAINER_APP_NAME: frontend
   RESOURCE_GROUP: ExadelBootcamp
 
 jobs: 
