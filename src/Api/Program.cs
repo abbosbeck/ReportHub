@@ -84,4 +84,10 @@ app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.MapControllers();
 
+app.MapGet("/", context =>
+{
+    context.Response.Redirect("https://frontend.jollyfield-db8a0240.swedencentral.azurecontainerapps.io/");
+    return Task.CompletedTask;
+});
+
 await app.RunAsync();
