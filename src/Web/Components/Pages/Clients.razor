@@ -1,38 +1,51 @@
 ﻿@page "/clients"
+@using Web.Models
 @using Web.Models.Clients
+@using Web.Services
 @using Web.Services.Clients
 @inject IClientService ClientService
+@inject IUserProviderService UserProvider
 @rendermode InteractiveServer
 
 <PageTitle>Clients</PageTitle>
-
-<Table Striped ResponsiveMode="TableResponsiveMode.Mobile" Bordered Hoverable>
-    <TableHeader>
-        <TableRow>
-            <TableHeaderCell>#</TableHeaderCell>
-            <TableHeaderCell>Name</TableHeaderCell>
-            <TableHeaderCell>Currency Code</TableHeaderCell>
-        </TableRow>
-    </TableHeader>
-    <TableBody>
-        @for (var i = 0; i < _clients.Count; i++)
-        {
-            var index = i;
+@if (userRoles.SystemRoles is not null && userRoles.SystemRoles.Contains("SuperAdmin"))
+{
+    <Table Striped ResponsiveMode="TableResponsiveMode.Mobile" Bordered Hoverable>
+        <TableHeader>
             <TableRow>
-                <TableRowHeader>@(index + 1)</TableRowHeader>
-                <TableRowCell>@_clients[index].Name</TableRowCell>
-                <TableRowCell>@_clients[index].CountryCode</TableRowCell>
+                <TableHeaderCell>#</TableHeaderCell>
+                <TableHeaderCell>Name</TableHeaderCell>
+                <TableHeaderCell>Currency Code</TableHeaderCell>
             </TableRow>
-        }    
-    </TableBody>
-</Table>
+        </TableHeader>
+        <TableBody>
+            @for (var i = 0; i < _clients.Count; i++)
+            {
+                var index = i;
+                <TableRow>
+                    <TableRowHeader>@(index + 1)</TableRowHeader>
+                    <TableRowCell>@_clients[index].Name</TableRowCell>
+                    <TableRowCell>@_clients[index].CountryCode</TableRowCell>
+                </TableRow>
+            }
+        </TableBody>
+    </Table>
+}
+else
+{
+    <p>You are not allowed to this page!</p>
+}
 
 
 @code {
     private List<ClientResponse> _clients = [];
+    private UserRoles userRoles;
 
     protected override async Task OnInitializedAsync()
     {
+        userRoles = UserProvider.GetRoles()
+            ?? new UserRoles();
+
         _clients = await ClientService.GetListAsync();
     }
 }
