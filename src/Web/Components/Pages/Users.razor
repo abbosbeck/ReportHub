@@ -1,11 +1,11 @@
-﻿@page "/clients"
+﻿@page "/users"
 @using Web.Models
 @using Web.Models.Clients
 @using Web.Models.Users
 @using Web.Services
 @using Web.Services.Clients
 @using Web.Services.Users
-@inject IClientService ClientService
+@inject IUserService UserService
 @inject IUserProviderService UserProvider
 @rendermode InteractiveServer
 
@@ -16,19 +16,23 @@
         <TableHeader>
             <TableRow>
                 <TableHeaderCell>#</TableHeaderCell>
-                <TableHeaderCell>Name</TableHeaderCell>
-                <TableHeaderCell>Currency Code</TableHeaderCell>
+                <TableHeaderCell>First Name</TableHeaderCell>
+                <TableHeaderCell>Last Name</TableHeaderCell>
+                <TableHeaderCell>Department</TableHeaderCell>
+                <TableHeaderCell>Email</TableHeaderCell>
                 <TableHeaderCell></TableHeaderCell>
             </TableRow>
         </TableHeader>
         <TableBody>
-            @for (var i = 0; i < _clients.Count; i++)
+            @for (var i = 0; i < users.Count; i++)
             {
                 var index = i;
                 <TableRow>
                     <TableRowHeader>@(index + 1)</TableRowHeader>
-                    <TableRowCell>@_clients[index].Name</TableRowCell>
-                    <TableRowCell>@_clients[index].CountryCode</TableRowCell>
+                    <TableRowCell>@users[index].FirstName</TableRowCell>
+                    <TableRowCell>@users[index].LastName</TableRowCell>
+                    <TableRowCell>@users[index].Department</TableRowCell>
+                    <TableRowCell>@users[index].Email</TableRowCell>
                     <TableRowCell class="icon-cell">
                         <div class="d-flex justify-content-center align-items-center gap-2">
                             <Icon Name="IconName.Eye" class="text-primary" />
@@ -48,7 +52,7 @@ else
 
 
 @code {
-    private List<ClientResponse> _clients = [];
+    private List<UserResponse> users = [];
     private UserRoles userRoles;
 
     protected override async Task OnInitializedAsync()
@@ -56,6 +60,6 @@ else
         userRoles = UserProvider.GetRoles()
             ?? new UserRoles();
 
-        _clients = await ClientService.GetListAsync();
+        users = await UserService.UserListAsync();
     }
 }
