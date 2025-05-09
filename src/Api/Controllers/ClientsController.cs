@@ -3,6 +3,7 @@ using Application.Clients.AssignClientRole;
 using Application.Clients.CreateClient;
 using Application.Clients.DeleteClient;
 using Application.Clients.GetClientById;
+using Application.Clients.GetClientByUserId;
 using Application.Clients.GetClientsList;
 using Application.Clients.UpdateClient;
 using MediatR;
@@ -33,6 +34,14 @@ public class ClientsController(ISender mediator) : ApiControllerBase(mediator)
     public async Task<IActionResult> GetAllAsync()
     {
         var result = await Mediator.Send(new GetClientsListQuery());
+
+        return Ok(result);
+    }
+
+    [HttpGet("my")]
+    public async Task<IActionResult> GetMyClientsAsync()
+    {
+        var result = await Mediator.Send(new GetClientByUserIdQuery());
 
         return Ok(result);
     }
