@@ -2,6 +2,7 @@
 using Application.Users.ConfirmUserEmail;
 using Application.Users.DeleteUser;
 using Application.Users.GetUserByEmail;
+using Application.Users.GetUserList;
 using Application.Users.LoginUser;
 using Application.Users.RefreshToken;
 using Application.Users.RegisterUser;
@@ -19,6 +20,14 @@ public class UsersController(ISender mediator) : ApiControllerBase(mediator)
     public async Task<IActionResult> GetByEmailAsync([FromRoute] string email)
     {
         var result = await Mediator.Send(new GetUserByEmailQuery { Email = email });
+
+        return Ok(result);
+    }
+
+    [HttpGet()]
+    public async Task<IActionResult> GetUserListAsync()
+    {
+        var result = await Mediator.Send(new GetUserListQuery());
 
         return Ok(result);
     }
