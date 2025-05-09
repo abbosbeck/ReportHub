@@ -16,4 +16,15 @@ public class ClientService(IHttpClientFactory httpClientFactory) : IClientServic
         
         return new List<ClientResponse>();
     }
+
+    public async Task<List<ClientResponse>> GetUserClients()
+    {
+        var response = await _httpClient.GetAsync("clients/my");
+        if (response.IsSuccessStatusCode)
+        {
+            return await response.Content.ReadFromJsonAsync<List<ClientResponse>>();
+        }
+
+        return new List<ClientResponse>();
+    }
 }
