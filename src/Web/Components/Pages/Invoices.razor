@@ -18,14 +18,16 @@
 {
     @if (clients is not null)
     {
-        <select @bind="selectedClientId" class="form-select">
-            <option value="">-- Select a Client --</option>
-            @foreach (var client in clients)
-            {
-                <option value="@client.Id">@client.Name</option>
-            }
-        </select>
-        <button class="btn btn-primary mt-2" @onclick="OnClientSelected">Load</button>
+        <div class="d-flex align-items-center">
+            <select @bind="selectedClientId" class="form-select me-2" style="width: auto;">
+                <option value="">-- Select a Client --</option>
+                @foreach (var client in clients)
+                {
+                    <option value="@client.Id">@client.Name</option>
+                }
+            </select>
+            <button class="btn btn-primary mt-2" @onclick="OnClientSelected">Load</button>
+        </div>
         <p></p>
         <Table Striped ResponsiveMode="TableResponsiveMode.Mobile" Bordered Hoverable>
             <TableHeader>
