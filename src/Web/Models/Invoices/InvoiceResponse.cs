@@ -2,6 +2,8 @@
 
 public class InvoiceResponse
 {
+    public Guid Id { get; set; }
+
     public int InvoiceNumber { get; set; }
 
     public DateTime IssueDate { get; set; }

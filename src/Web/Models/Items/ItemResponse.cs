@@ -8,11 +8,11 @@ public class ItemResponse
 
     public string Description { get; set; }
 
-    public string Price { get; set; }
+    public decimal Price { get; set; }
 
     public string CurrencyCode { get; set; }
 
-    public string CustomerName { get; set; }
+    public string InvoiceNumber { get; set; }
 
-    public Guid CustomerId { get; set; }
+    public Guid InvoiceId { get; set; }
 }
