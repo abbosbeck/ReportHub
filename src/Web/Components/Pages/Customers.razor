@@ -1,6 +1,7 @@
 ﻿@page "/customers"
 @using Web.Models
 @using Web.Models.Clients
+@using Web.Models.Customers
 @using Web.Models.Users
 @using Web.Services
 @using Web.Services.Clients
@@ -26,6 +27,31 @@
             </select>
             <button class="btn btn-primary mt-2" @onclick="OnClientSelected">Load</button>
         </div>
+
+        <EditForm Model="@newCustomer" OnValidSubmit="AddCustomer" class="mb-3">
+            <div class="d-flex align-items-end gap-2 flex-wrap">
+                <div>
+                    <label class="form-label">Name</label>
+                    <InputText class="form-control form-control-sm" @bind-Value="newCustomer.Name" style="width: 180px;" />
+                </div>
+
+                <div>
+                    <label class="form-label">Email</label>
+                    <InputText class="form-control form-control-sm" @bind-Value="newCustomer.Email" style="width: 220px;" />
+                </div>
+
+                <div>
+                    <label class="form-label">Country Code</label>
+                    <InputText class="form-control form-control-sm" @bind-Value="newCustomer.CountryCode" style="width: 120px;" />
+                </div>
+
+                <div>
+                    <button type="submit" class="btn btn-sm btn-primary mt-2">Add Customer</button>
+                </div>
+            </div>
+        </EditForm>
+
+
         <p></p>
         <Table Striped ResponsiveMode="TableResponsiveMode.Mobile" Bordered Hoverable>
             <TableHeader>
@@ -79,6 +105,8 @@ else
     private Delete deleteModal;
     private Guid selectedCustomerId;
 
+    private CreateCustomerRequest newCustomer = new();
+
     private void PromptDelete(Guid id)
     {
         selectedCustomerId = id;
@@ -106,5 +134,12 @@ else
         {
             customers = await CustomerService.GetListAsync(selectedClientId.Value);
         }
+    }
+
+    private async Task AddCustomer()
+    {
+        await CustomerService.CreateAsync(newCustomer, selectedClientId.Value);
+        newCustomer = new();
+        customers = await CustomerService.GetListAsync(selectedClientId.Value);
     }
 }
