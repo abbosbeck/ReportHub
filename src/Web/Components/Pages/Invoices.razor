@@ -80,6 +80,8 @@
                     <TableHeaderCell>Invoice Number</TableHeaderCell>
                     <TableHeaderCell>Issue Date</TableHeaderCell>
                     <TableHeaderCell>Due Date</TableHeaderCell>
+                    <TableHeaderCell>Amount</TableHeaderCell>
+                    <TableHeaderCell>Currency Code</TableHeaderCell>
                     <TableHeaderCell>Customer Name</TableHeaderCell>
                     <TableHeaderCell>Payment Status</TableHeaderCell>
                 </TableRow>
@@ -93,6 +95,8 @@
                         <TableRowCell>@_invoices[index].InvoiceNumber.ToString("D6")</TableRowCell>
                         <TableRowCell>@_invoices[index].IssueDate</TableRowCell>
                         <TableRowCell>@_invoices[index].DueDate</TableRowCell>
+                        <TableRowCell>@_invoices[index].AmountDto</TableRowCell>
+                        <TableRowCell>@_invoices[index].CurrencyCode</TableRowCell>
                         <TableRowCell>@_invoices[index].CustomerName</TableRowCell>
                         <TableRowCell>
                             <span style="@(_invoices[index].PaymentStatus == InvoicePaymentStatus.Paid ? "color: green;" : "color: red;")">

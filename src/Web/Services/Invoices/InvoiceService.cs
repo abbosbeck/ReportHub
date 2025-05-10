@@ -1,12 +1,14 @@
 ﻿
 using Web.Models.Invoices;
 using Web.Services.Customers;
+using Web.Services.ExternalServices;
 
 namespace Web.Services.Invoices;
 
 public class InvoiceService(
     IHttpClientFactory httpClientFactory,
-    ICustomerService customerService)
+    ICustomerService customerService,
+    IMoneyService moneyService)
     : IInvoiceService
 {
     private readonly HttpClient _httpClient = httpClientFactory.CreateClient("api");
@@ -43,6 +45,7 @@ public class InvoiceService(
             {
                 var customer = await customerService.GetByIdAsync(x.CustomerId, clientId);
                 x.CustomerName = customer.Name;
+                x.AmountDto = moneyService.GetAmountWithSymbol(x.Amount, x.CurrencyCode);
             });
 
             await Task.WhenAll(tasks);
