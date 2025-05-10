@@ -30,4 +30,19 @@ public class InvoiceService(
 
         return new List<InvoiceResponse>();
     }
+
+    public async Task<InvoiceResponse> GetByIdAsync(Guid id, Guid clientId)
+    {
+        var invoiceResponse = await _httpClient.GetAsync($"clients/{clientId}/invoices/{id}");
+        if (invoiceResponse.IsSuccessStatusCode)
+        {
+            var invoice = await invoiceResponse.Content.ReadFromJsonAsync<InvoiceResponse>();
+            var customer = await customerService.GetByIdAsync(invoice.CustomerId, clientId);
+            invoice.CustomerName = customer.Name;
+            
+            return invoice;
+        }
+
+        return new InvoiceResponse();
+    }
 }
