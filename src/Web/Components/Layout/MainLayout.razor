@@ -15,7 +15,7 @@
             @if (isAuthenticated)
             {
                 <span class="rounded-2 border border-light p-2 text-light">Hi, @email!</span>
-                <a href="/logout" class="btn btn btn-outline-light text-decoration-none" role="button">Logout</a>
+                <a href="/logout" class="btn btn-outline-light" onclick="window.location.href='/logout'">Logout</a>
             }
             else
             {
