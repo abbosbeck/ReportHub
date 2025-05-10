@@ -10,6 +10,8 @@ public class ItemResponse
 
     public decimal Price { get; set; }
 
+    public string PriceDto { get; set; }
+
     public string CurrencyCode { get; set; }
 
     public string InvoiceNumber { get; set; }

@@ -47,7 +47,7 @@
                         <TableRowHeader>@(index + 1)</TableRowHeader>
                         <TableRowCell>@customers[index].Name</TableRowCell>
                         <TableRowCell>@customers[index].Description</TableRowCell>
-                        <TableRowCell>@customers[index].Price</TableRowCell>
+                        <TableRowCell>@customers[index].PriceDto</TableRowCell>
                         <TableRowCell>@customers[index].CurrencyCode</TableRowCell>
                         <TableRowCell>@customers[index].InvoiceNumber</TableRowCell>
                         <Delete @ref="deleteModal" OnConfirm="ConfirmDelete" />

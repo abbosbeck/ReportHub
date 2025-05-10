@@ -1,11 +1,13 @@
 ﻿using Web.Models.Items;
 using Web.Services.Customers;
+using Web.Services.ExternalServices;
 using Web.Services.Invoices;
 
 namespace Web.Services.Items;
 
 public class ItemService(
     IHttpClientFactory httpClientFactory,
+    IMoneyService moneyService,
     IInvoiceService invoiceService)
     : IItemService
 {
@@ -22,6 +24,7 @@ public class ItemService(
             {
                 var invoice = await invoiceService.GetByIdAsync(i.InvoiceId, clientId);
                 i.InvoiceNumber = invoice.InvoiceNumber.ToString("D6");
+                i.PriceDto = moneyService.GetAmountWithSymbol(i.Price, i.CurrencyCode);
             });
 
             await Task.WhenAll(tasks);
