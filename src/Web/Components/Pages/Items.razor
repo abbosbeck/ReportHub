@@ -1,15 +1,18 @@
 ﻿@page "/items"
 @using Web.Models
 @using Web.Models.Clients
+@using Web.Models.Invoices
 @using Web.Models.Items
 @using Web.Models.Users
 @using Web.Services
 @using Web.Services.Clients
 @using Web.Services.Customers
+@using Web.Services.Invoices
 @using Web.Services.Items
 @using Web.Services.Users
 @inject IItemService ItemService
 @inject IClientService ClientService
+@inject IInvoiceService InvoiceService
 @inject IUserProviderService UserProvider
 @rendermode InteractiveServer
 
@@ -18,14 +21,57 @@
 {
     @if (clients is not null)
     {
-        <select @bind="selectedClientId" class="form-select">
-            <option value="">-- Select a Client --</option>
-            @foreach (var client in clients)
-            {
-                <option value="@client.Id">@client.Name</option>
-            }
-        </select>
-        <button class="btn btn-primary mt-2" @onclick="OnClientSelected">Load Customers</button>
+        <div class="d-flex align-items-center">
+            <select @bind="selectedClientId" class="form-select me-2" style="width: auto;">
+                <option value="">-- Select a Client --</option>
+                @foreach (var client in clients)
+                {
+                    <option value="@client.Id">@client.Name</option>
+                }</select>
+            <button class="btn btn-primary mt-2" @onclick="OnClientSelected">Load</button>
+        </div>
+
+        <EditForm Model="@newItem" OnValidSubmit="AddItem" class="mb-3">
+            <div class="d-flex align-items-end gap-2 flex-wrap">
+                <div>
+                    <label class="form-label">Name</label>
+                    <InputText class="form-control form-control-sm" @bind-Value="newItem.Name" style="width: 180px;" />
+                </div>
+
+                <div>
+                    <label class="form-label">Description</label>
+                    <InputText class="form-control form-control-sm" @bind-Value="newItem.Description" style="width: 220px;" />
+                </div>
+
+                <div>
+                    <label class="form-label">Price</label>
+                    <InputNumber class="form-control form-control-sm" @bind-Value="newItem.Price" style="width: 120px;" />
+                </div>
+
+                <div>
+                    <label class="form-label">Currency Code</label>
+                    <InputText class="form-control form-control-sm" @bind-Value="newItem.CurrencyCode" style="width: 100px;" />
+                </div>
+
+                <div>
+                    <label class="form-label">Invoice</label>
+                    <InputSelect class="form-select form-select-sm" @bind-Value="newItem.InvoiceId" style="width: 200px;">
+                        <option value="">-- Select Invoice --</option>
+                        @foreach (var invoice in _invoices)
+                        {
+                            <option value="@invoice.Id">Invoice #@invoice.InvoiceNumber</option>
+                        }
+                    </InputSelect>
+                </div>
+
+                <div>
+                    <button type="submit" class="btn btn-sm btn-primary mt-2">Add Item</button>
+                </div>
+            </div>
+        </EditForm>
+
+
+
         <p></p>
         <Table Striped ResponsiveMode="TableResponsiveMode.Mobile" Bordered Hoverable>
             <TableHeader>
@@ -40,22 +86,21 @@
                 </TableRow>
             </TableHeader>
             <TableBody>
-                @for (var i = 0; i < customers.Count; i++)
+                @for (var i = 0; i < _items.Count; i++)
                 {
                     var index = i;
                     <TableRow>
                         <TableRowHeader>@(index + 1)</TableRowHeader>
-                        <TableRowCell>@customers[index].Name</TableRowCell>
-                        <TableRowCell>@customers[index].Description</TableRowCell>
-                        <TableRowCell>@customers[index].PriceDto</TableRowCell>
-                        <TableRowCell>@customers[index].CurrencyCode</TableRowCell>
-                        <TableRowCell>@customers[index].InvoiceNumber</TableRowCell>
+                        <TableRowCell>@_items[index].Name</TableRowCell>
+                        <TableRowCell>@_items[index].Description</TableRowCell>
+                        <TableRowCell>@_items[index].PriceDto</TableRowCell>
+                        <TableRowCell>@_items[index].CurrencyCode</TableRowCell>
+                        <TableRowCell>@_items[index].InvoiceNumber</TableRowCell>
                         <Delete @ref="deleteModal" OnConfirm="ConfirmDelete" />
                         <TableRowCell class="icon-cell">
                             <div class="d-flex justify-content-center align-items-center gap-2">
-                                <Icon Name="IconName.Eye" class="text-primary" />
                                 <Icon Name="IconName.Edit" class="text-warning" />
-                                <Icon Name="IconName.Delete" class="text-danger cursor-pointer" @onclick="() => PromptDelete(customers[index].Id)" />
+                                <Icon Name="IconName.Delete" class="text-danger cursor-pointer" @onclick="() => PromptDelete(_items[index].Id)" />
                             </div>
                         </TableRowCell>
                     </TableRow>
@@ -76,13 +121,16 @@ else
 
 
 @code {
-    private List<ItemResponse> customers = [];
+    private List<ItemResponse> _items = [];
+    private List<InvoiceResponse> _invoices = [];
     private List<ClientResponse> clients;
     private UserRoles userRoles;
     private Guid? selectedClientId;
 
     private Delete deleteModal;
     private Guid selectedCustomerId;
+
+    private CreateItemRequest newItem = new();
 
     private void PromptDelete(Guid id)
     {
@@ -92,8 +140,8 @@ else
 
     private async Task ConfirmDelete()
     {
-        // await CustomerService.DeleteAsync(selectedCustomerId, selectedClientId.Value);
-        // customers = await CustomerService.GetListAsync(selectedClientId.Value);
+        await ItemService.DeleteAsync(selectedCustomerId, selectedClientId.Value);
+        _items = await ItemService.GetItemListAsync(selectedClientId.Value);
         StateHasChanged();
     }
 
@@ -109,7 +157,15 @@ else
     {
         if (selectedClientId is not null)
         {
-            customers = await ItemService.GetItemListAsync(selectedClientId.Value);
+            _items = await ItemService.GetItemListAsync(selectedClientId.Value);
+            _invoices = await InvoiceService.GetAllAsync(selectedClientId.Value);
         }
+    }
+
+    private async Task AddItem()
+    {
+        await ItemService.CreateAsync(newItem, selectedClientId.Value);
+        newItem = new();
+        _items = await ItemService.GetItemListAsync(selectedClientId.Value);
     }
 }

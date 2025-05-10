@@ -10,9 +10,15 @@ public class InvoiceResponse
 
     public DateTime DueDate { get; set; }
 
+    public decimal Amount { get; set; }
+
+    public string AmountDto { get; set; }
+
+    public string CurrencyCode { get; set; }
+
     public string CustomerName { get; set; }
 
     public Guid CustomerId { get; set; }
 
-    public PaymentStatus PaymentStatus { get; set; }
+    public InvoicePaymentStatus PaymentStatus { get; set; }
 }

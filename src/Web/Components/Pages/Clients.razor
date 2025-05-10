@@ -15,33 +15,33 @@
 {
     <EditForm Model="@newClient" OnValidSubmit="AddClient" class="mb-3">
 
-    <div class="d-flex align-items-end gap-2 flex-wrap">
-        <div>
-            <label class="form-label">Name</label>
-            <InputText class="form-control form-control-sm" @bind-Value="newClient.Name" style="width: 150px;" />
-        </div>
+        <div class="d-flex align-items-end gap-2 flex-wrap">
+            <div>
+                <label class="form-label">Name</label>
+                <InputText class="form-control form-control-sm" @bind-Value="newClient.Name" style="width: 150px;" />
+            </div>
 
-        <div>
-            <label class="form-label">Country Code</label>
-            <InputText class="form-control form-control-sm" @bind-Value="newClient.CountryCode" style="width: 120px;" />
-        </div>
+            <div>
+                <label class="form-label">Country Code</label>
+                <InputText class="form-control form-control-sm" @bind-Value="newClient.CountryCode" style="width: 120px;" />
+            </div>
 
-        <div>
-            <label class="form-label">User</label>
-            <InputSelect class="form-select form-select-sm" @bind-Value="newClient.OwnerId" style="width: 180px;">
-                <option value="">-- Select --</option>
-                @foreach (var user in _users)
-                {
-                    <option value="@user.Id">@user.FirstName, @user.LastName</option>
-                }
-            </InputSelect>
-        </div>
+            <div>
+                <label class="form-label">Owner</label>
+                <InputSelect class="form-select form-select-sm" @bind-Value="newClient.OwnerId" style="width: 180px;">
+                    <option value="">-- Select --</option>
+                    @foreach (var user in _users)
+                    {
+                        <option value="@user.Id">@user.FirstName, @user.LastName</option>
+                    }
+                </InputSelect>
+            </div>
 
-        <div>
-            <button type="submit" class="btn btn-sm btn-primary mt-2">Add Client</button>
+            <div>
+                <button type="submit" class="btn btn-sm btn-primary mt-2">Add Client</button>
+            </div>
         </div>
-    </div>
-</EditForm>
+    </EditForm>
 
 
     <Table Striped ResponsiveMode="TableResponsiveMode.Mobile" Bordered Hoverable>
@@ -61,11 +61,11 @@
                     <TableRowHeader>@(index + 1)</TableRowHeader>
                     <TableRowCell>@_clients[index].Name</TableRowCell>
                     <TableRowCell>@_clients[index].CountryCode</TableRowCell>
+                    <Delete @ref="deleteModal" OnConfirm="ConfirmDelete" />
                     <TableRowCell class="icon-cell">
                         <div class="d-flex justify-content-center align-items-center gap-2">
-                            <Icon Name="IconName.Eye" class="text-primary" />
                             <Icon Name="IconName.Edit" class="text-warning" />
-                            <Icon Name="IconName.Delete" class="text-danger cursor-pointer" />
+                            <Icon Name="IconName.Delete" class="text-danger cursor-pointer" @onclick="() => PromptDelete(_clients[index].Id)" />
                         </div>
                     </TableRowCell>
                 </TableRow>
@@ -84,6 +84,22 @@ else
     private List<UserResponse> _users = [];
     private ClientCreateRequest newClient = new();
     private UserRoles userRoles;
+
+    private Delete deleteModal;
+    private Guid? selectedClientId;
+
+    private void PromptDelete(Guid id)
+    {
+        selectedClientId = id;
+        deleteModal.Show();
+    }
+
+    private async Task ConfirmDelete()
+    {
+        await ClientService.DeleteAsyn(selectedClientId.Value);
+        _clients = await ClientService.GetListAsync();
+        StateHasChanged();
+    }
 
     protected override async Task OnInitializedAsync()
     {

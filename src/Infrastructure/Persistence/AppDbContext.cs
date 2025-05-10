@@ -62,6 +62,9 @@ public class AppDbContext(
 
     private void ApplyQueryFilters(ModelBuilder builder)
     {
+        builder.Entity<Client>(entity => entity
+            .HasQueryFilter(t => !t.IsDeleted));
+
         builder.Entity<Customer>(entity => entity
             .HasQueryFilter(t =>
                 t.ClientId == clientProvider.ClientId &&

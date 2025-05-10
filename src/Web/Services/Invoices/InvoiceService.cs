@@ -1,15 +1,39 @@
 ﻿
 using Web.Models.Invoices;
 using Web.Services.Customers;
+using Web.Services.ExternalServices;
 
 namespace Web.Services.Invoices;
 
 public class InvoiceService(
     IHttpClientFactory httpClientFactory,
-    ICustomerService customerService)
+    ICustomerService customerService,
+    IMoneyService moneyService)
     : IInvoiceService
 {
     private readonly HttpClient _httpClient = httpClientFactory.CreateClient("api");
+
+    public async Task<bool> CreateAsync(InvoiceCreateRequest invoice, Guid clienId)
+    {
+        var respone = await _httpClient.PostAsJsonAsync($"clients/{clienId}/invoices", invoice);
+        if (respone.IsSuccessStatusCode)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public async Task<bool> DeleteAsync(Guid id, Guid clientId)
+    {
+        var response = await _httpClient.DeleteAsync($"clients/{clientId}/invoices/{id}");
+        if (response.IsSuccessStatusCode)
+        {
+            return true;
+        }
+
+        return false;
+    }
 
     public async Task<List<InvoiceResponse>> GetAllAsync(Guid clientId)
     {
@@ -21,6 +45,7 @@ public class InvoiceService(
             {
                 var customer = await customerService.GetByIdAsync(x.CustomerId, clientId);
                 x.CustomerName = customer.Name;
+                x.AmountDto = moneyService.GetAmountWithSymbol(x.Amount, x.CurrencyCode);
             });
 
             await Task.WhenAll(tasks);

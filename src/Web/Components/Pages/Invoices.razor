@@ -1,14 +1,17 @@
 ﻿@page "/invoices"
 @using Web.Models.Clients
+@using Web.Models.Customers
 @using Web.Models.Invoices
 @using Web.Models.Users
 @using Web.Services.Clients
+@using Web.Services.Customers
 @using Web.Services.Invoices
 @using Web.Services.Users
 @inject IHttpClientFactory ClientFactory
-@inject IUserProviderService UserProvider;
-@inject IInvoiceService InvoiceService;
-@inject IClientService ClientService;
+@inject IUserProviderService UserProvider
+@inject IInvoiceService InvoiceService
+@inject IClientService ClientService
+@inject ICustomerService CustomerService
 @rendermode InteractiveServer
 
 <PageTitle>Invoices</PageTitle>
@@ -16,17 +19,61 @@
 <h3>Invoices</h3>
 @if (userRoles.ClientRoles is not null && userRoles.ClientRoles.Contains("Owner"))
 {
-    @if (clients is not null)
+    @if (_clients is not null)
     {
-        <select @bind="selectedClientId" class="form-select">
-            <option value="">-- Select a Client --</option>
-            @foreach (var client in clients)
-            {
-                <option value="@client.Id">@client.Name</option>
-            }
-        </select>
-        <button class="btn btn-primary mt-2" @onclick="OnClientSelected">Load Customers</button>
+        <div class="d-flex align-items-center">
+            <select @bind="selectedClientId" class="form-select me-2" style="width: auto;">
+                <option value="">-- Select a Client --</option>
+                @foreach (var client in _clients)
+                {
+                    <option value="@client.Id">@client.Name</option>
+                }
+            </select>
+            <button class="btn btn-primary mt-2" @onclick="OnClientSelected">Load</button>
+        </div>
         <p></p>
+
+        <EditForm Model="@newInvoice" OnValidSubmit="AddInvoice" class="mb-3">
+            <div class="d-flex align-items-end gap-2 flex-wrap">
+                <div>
+                    <label class="form-label">Issue Date</label>
+                    <InputDate class="form-control form-control-sm" @bind-Value="newInvoice.IssueDate" style="width: 150px;" />
+                </div>
+
+                <div>
+                    <label class="form-label">Due Date</label>
+                    <InputDate class="form-control form-control-sm" @bind-Value="newInvoice.DueDate" style="width: 120px;" />
+                </div>
+
+                <div>
+                    <label class="form-label">Customer</label>
+                    <InputSelect class="form-select form-select-sm" @bind-Value="newInvoice.CustomerId" style="width: 180px;">
+                        <option value="">-- Select --</option>
+                        @foreach (var customer in _customers)
+                        {
+                            <option value="@customer.Id">@customer.Name</option>
+                        }
+                    </InputSelect>
+                </div>
+
+                <div>
+                    <label class="form-label">Payment Status</label>
+                    <InputSelect class="form-select form-select-sm" @bind-Value="newInvoice.PaymentStatus" style="width: 180px;">
+                        <option value="">-- Select Status --</option>
+                        @foreach (var status in Enum.GetValues(typeof(InvoicePaymentStatus)))
+                        {
+                            <option value="@status">@status</option>
+                        }
+                    </InputSelect>
+                </div>
+
+                <div>
+                    <button type="submit" class="btn btn-sm btn-primary mt-2">Add Invoice</button>
+                </div>
+            </div>
+        </EditForm>
+
+
         <Table Striped ResponsiveMode="TableResponsiveMode.Mobile" Bordered Hoverable>
             <TableHeader>
                 <TableRow>
@@ -34,30 +81,34 @@
                     <TableHeaderCell>Invoice Number</TableHeaderCell>
                     <TableHeaderCell>Issue Date</TableHeaderCell>
                     <TableHeaderCell>Due Date</TableHeaderCell>
+                    <TableHeaderCell>Amount</TableHeaderCell>
+                    <TableHeaderCell>Currency Code</TableHeaderCell>
                     <TableHeaderCell>Customer Name</TableHeaderCell>
                     <TableHeaderCell>Payment Status</TableHeaderCell>
                 </TableRow>
             </TableHeader>
             <TableBody>
-                @for (var i = 0; i < customers.Count; i++)
+                @for (var i = 0; i < _invoices.Count; i++)
                 {
                     var index = i;
                     <TableRow>
                         <TableRowHeader>@(index + 1)</TableRowHeader>
-                        <TableRowCell>@customers[index].InvoiceNumber.ToString("D6")</TableRowCell>
-                        <TableRowCell>@customers[index].IssueDate</TableRowCell>
-                        <TableRowCell>@customers[index].DueDate</TableRowCell>
-                        <TableRowCell>@customers[index].CustomerName</TableRowCell>
+                        <TableRowCell>@_invoices[index].InvoiceNumber.ToString("D6")</TableRowCell>
+                        <TableRowCell>@_invoices[index].IssueDate</TableRowCell>
+                        <TableRowCell>@_invoices[index].DueDate</TableRowCell>
+                        <TableRowCell>@_invoices[index].AmountDto</TableRowCell>
+                        <TableRowCell>@_invoices[index].CurrencyCode</TableRowCell>
+                        <TableRowCell>@_invoices[index].CustomerName</TableRowCell>
                         <TableRowCell>
-                            <span style="@(customers[index].PaymentStatus == PaymentStatus.Paid ? "color: green;" : "color: red;")">
-                                @customers[index].PaymentStatus
+                            <span style="@(_invoices[index].PaymentStatus == InvoicePaymentStatus.Paid ? "color: green;" : "color: red;")">
+                                @_invoices[index].PaymentStatus
                             </span>
                         </TableRowCell>
+                        <Delete @ref="deleteModal" OnConfirm="ConfirmDelete" />
                         <TableRowCell class="icon-cell">
                             <div class="d-flex justify-content-center align-items-center gap-2">
-                                <Icon Name="IconName.Eye" class="text-primary" />
                                 <Icon Name="IconName.Edit" class="text-warning" />
-                                <Icon Name="IconName.Delete" class="text-danger" />
+                                <Icon Name="IconName.Delete" class="text-danger cursor-pointer" @onclick="() => PromptDelete(_invoices[index].Id)" />
                             </div>
                         </TableRowCell>
                     </TableRow>
@@ -78,24 +129,51 @@ else
 
 
 @code {
-    private List<InvoiceResponse> customers = [];
-    private List<ClientResponse> clients;
+    private List<InvoiceResponse> _invoices = [];
+    private List<ClientResponse> _clients;
+    private List<CustomerResponse> _customers = [];
     private UserRoles userRoles;
     private Guid? selectedClientId;
+
+    private InvoiceCreateRequest newInvoice = new();
+
+    private Delete deleteModal;
+    private Guid? selectedInvoiceId;
+
+    private void PromptDelete(Guid id)
+    {
+        selectedInvoiceId = id;
+        deleteModal.Show();
+    }
+
+    private async Task ConfirmDelete()
+    {
+        await InvoiceService.DeleteAsync(selectedInvoiceId.Value, selectedClientId.Value);
+        _invoices = await InvoiceService.GetAllAsync(selectedClientId.Value);
+        StateHasChanged();
+    }
 
     protected override async Task OnInitializedAsync()
     {
         userRoles = UserProvider.GetRoles()
             ?? new UserRoles();
 
-        clients = await ClientService.GetUserClients();
+        _clients = await ClientService.GetUserClients();
     }
 
     private async Task OnClientSelected()
     {
         if (selectedClientId is not null)
         {
-            customers = await InvoiceService.GetAllAsync(selectedClientId.Value);
+            _invoices = await InvoiceService.GetAllAsync(selectedClientId.Value);
+            _customers = await CustomerService.GetListAsync(selectedClientId.Value);
         }
+    }
+
+    private async Task AddInvoice()
+    {
+        await InvoiceService.CreateAsync(newInvoice, selectedClientId.Value);
+        newInvoice = new();
+        _invoices = await InvoiceService.GetAllAsync(selectedClientId.Value);
     }
 }

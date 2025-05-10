@@ -1,8 +1,21 @@
-﻿namespace Web.Services.Customers;
+﻿using Web.Models.Customers;
+
+namespace Web.Services.Customers;
 
 public class CustomerService(IHttpClientFactory httpClientFactory) : ICustomerService
 {
     private readonly HttpClient _httpClient = httpClientFactory.CreateClient("api");
+
+    public async Task<bool> CreateAsync(CreateCustomerRequest customer, Guid clientId)
+    {
+        var respone = await _httpClient.PostAsJsonAsync($"clients/{clientId}/customers", customer);
+        if (respone.IsSuccessStatusCode)
+        {
+            return true;
+        }
+
+        return false;
+    }
 
     public async Task<bool> DeleteAsync(Guid id, Guid clientId)
     {

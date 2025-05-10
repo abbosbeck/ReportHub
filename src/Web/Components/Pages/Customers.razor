@@ -1,6 +1,7 @@
 ﻿@page "/customers"
 @using Web.Models
 @using Web.Models.Clients
+@using Web.Models.Customers
 @using Web.Models.Users
 @using Web.Services
 @using Web.Services.Clients
@@ -16,14 +17,41 @@
 {
     @if (clients is not null)
     {
-        <select @bind="selectedClientId" class="form-select">
-            <option value="">-- Select a Client --</option>
-            @foreach (var client in clients)
-            {
-                <option value="@client.Id">@client.Name</option>
-            }
-        </select>
-        <button class="btn btn-primary mt-2" @onclick="OnClientSelected">Load Customers</button>
+        <div class="d-flex align-items-center">
+            <select @bind="selectedClientId" class="form-select me-2" style="width: auto;">
+                <option value="">-- Select a Client --</option>
+                @foreach (var client in clients)
+                {
+                    <option value="@client.Id">@client.Name</option>
+                }
+            </select>
+            <button class="btn btn-primary mt-2" @onclick="OnClientSelected">Load</button>
+        </div>
+
+        <EditForm Model="@newCustomer" OnValidSubmit="AddCustomer" class="mb-3">
+            <div class="d-flex align-items-end gap-2 flex-wrap">
+                <div>
+                    <label class="form-label">Name</label>
+                    <InputText class="form-control form-control-sm" @bind-Value="newCustomer.Name" style="width: 180px;" />
+                </div>
+
+                <div>
+                    <label class="form-label">Email</label>
+                    <InputText class="form-control form-control-sm" @bind-Value="newCustomer.Email" style="width: 220px;" />
+                </div>
+
+                <div>
+                    <label class="form-label">Country Code</label>
+                    <InputText class="form-control form-control-sm" @bind-Value="newCustomer.CountryCode" style="width: 120px;" />
+                </div>
+
+                <div>
+                    <button type="submit" class="btn btn-sm btn-primary mt-2">Add Customer</button>
+                </div>
+            </div>
+        </EditForm>
+
+
         <p></p>
         <Table Striped ResponsiveMode="TableResponsiveMode.Mobile" Bordered Hoverable>
             <TableHeader>
@@ -47,7 +75,6 @@
                         <Delete @ref="deleteModal" OnConfirm="ConfirmDelete" />
                         <TableRowCell class="icon-cell">
                             <div class="d-flex justify-content-center align-items-center gap-2">
-                                <Icon Name="IconName.Eye" class="text-primary" />
                                 <Icon Name="IconName.Edit" class="text-warning" />
                                 <Icon Name="IconName.Delete" class="text-danger cursor-pointer" @onclick="() => PromptDelete(customers[index].Id)" />
                             </div>
@@ -78,6 +105,8 @@ else
     private Delete deleteModal;
     private Guid selectedCustomerId;
 
+    private CreateCustomerRequest newCustomer = new();
+
     private void PromptDelete(Guid id)
     {
         selectedCustomerId = id;
@@ -105,5 +134,12 @@ else
         {
             customers = await CustomerService.GetListAsync(selectedClientId.Value);
         }
+    }
+
+    private async Task AddCustomer()
+    {
+        await CustomerService.CreateAsync(newCustomer, selectedClientId.Value);
+        newCustomer = new();
+        customers = await CustomerService.GetListAsync(selectedClientId.Value);
     }
 }
