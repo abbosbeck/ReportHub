@@ -31,6 +31,7 @@
             <TableHeader>
                 <TableRow>
                     <TableHeaderCell>#</TableHeaderCell>
+                    <TableHeaderCell>Invoice Number</TableHeaderCell>
                     <TableHeaderCell>Issue Date</TableHeaderCell>
                     <TableHeaderCell>Due Date</TableHeaderCell>
                     <TableHeaderCell>Customer Name</TableHeaderCell>
@@ -43,6 +44,7 @@
                     var index = i;
                     <TableRow>
                         <TableRowHeader>@(index + 1)</TableRowHeader>
+                        <TableRowCell>@customers[index].InvoiceNumber</TableRowCell>
                         <TableRowCell>@customers[index].IssueDate</TableRowCell>
                         <TableRowCell>@customers[index].DueDate</TableRowCell>
                         <TableRowCell>@customers[index].CustomerName</TableRowCell>
