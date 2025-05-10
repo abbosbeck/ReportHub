@@ -9,4 +9,6 @@ public interface IClientService
     Task<List<ClientResponse>> GetUserClients();
 
     Task<bool> CreateAsync(ClientCreateRequest client);
+
+    Task<bool> DeleteAsyn(Guid id);
 }

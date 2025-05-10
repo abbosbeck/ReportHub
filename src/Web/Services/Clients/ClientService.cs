@@ -17,6 +17,17 @@ public class ClientService(IHttpClientFactory httpClientFactory) : IClientServic
         return false;
     }
 
+    public async Task<bool> DeleteAsyn(Guid id)
+    {
+        var respone = await _httpClient.DeleteAsync($"clients/{id}");
+        if (respone.IsSuccessStatusCode)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
     public async Task<List<ClientResponse>> GetListAsync()
     {
         var response = await _httpClient.GetAsync("clients");
