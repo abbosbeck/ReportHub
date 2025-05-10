@@ -1,9 +1,7 @@
-﻿namespace Web.Services.Customers;
+﻿namespace Web.Models.Customers;
 
-public class CustomerResponse
+public class CreateCustomerRequest
 {
-    public Guid Id { get; set; }
-
     public string Name { get; set; }
 
     public string Email { get; set; }
