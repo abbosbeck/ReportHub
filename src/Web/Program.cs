@@ -5,7 +5,9 @@ using Web.Authentication;
 using Web.Components;
 using Web.Services.Clients;
 using Web.Services.Customers;
+using Web.Services.ExternalServices;
 using Web.Services.Invoices;
+using Web.Services.Items;
 using Web.Services.Users;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,6 +37,8 @@ builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IInvoiceService, InvoiceService>();
+builder.Services.AddScoped<IItemService, ItemService>();
+builder.Services.AddScoped<IMoneyService, MoneyService>();
 
 
 var app = builder.Build();
