@@ -1,6 +1,115 @@
 ﻿@page "/items"
-<h3>Items</h3>
+@using Web.Models
+@using Web.Models.Clients
+@using Web.Models.Items
+@using Web.Models.Users
+@using Web.Services
+@using Web.Services.Clients
+@using Web.Services.Customers
+@using Web.Services.Items
+@using Web.Services.Users
+@inject IItemService ItemService
+@inject IClientService ClientService
+@inject IUserProviderService UserProvider
+@rendermode InteractiveServer
+
+<h3>Customers</h3>
+@if (userRoles.ClientRoles is not null && userRoles.ClientRoles.Contains("Owner"))
+{
+    @if (clients is not null)
+    {
+        <select @bind="selectedClientId" class="form-select">
+            <option value="">-- Select a Client --</option>
+            @foreach (var client in clients)
+            {
+                <option value="@client.Id">@client.Name</option>
+            }
+        </select>
+        <button class="btn btn-primary mt-2" @onclick="OnClientSelected">Load Customers</button>
+        <p></p>
+        <Table Striped ResponsiveMode="TableResponsiveMode.Mobile" Bordered Hoverable>
+            <TableHeader>
+                <TableRow>
+                    <TableHeaderCell>#</TableHeaderCell>
+                    <TableHeaderCell>Name</TableHeaderCell>
+                    <TableHeaderCell>Description</TableHeaderCell>
+                    <TableHeaderCell>Price</TableHeaderCell>
+                    <TableHeaderCell>Currency Code</TableHeaderCell>
+                    <TableHeaderCell>Invoice Number</TableHeaderCell>
+                    <TableHeaderCell></TableHeaderCell>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                @for (var i = 0; i < customers.Count; i++)
+                {
+                    var index = i;
+                    <TableRow>
+                        <TableRowHeader>@(index + 1)</TableRowHeader>
+                        <TableRowCell>@customers[index].Name</TableRowCell>
+                        <TableRowCell>@customers[index].Description</TableRowCell>
+                        <TableRowCell>@customers[index].Price</TableRowCell>
+                        <TableRowCell>@customers[index].CurrencyCode</TableRowCell>
+                        <TableRowCell>@customers[index].InvoiceNumber</TableRowCell>
+                        <Delete @ref="deleteModal" OnConfirm="ConfirmDelete" />
+                        <TableRowCell class="icon-cell">
+                            <div class="d-flex justify-content-center align-items-center gap-2">
+                                <Icon Name="IconName.Eye" class="text-primary" />
+                                <Icon Name="IconName.Edit" class="text-warning" />
+                                <Icon Name="IconName.Delete" class="text-danger cursor-pointer" @onclick="() => PromptDelete(customers[index].Id)" />
+                            </div>
+                        </TableRowCell>
+                    </TableRow>
+                }
+            </TableBody>
+        </Table>
+    }
+    else
+    {
+        <p>You don`t have any client!</p>
+    }
+
+}
+else
+{
+    <p>You are not allowed to this page!</p>
+}
+
 
 @code {
-    
+    private List<ItemResponse> customers = [];
+    private List<ClientResponse> clients;
+    private UserRoles userRoles;
+    private Guid? selectedClientId;
+
+    private Delete deleteModal;
+    private Guid selectedCustomerId;
+
+    private void PromptDelete(Guid id)
+    {
+        selectedCustomerId = id;
+        deleteModal.Show();
+    }
+
+    private async Task ConfirmDelete()
+    {
+        // await CustomerService.DeleteAsync(selectedCustomerId, selectedClientId.Value);
+        // customers = await CustomerService.GetListAsync(selectedClientId.Value);
+        StateHasChanged();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        userRoles = UserProvider.GetRoles()
+            ?? new UserRoles();
+
+        clients = await ClientService.GetUserClients();
+    }
+
+    private async Task OnClientSelected()
+    {
+        if (selectedClientId is not null)
+        {
+            customers = await ItemService.GetItemListAsync(selectedClientId.Value);
+        }
+    }
 }
