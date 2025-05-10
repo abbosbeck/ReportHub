@@ -39,25 +39,26 @@
                 </TableRow>
             </TableHeader>
             <TableBody>
-                @for (var i = 0; i < customers.Count; i++)
+                @for (var i = 0; i < _invoices.Count; i++)
                 {
                     var index = i;
                     <TableRow>
                         <TableRowHeader>@(index + 1)</TableRowHeader>
-                        <TableRowCell>@customers[index].InvoiceNumber.ToString("D6")</TableRowCell>
-                        <TableRowCell>@customers[index].IssueDate</TableRowCell>
-                        <TableRowCell>@customers[index].DueDate</TableRowCell>
-                        <TableRowCell>@customers[index].CustomerName</TableRowCell>
+                        <TableRowCell>@_invoices[index].InvoiceNumber.ToString("D6")</TableRowCell>
+                        <TableRowCell>@_invoices[index].IssueDate</TableRowCell>
+                        <TableRowCell>@_invoices[index].DueDate</TableRowCell>
+                        <TableRowCell>@_invoices[index].CustomerName</TableRowCell>
                         <TableRowCell>
-                            <span style="@(customers[index].PaymentStatus == PaymentStatus.Paid ? "color: green;" : "color: red;")">
-                                @customers[index].PaymentStatus
+                            <span style="@(_invoices[index].PaymentStatus == PaymentStatus.Paid ? "color: green;" : "color: red;")">
+                                @_invoices[index].PaymentStatus
                             </span>
                         </TableRowCell>
+                        <Delete @ref="deleteModal" OnConfirm="ConfirmDelete" />
                         <TableRowCell class="icon-cell">
                             <div class="d-flex justify-content-center align-items-center gap-2">
                                 <Icon Name="IconName.Eye" class="text-primary" />
                                 <Icon Name="IconName.Edit" class="text-warning" />
-                                <Icon Name="IconName.Delete" class="text-danger" />
+                                <Icon Name="IconName.Delete" class="text-danger cursor-pointer" @onclick="() => PromptDelete(_invoices[index].Id)" />
                             </div>
                         </TableRowCell>
                     </TableRow>
@@ -78,10 +79,26 @@ else
 
 
 @code {
-    private List<InvoiceResponse> customers = [];
+    private List<InvoiceResponse> _invoices = [];
     private List<ClientResponse> clients;
     private UserRoles userRoles;
     private Guid? selectedClientId;
+
+    private Delete deleteModal;
+    private Guid? selectedInvoiceId;
+
+    private void PromptDelete(Guid id)
+    {
+        selectedInvoiceId = id;
+        deleteModal.Show();
+    }
+
+    private async Task ConfirmDelete()
+    {
+        await InvoiceService.DeleteAsync(selectedInvoiceId.Value, selectedClientId.Value);
+        _invoices = await InvoiceService.GetAllAsync(selectedClientId.Value);
+        StateHasChanged();
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -95,7 +112,7 @@ else
     {
         if (selectedClientId is not null)
         {
-            customers = await InvoiceService.GetAllAsync(selectedClientId.Value);
+            _invoices = await InvoiceService.GetAllAsync(selectedClientId.Value);
         }
     }
 }
