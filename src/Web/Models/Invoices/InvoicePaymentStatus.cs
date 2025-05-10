@@ -1,7 +1,7 @@
 ﻿namespace Web.Models.Invoices;
 
-public enum PaymentStatus
+public enum InvoicePaymentStatus
 {
     Paid,
-    Unpaid
+    Unpaid,
 }

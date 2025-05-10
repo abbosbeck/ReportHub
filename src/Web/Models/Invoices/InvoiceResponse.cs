@@ -14,5 +14,5 @@ public class InvoiceResponse
 
     public Guid CustomerId { get; set; }
 
-    public PaymentStatus PaymentStatus { get; set; }
+    public InvoicePaymentStatus PaymentStatus { get; set; }
 }
