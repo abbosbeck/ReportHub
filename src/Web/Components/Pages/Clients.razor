@@ -7,11 +7,43 @@
 @using Web.Services.Users
 @inject IClientService ClientService
 @inject IUserProviderService UserProvider
+@inject IUserService UserService
 @rendermode InteractiveServer
 
 <PageTitle>Clients</PageTitle>
 @if (userRoles.SystemRoles is not null && userRoles.SystemRoles.Contains("SuperAdmin"))
 {
+    <EditForm Model="@newClient" OnValidSubmit="AddClient" class="mb-3">
+
+    <div class="d-flex align-items-end gap-2 flex-wrap">
+        <div>
+            <label class="form-label">Name</label>
+            <InputText class="form-control form-control-sm" @bind-Value="newClient.Name" style="width: 150px;" />
+        </div>
+
+        <div>
+            <label class="form-label">Country Code</label>
+            <InputText class="form-control form-control-sm" @bind-Value="newClient.CountryCode" style="width: 120px;" />
+        </div>
+
+        <div>
+            <label class="form-label">User</label>
+            <InputSelect class="form-select form-select-sm" @bind-Value="newClient.OwnerId" style="width: 180px;">
+                <option value="">-- Select --</option>
+                @foreach (var user in _users)
+                {
+                    <option value="@user.Id">@user.FirstName, @user.LastName</option>
+                }
+            </InputSelect>
+        </div>
+
+        <div>
+            <button type="submit" class="btn btn-sm btn-primary mt-2">Add Client</button>
+        </div>
+    </div>
+</EditForm>
+
+
     <Table Striped ResponsiveMode="TableResponsiveMode.Mobile" Bordered Hoverable>
         <TableHeader>
             <TableRow>
@@ -49,6 +81,8 @@ else
 
 @code {
     private List<ClientResponse> _clients = [];
+    private List<UserResponse> _users = [];
+    private ClientCreateRequest newClient = new();
     private UserRoles userRoles;
 
     protected override async Task OnInitializedAsync()
@@ -56,6 +90,14 @@ else
         userRoles = UserProvider.GetRoles()
             ?? new UserRoles();
 
+        _clients = await ClientService.GetListAsync();
+        _users = await UserService.UserListAsync();
+    }
+
+    private async Task AddClient()
+    {
+        await ClientService.CreateAsync(newClient);
+        newClient = new();
         _clients = await ClientService.GetListAsync();
     }
 }

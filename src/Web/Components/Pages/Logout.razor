@@ -14,6 +14,6 @@
     private void LogOut()
     {
         TokenProvider.RemoveToken();
-        Navigation.NavigateTo("/login");
+        Navigation.NavigateTo("/login", forceLoad: true);
     }
 }
