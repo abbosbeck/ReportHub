@@ -1,11 +1,12 @@
 ﻿using Web.Models.Items;
 using Web.Services.Customers;
+using Web.Services.Invoices;
 
 namespace Web.Services.Items;
 
 public class ItemService(
     IHttpClientFactory httpClientFactory,
-    ICustomerService customerService)
+    IInvoiceService invoiceService)
     : IItemService
 {
     private readonly HttpClient _httpClient = httpClientFactory.CreateClient("api");
@@ -19,8 +20,8 @@ public class ItemService(
 
             var tasks = items.Select(async i =>
             {
-                var customer = await customerService.GetByIdAsync(i.CustomerId, clientId);
-                i.CustomerName = customer.Name;
+                var invoice = await invoiceService.GetByIdAsync(i.InvoiceId, clientId);
+                i.InvoiceNumber = invoice.InvoiceNumber.ToString("D6");
             });
 
             await Task.WhenAll(tasks);
