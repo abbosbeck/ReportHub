@@ -44,7 +44,7 @@
                     var index = i;
                     <TableRow>
                         <TableRowHeader>@(index + 1)</TableRowHeader>
-                        <TableRowCell>@customers[index].InvoiceNumber</TableRowCell>
+                        <TableRowCell>@customers[index].InvoiceNumber.ToString("D6")</TableRowCell>
                         <TableRowCell>@customers[index].IssueDate</TableRowCell>
                         <TableRowCell>@customers[index].DueDate</TableRowCell>
                         <TableRowCell>@customers[index].CustomerName</TableRowCell>
