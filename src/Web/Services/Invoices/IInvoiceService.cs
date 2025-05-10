@@ -8,5 +8,7 @@ public interface IInvoiceService
 
     Task<InvoiceResponse> GetByIdAsync(Guid id, Guid clientId);
 
+    Task<bool> CreateAsync(InvoiceCreateRequest invoice, Guid clienId);
+
     Task<bool> DeleteAsync(Guid id, Guid clientId);
 }

@@ -11,6 +11,17 @@ public class InvoiceService(
 {
     private readonly HttpClient _httpClient = httpClientFactory.CreateClient("api");
 
+    public async Task<bool> CreateAsync(InvoiceCreateRequest invoice, Guid clienId)
+    {
+        var respone = await _httpClient.PostAsJsonAsync($"clients/{clienId}/invoices", invoice);
+        if (respone.IsSuccessStatusCode)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
     public async Task<bool> DeleteAsync(Guid id, Guid clientId)
     {
         var response = await _httpClient.DeleteAsync($"clients/{clientId}/invoices/{id}");
