@@ -6,14 +6,15 @@
 
 
 @code {
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        this.LogOut();
+        await this.LogOutAsync();
     }
 
-    private void LogOut()
+    private async Task LogOutAsync()
     {
         TokenProvider.RemoveToken();
-        Navigation.NavigateTo("/login", forceLoad: true);
+        await Task.Delay(200);
+        Navigation.NavigateTo("/", forceLoad: true);
     }
 }
