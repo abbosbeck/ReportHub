@@ -1,0 +1,117 @@
+{
+	"info": {
+		"_postman_id": "5b5b560c-0820-4476-86d6-3e6676a27484",
+		"name": "reports",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_uid": "40646021-5b5b560c-0820-4476-86d6-3e6676a27484"
+	},
+	"item": [
+		{
+			"name": "schedule",
+			"item": [
+				{
+					"name": "Success",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "26382f0f-201f-4546-b21a-78aed720895e",
+								"exec": [
+									"pm.test(\"Response status code is 401\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(401);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "4576f117-4107-443c-a28e-15fb38225b3f",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"cronExpression\": \"<string>\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients/:clientId/reports/schedule",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"clients",
+								":clientId",
+								"reports",
+								"schedule"
+							],
+							"variable": [
+								{
+									"key": "clientId",
+									"value": "{{$guid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "45b4f723-0c1d-4950-a715-9f608465c3ad"
+		},
+		{
+			"name": "stop",
+			"item": [],
+			"id": "a3cded79-15b0-45a2-b5f7-75b19c3bb321"
+		},
+		{
+			"name": "re-schedule",
+			"item": [],
+			"id": "1a9f97da-621d-449a-a414-2243ec6fe804"
+		},
+		{
+			"name": "get",
+			"item": [],
+			"id": "132bcd9a-fc4f-42e0-acbb-67c5ab70d2ad"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "c2abf694-ed88-454f-a712-10dbf937789a",
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "742c0401-bf69-45df-9f82-09584ab386fb",
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "ffa2bb12-de23-49ce-9539-dd88f236a0b6",
+			"key": "baseUrl",
+			"value": "http://localhost:5297",
+			"type": "string"
+		}
+	]
+}

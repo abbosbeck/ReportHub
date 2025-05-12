@@ -1,0 +1,116 @@
+{
+	"info": {
+		"_postman_id": "7e654a8a-8d9f-4c32-b502-361dfc82641b",
+		"name": "plans",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_uid": "40646021-7e654a8a-8d9f-4c32-b502-361dfc82641b"
+	},
+	"item": [
+		{
+			"name": "create",
+			"item": [
+				{
+					"name": "Success",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "26382f0f-201f-4546-b21a-78aed720895e",
+								"exec": [
+									"pm.test(\"Response status code is 401\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(401);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "70681eee-d697-4c9d-bcc9-c500c34de0ba",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"title\": \"<string>\",\r\n  \"planItems\": [\r\n    {\r\n      \"itemId\": \"<uuid>\",\r\n      \"quantity\": \"<integer>\"\r\n    },\r\n    {\r\n      \"itemId\": \"<uuid>\",\r\n      \"quantity\": \"<integer>\"\r\n    }\r\n  ],\r\n  \"startDate\": \"<dateTime>\",\r\n  \"endDate\": \"<dateTime>\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients/:clientId/plans",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"clients",
+								":clientId",
+								"plans"
+							],
+							"variable": [
+								{
+									"key": "clientId",
+									"value": "{{$guid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "9b78cc37-2881-401c-9302-07863d69bca1"
+		},
+		{
+			"name": "delete",
+			"item": [],
+			"id": "09e7dd6e-2f2c-4093-b832-ba1828f3a1c5"
+		},
+		{
+			"name": "update",
+			"item": [],
+			"id": "d971c1da-b7e7-4a9b-9abf-71ae7e0e8e7f"
+		},
+		{
+			"name": "get",
+			"item": [],
+			"id": "da1a3efb-15ba-4ae3-9352-0cb8fb694347"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "83b4d19a-aa4c-497b-9b97-0f9773125554",
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "18adb600-da71-45b5-aa33-3428343bad07",
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "d1c31883-b76b-45e8-8709-082cd7689875",
+			"key": "baseUrl",
+			"value": "http://localhost:5297",
+			"type": "string"
+		}
+	]
+}
