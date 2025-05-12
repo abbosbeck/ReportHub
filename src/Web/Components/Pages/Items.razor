@@ -59,7 +59,7 @@
                         <option value="">-- Select Invoice --</option>
                         @foreach (var invoice in _invoices)
                         {
-                            <option value="@invoice.Id">Invoice #@invoice.InvoiceNumber</option>
+                            <option value="@invoice.Id">Invoice #@invoice.InvoiceNumber.ToString("D6")</option>
                         }
                     </InputSelect>
                 </div>
