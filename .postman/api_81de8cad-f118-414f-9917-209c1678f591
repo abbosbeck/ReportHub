@@ -9,7 +9,12 @@ id = 81de8cad-f118-414f-9917-209c1678f591
 
 [config.relations.collections]
 rootDirectory = tests/IntegrationTests
+files[] = {"id":"40646021-f8fccb07-8ea3-4150-8e27-bfc9b82268ef","path":"clients.json","metaData":{}}
+files[] = {"id":"40646021-a5cc07ae-cf7f-4723-ab4f-b9ae5f6c9993","path":"customers.json","metaData":{}}
 files[] = {"id":"44742947-4ad46e4a-43a4-49ef-a42e-3b768b699a52","path":"invoices.json","metaData":{}}
+files[] = {"id":"40646021-e2a35f13-b2b2-4a17-9b16-18fda8eea7ca","path":"items.json","metaData":{}}
+files[] = {"id":"40646021-7e654a8a-8d9f-4c32-b502-361dfc82641b","path":"plans.json","metaData":{}}
+files[] = {"id":"40646021-5b5b560c-0820-4476-86d6-3e6676a27484","path":"reports.json","metaData":{}}
 files[] = {"id":"40646021-83a58b11-ff15-419d-9ee6-2c8dc06c4d65","path":"users.json","metaData":{}}
 files[] = {"id":"44742947-323e05bd-b6fd-43d5-989e-55f02fe820c4","path":"weather-forecast.json","metaData":{}}
 

@@ -1,0 +1,108 @@
+{
+	"info": {
+		"_postman_id": "f8fccb07-8ea3-4150-8e27-bfc9b82268ef",
+		"name": "clients",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_uid": "40646021-f8fccb07-8ea3-4150-8e27-bfc9b82268ef"
+	},
+	"item": [
+		{
+			"name": "create",
+			"item": [
+				{
+					"name": "Success",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "26382f0f-201f-4546-b21a-78aed720895e",
+								"exec": [
+									"pm.test(\"Response status code is 401\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(401);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "fb4633a0-e87b-4b4d-a4b9-5a8dde90b48a",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"<string>\",\r\n  \"countryCode\": \"<string>\",\r\n  \"ownerId\": \"<uuid>\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clients",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"clients"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "1335d4f2-0510-4352-937d-461fc65827d7"
+		},
+		{
+			"name": "delete",
+			"item": [],
+			"id": "221ea730-0fc4-4ae5-9d35-a68f5a657a31"
+		},
+		{
+			"name": "update",
+			"item": [],
+			"id": "66db1473-89b9-4c8c-b08f-bad011d44a2d"
+		},
+		{
+			"name": "get",
+			"item": [],
+			"id": "5748051f-9ae0-4184-9cb6-a7ce1d38f486"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "568d7982-e174-47e9-a8f4-3712cf44fbcf",
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "db16af31-ff20-42cf-b79d-694981edaea2",
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "fc25c2f8-8139-4891-98aa-8961c3bf72dc",
+			"key": "baseUrl",
+			"value": "http://localhost:5297",
+			"type": "string"
+		}
+	]
+}
