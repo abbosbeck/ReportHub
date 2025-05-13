@@ -11,4 +11,6 @@ public interface IInvoiceService
     Task<bool> CreateAsync(InvoiceCreateRequest invoice, Guid clienId);
 
     Task<bool> DeleteAsync(Guid id, Guid clientId);
+
+    Task<byte[]> DownloadInvoiceAsync(Guid id, Guid clientId);
 }

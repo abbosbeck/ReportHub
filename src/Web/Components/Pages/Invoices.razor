@@ -12,6 +12,7 @@
 @inject IInvoiceService InvoiceService
 @inject IClientService ClientService
 @inject ICustomerService CustomerService
+@inject IJSRuntime JS
 @rendermode InteractiveServer
 
 <PageTitle>Invoices</PageTitle>
@@ -107,6 +108,7 @@
                         <Delete @ref="deleteModal" OnConfirm="ConfirmDelete" />
                         <TableRowCell class="icon-cell">
                             <div class="d-flex justify-content-center align-items-center gap-2">
+                                <Icon Name="IconName.Download" class="text-primary cursor-pointer" @onclick="() => DownloadInvoiceAsync(_invoices[index].Id, _invoices[index].InvoiceNumber)" />
                                 <Icon Name="IconName.Edit" class="text-warning" />
                                 <Icon Name="IconName.Delete" class="text-danger cursor-pointer" @onclick="() => PromptDelete(_invoices[index].Id)" />
                             </div>
@@ -175,5 +177,20 @@ else
         await InvoiceService.CreateAsync(newInvoice, selectedClientId.Value);
         newInvoice = new();
         _invoices = await InvoiceService.GetAllAsync(selectedClientId.Value);
+    }
+
+    private async Task DownloadInvoiceAsync(Guid invoiceId, int invoiceNumber)
+    {
+        if (selectedClientId is null)
+            return;
+
+        var invoicePdfArray = await InvoiceService.DownloadInvoiceAsync(invoiceId, selectedClientId.Value);
+
+        if (invoicePdfArray.Length > 0)
+        {
+            var base64 = Convert.ToBase64String(invoicePdfArray);
+
+            await JS.InvokeVoidAsync("downloadFileFromByteArray", $"{invoiceNumber}_invoice.pdf", base64, "application/pdf");
+        }
     }
 }

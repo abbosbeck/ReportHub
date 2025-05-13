@@ -1,5 +1,4 @@
-﻿
-using Web.Models.Invoices;
+﻿using Web.Models.Invoices;
 using Web.Services.Customers;
 using Web.Services.ExternalServices;
 
@@ -33,6 +32,17 @@ public class InvoiceService(
         }
 
         return false;
+    }
+
+    public async Task<byte[]> DownloadInvoiceAsync(Guid id, Guid clientId)
+    {
+        var invoiceResponse = await _httpClient.GetAsync($"clients/{clientId}/invoices/{id}/export-pdf");
+        if (!invoiceResponse.IsSuccessStatusCode)
+        {
+            return [];
+        }
+
+        return await invoiceResponse.Content.ReadAsByteArrayAsync();
     }
 
     public async Task<List<InvoiceResponse>> GetAllAsync(Guid clientId)
