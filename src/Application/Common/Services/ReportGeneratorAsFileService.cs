@@ -6,6 +6,7 @@ using Application.Reports.ExportReportsToFile;
 using Application.Reports.ExportReportsToFile.Request;
 using Aspose.Cells;
 using Domain.Entities;
+using Domain.Enums;
 using MediatR;
 
 namespace Application.Common.Services;
@@ -80,7 +81,7 @@ public class ReportGeneratorAsFileService(ICurrencyExchangeService currencyExcha
             return new ExportReportsToFileDto(
                     ms.ToArray(),
                     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                    "Reports");
+                    "Report");
         }
     }
 
@@ -197,6 +198,19 @@ public class ReportGeneratorAsFileService(ICurrencyExchangeService currencyExcha
                 var cell = cells[row, col];
                 cell.SetStyle(cellBorderSyle);
             }
+            var paymentStatusCell = cells[row, 6];
+            Style style = paymentStatusCell.GetStyle();
+
+            if (invoice.PaymentStatus == InvoicePaymentStatus.Paid)
+            {
+                style.Font.Color = Color.ForestGreen;
+            }
+            else
+            {
+                style.Font.Color = Color.Crimson;
+            }
+
+            paymentStatusCell.SetStyle(style);
 
             row++;
         }
