@@ -127,7 +127,7 @@ public class ExportReportsToFileQueryHandler(
                 return exchangedValue * item.Amount;
             }))).Sum();
 
-            planDto.TotalPrice = string.Format("{0:#.00}", Convert.ToDecimal(totalPrice) / 100);
+            planDto.TotalPrice = totalPrice;
             planDto.CurrencyCode = clientCurrency;
             planDtos.Add(planDto);
         }
