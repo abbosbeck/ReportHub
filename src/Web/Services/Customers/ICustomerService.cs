@@ -10,5 +10,7 @@ public interface ICustomerService
 
     Task<bool> CreateAsync(CreateCustomerRequest customer, Guid clientId);
 
+    Task<List<CustomerResponse>> UploadCustomerListAsync(byte[] file, string name, Guid clientId);
+
     Task<bool> DeleteAsync(Guid id, Guid clientId);
 }

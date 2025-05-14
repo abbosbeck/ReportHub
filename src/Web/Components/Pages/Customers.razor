@@ -28,28 +28,40 @@
             <button class="btn btn-primary mt-2" @onclick="OnClientSelected">Load</button>
         </div>
 
-        <EditForm Model="@newCustomer" OnValidSubmit="AddCustomer" class="mb-3">
-            <div class="d-flex align-items-end gap-2 flex-wrap">
-                <div>
-                    <label class="form-label">Name</label>
-                    <InputText class="form-control form-control-sm" @bind-Value="newCustomer.Name" style="width: 180px;" />
-                </div>
+        @if (isClientSelected)
+        {
+            <EditForm Model="@newCustomer" OnValidSubmit="AddCustomer" class="mb-3">
+                <div class="d-flex justify-content-between align-items-end flex-wrap">
+                    <div class="d-flex align-items-end gap-2 flex-wrap">
+                        <div>
+                            <label class="form-label">Name</label>
+                            <InputText class="form-control form-control-sm" @bind-Value="newCustomer.Name" style="width: 180px;" />
+                        </div>
 
-                <div>
-                    <label class="form-label">Email</label>
-                    <InputText class="form-control form-control-sm" @bind-Value="newCustomer.Email" style="width: 220px;" />
-                </div>
+                        <div>
+                            <label class="form-label">Email</label>
+                            <InputText class="form-control form-control-sm" @bind-Value="newCustomer.Email" style="width: 220px;" />
+                        </div>
 
-                <div>
-                    <label class="form-label">Country Code</label>
-                    <InputText class="form-control form-control-sm" @bind-Value="newCustomer.CountryCode" style="width: 120px;" />
-                </div>
+                        <div>
+                            <label class="form-label">Country Code</label>
+                            <InputText class="form-control form-control-sm" @bind-Value="newCustomer.CountryCode" style="width: 120px;" />
+                        </div>
 
-                <div>
-                    <button type="submit" class="btn btn-sm btn-primary mt-2">Add Customer</button>
+                        <div>
+                            <button type="submit" class="btn btn-sm btn-primary mt-2">Add Customer</button>
+                        </div>
+                    </div>
+
+
+                        <div class="d-flex align-items-end gap-2 mt-2">
+                            <InputFile OnChange="HandleFileSelected" class="form-control form-control-sm" style="width: auto;" />
+                            <button class="btn btn-sm btn-primary" @onclick="UploadFile" disabled="@(selectedFile is null)">Upload</button>
+                        </div>
                 </div>
-            </div>
-        </EditForm>
+            </EditForm>
+         }
+
 
 
         <p></p>
@@ -101,11 +113,14 @@ else
     private List<ClientResponse> clients;
     private UserRoles userRoles;
     private Guid? selectedClientId;
+    private bool isClientSelected = false;
 
     private Delete deleteModal;
     private Guid selectedCustomerId;
 
     private CreateCustomerRequest newCustomer = new();
+
+    private IBrowserFile selectedFile;
 
     private void PromptDelete(Guid id)
     {
@@ -132,6 +147,7 @@ else
     {
         if (selectedClientId is not null)
         {
+            isClientSelected = true;
             customers = await CustomerService.GetListAsync(selectedClientId.Value);
         }
     }
@@ -141,5 +157,26 @@ else
         await CustomerService.CreateAsync(newCustomer, selectedClientId.Value);
         newCustomer = new();
         customers = await CustomerService.GetListAsync(selectedClientId.Value);
+    }
+
+    private void HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        selectedFile = e.File;
+    }
+
+    private async Task UploadFile()
+    {
+        if (selectedFile != null)
+        {
+            using var stream = selectedFile.OpenReadStream(selectedFile.Size);
+            using var memoryStream = new MemoryStream();
+            await stream.CopyToAsync(memoryStream);
+            var fileBytes = memoryStream.ToArray();
+
+            customers = await CustomerService
+                    .UploadCustomerListAsync(fileBytes, selectedFile.Name, selectedClientId.Value);
+
+            selectedFile = null;
+        }
     }
 }
