@@ -5,7 +5,12 @@ namespace Web.Services.ExternalServices;
 
 public class MoneyService : IMoneyService
 {
-    private static readonly ConcurrentDictionary<string, CultureInfo> _currencyCultureCache = new(StringComparer.OrdinalIgnoreCase);
+    private static readonly ConcurrentDictionary<string, CultureInfo> _currencyCultureCache = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["UZS"] = new CultureInfo("uz-Latn-UZ"),
+        ["USD"] = new CultureInfo("chr-US"),
+        ["EUR"] = new CultureInfo("ast-ES"),
+    };
 
     public string GetAmountWithSymbol(decimal amount, string currencyCode)
     {
@@ -14,11 +19,6 @@ public class MoneyService : IMoneyService
             var cultureInfo = CultureInfo.GetCultures(CultureTypes.SpecificCultures)
                 .FirstOrDefault(c => new RegionInfo(c.Name).ISOCurrencySymbol.Equals(
                     code, StringComparison.OrdinalIgnoreCase));
-
-            if (cultureInfo?.Name == "uz-Cyrl-UZ")
-            {
-                return new CultureInfo("uz-Latn-UZ");
-            }
 
             return cultureInfo ?? CultureInfo.InvariantCulture;
         });
