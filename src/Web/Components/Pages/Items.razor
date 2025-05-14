@@ -31,7 +31,9 @@
             <button class="btn btn-primary mt-2" @onclick="OnClientSelected">Load</button>
         </div>
 
-        <EditForm Model="@newItem" OnValidSubmit="AddItem" class="mb-3">
+        @if (isClientSelected)
+        {
+            <EditForm Model="@newItem" OnValidSubmit="AddItem" class="mb-3">
             <div class="d-flex align-items-end gap-2 flex-wrap">
                 <div>
                     <label class="form-label">Name</label>
@@ -69,8 +71,7 @@
                 </div>
             </div>
         </EditForm>
-
-
+        }
 
         <p></p>
         <Table Striped ResponsiveMode="TableResponsiveMode.Mobile" Bordered Hoverable>
@@ -126,6 +127,7 @@ else
     private List<ClientResponse> clients;
     private UserRoles userRoles;
     private Guid? selectedClientId;
+    private bool isClientSelected = false;
 
     private Delete deleteModal;
     private Guid selectedCustomerId;
@@ -157,6 +159,7 @@ else
     {
         if (selectedClientId is not null)
         {
+            isClientSelected = true;
             _items = await ItemService.GetItemListAsync(selectedClientId.Value);
             _invoices = await InvoiceService.GetAllAsync(selectedClientId.Value);
         }
