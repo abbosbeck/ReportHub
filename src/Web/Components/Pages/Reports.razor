@@ -52,16 +52,18 @@
                             }
                         </InputSelect>
                     </div>
-
-                    <div>
-                        <label class="form-label">Table Type</label>
-                        <InputSelect class="form-select form-select-sm" @bind-Value="reportRequest.TableType" style="width: 140px;">
-                            @foreach (var tableType in Enum.GetValues<ReportTableType>())
-                            {
-                                <option value="@tableType">@tableType</option>
-                            }
-                        </InputSelect>
-                    </div>
+                    @if(reportRequest.FileType == ReportFileType.CSV)
+                    {
+                        <div>
+                            <label class="form-label">Table Type</label>
+                            <InputSelect class="form-select form-select-sm" @bind-Value="reportRequest.TableType" style="width: 140px;">
+                                @foreach (var tableType in Enum.GetValues<ReportTableType>())
+                                {
+                                    <option value="@tableType">@tableType</option>
+                                }
+                            </InputSelect>
+                        </div>
+                    }
 
                     <div>
                         <button type="submit" class="btn btn-sm btn-success">Download</button>
