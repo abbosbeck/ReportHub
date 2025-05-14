@@ -95,7 +95,7 @@
                         <TableRowCell>@_items[index].Description</TableRowCell>
                         <TableRowCell>@_items[index].PriceDto</TableRowCell>
                         <TableRowCell>@_items[index].CurrencyCode</TableRowCell>
-                        <TableRowCell>@_items[index].InvoiceNumber</TableRowCell>
+                        <TableRowCell>#@_items[index].InvoiceNumber</TableRowCell>
                         <Delete @ref="deleteModal" OnConfirm="ConfirmDelete" />
                         <TableRowCell class="icon-cell">
                             <div class="d-flex justify-content-center align-items-center gap-2">
