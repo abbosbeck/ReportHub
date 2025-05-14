@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Collections.Concurrent;
+using System.Globalization;
 using System.Net.Http.Json;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces.External.CurrencyExchange;
@@ -7,6 +8,13 @@ namespace Infrastructure.External;
 
 public class CurrencyExchangeService(HttpClient httpClient) : ICurrencyExchangeService
 {
+    private static readonly ConcurrentDictionary<string, CultureInfo> currencyCultureCache = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["UZS"] = new CultureInfo("uz-Latn-UZ"),
+        ["USD"] = new CultureInfo("chr-US"),
+        ["EUR"] = new CultureInfo("ast-ES"),
+    };
+
     public async Task<bool> CheckCurrencyCodeAsync(string currencyCode)
     {
         var response = await httpClient.GetAsync($"latest/{currencyCode}");
@@ -44,14 +52,14 @@ public class CurrencyExchangeService(HttpClient httpClient) : ICurrencyExchangeS
 
     public string GetAmountWithSymbol(decimal amount, string currencyCode)
     {
-        var culture = CultureInfo.GetCultures(CultureTypes.SpecificCultures)
-            .FirstOrDefault(x => new RegionInfo(x.Name).ISOCurrencySymbol.Equals(
-                currencyCode, StringComparison.OrdinalIgnoreCase));
-
-        if (culture.Name == "uz-Cyrl-UZ")
+        var culture = currencyCultureCache.GetOrAdd(currencyCode, code =>
         {
-            culture = new CultureInfo("uz-Latn-UZ");
-        }
+            var cultureInfo = CultureInfo.GetCultures(CultureTypes.SpecificCultures)
+                .FirstOrDefault(c => new RegionInfo(c.Name).ISOCurrencySymbol.Equals(
+                    code, StringComparison.OrdinalIgnoreCase));
+
+            return cultureInfo ?? CultureInfo.InvariantCulture;
+        });
 
         return amount.ToString("C", culture);
     }

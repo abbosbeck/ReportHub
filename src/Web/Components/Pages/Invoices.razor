@@ -94,9 +94,9 @@
                     var index = i;
                     <TableRow>
                         <TableRowHeader>@(index + 1)</TableRowHeader>
-                        <TableRowCell>@_invoices[index].InvoiceNumber.ToString("D6")</TableRowCell>
-                        <TableRowCell>@_invoices[index].IssueDate</TableRowCell>
-                        <TableRowCell>@_invoices[index].DueDate</TableRowCell>
+                        <TableRowCell>#@_invoices[index].InvoiceNumber.ToString("D6")</TableRowCell>
+                        <TableRowCell>@_invoices[index].IssueDate.ToString("MM/dd/yyyy")</TableRowCell>
+                        <TableRowCell>@_invoices[index].DueDate.ToString("MM/dd/yyyy")</TableRowCell>
                         <TableRowCell>@_invoices[index].AmountDto</TableRowCell>
                         <TableRowCell>@_invoices[index].CurrencyCode</TableRowCell>
                         <TableRowCell>@_invoices[index].CustomerName</TableRowCell>

@@ -4,7 +4,7 @@ public class CreatePlanRequest
 {
     public string Title { get; set; }
 
-    public IEnumerable<CreatePlanItemDto> PlanItems { get; set; }
+    public IList<CreatePlanItemDto> PlanItems { get; set; }
 
     public DateTime StartDate { get; set; }
 
