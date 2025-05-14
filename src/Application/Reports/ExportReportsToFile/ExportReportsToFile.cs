@@ -82,12 +82,7 @@ public class ExportReportsToFileQueryHandler(
             }
         }
 
-        var result = fileGenerator.GenerateExcelFile(
-            invoices,
-            items,
-            planDtos,
-            request.ExportReportsFileType,
-            request.ReportType);
+        var result = fileGenerator.GenerateExcelFile(invoices, items, planDtos, request);
 
         return result;
     }

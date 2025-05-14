@@ -10,6 +10,5 @@ public interface IReportGeneratorAsFileService
         List<Invoice> invoices,
         List<Item> items,
         List<PlanDto> plans,
-        ExportReportsFileType fileType,
-        ExportReportsReportTableType? reportType);
+        ExportReportsToFileQuery request);
 }

@@ -1,14 +1,16 @@
 ﻿using System.Drawing;
 using Application.Common.Exceptions;
+using Application.Common.Interfaces.External.CurrencyExchange;
 using Application.Common.Interfaces.Services;
 using Application.Reports.ExportReportsToFile;
 using Application.Reports.ExportReportsToFile.Request;
 using Aspose.Cells;
 using Domain.Entities;
+using MediatR;
 
 namespace Application.Common.Services;
 
-public class ReportGeneratorAsFileService : IReportGeneratorAsFileService
+public class ReportGeneratorAsFileService(ICurrencyExchangeService currencyExchange) : IReportGeneratorAsFileService
 {
     private readonly Style headerStyle = new SheetStyle().CreateHeaderStyle();
     private readonly Style cellBorderSyle = new SheetStyle().CreateBorderStyle();
@@ -17,15 +19,20 @@ public class ReportGeneratorAsFileService : IReportGeneratorAsFileService
         List<Invoice> invoices,
         List<Item> items,
         List<PlanDto> plans,
-        ExportReportsFileType fileType,
-        ExportReportsReportTableType? reportType)
+        ExportReportsToFileQuery request)
     {
+        var fileType = request.ExportReportsFileType;
+        var reportType = request.ReportType;
         Workbook mainWorkbook = new Workbook();
         WorksheetCollection sheets = mainWorkbook.Worksheets;
         sheets[0].Name = "About Report";
         var cells = sheets[0].Cells;
         cells[0, 0].Value = "Reported Time: ";
+        cells[1, 0].Value = "Reported From: ";
+        cells[2, 0].Value = "To: ";
         cells[0, 1].Value = string.Format("{0:MM/dd/yyyy}", DateTime.Today);
+        cells[1, 1].Value = string.Format("{0:MM/dd/yyyy}", request.StartDate);
+        cells[2, 1].Value = string.Format("{0:MM/dd/yyyy}", request.EndDate);
         sheets[0].AutoFitColumns();
 
         MemoryStream ms = new MemoryStream();
@@ -139,7 +146,7 @@ public class ReportGeneratorAsFileService : IReportGeneratorAsFileService
             cells[row, 0].Value = counter++;
             cells[row, 1].Value = item.Name;
             cells[row, 2].Value = item.Description;
-            cells[row, 3].Value = string.Format("{0:#.00}", Convert.ToDecimal(item.Price) / 100);
+            cells[row, 3].Value = currencyExchange.GetAmountWithSymbol(item.Price, item.CurrencyCode);
             cells[row, 4].Value = item.CurrencyCode;
             cells[row, 5].Value = item.Invoice.InvoiceNumber.ToString("D6");
 
@@ -181,7 +188,7 @@ public class ReportGeneratorAsFileService : IReportGeneratorAsFileService
             cells[row, 1].Value = invoice.InvoiceNumber.ToString("D6");
             cells[row, 2].Value = string.Format("{0:MM/dd/yyyy}", invoice.IssueDate);
             cells[row, 3].Value = string.Format("{0:MM/dd/yyyy}", invoice.DueDate);
-            cells[row, 4].Value = string.Format("{0:#.00}", Convert.ToDecimal(invoice.Amount) / 100);
+            cells[row, 4].Value = currencyExchange.GetAmountWithSymbol(invoice.Amount, invoice.CurrencyCode);
             cells[row, 5].Value = invoice.CurrencyCode;
             cells[row, 6].Value = invoice.PaymentStatus.ToString();
 
