@@ -33,8 +33,9 @@
             <button class="btn btn-primary mt-2" @onclick="OnClientSelected">Load</button>
         </div>
         <p></p>
-
-        <EditForm Model="@newInvoice" OnValidSubmit="AddInvoice" class="mb-3">
+        @if (isClientSelected)
+        {
+            <EditForm Model="@newInvoice" OnValidSubmit="AddInvoice" class="mb-3">
             <div class="d-flex align-items-end gap-2 flex-wrap">
                 <div>
                     <label class="form-label">Issue Date</label>
@@ -73,7 +74,7 @@
                 </div>
             </div>
         </EditForm>
-
+        }
 
         <Table Striped ResponsiveMode="TableResponsiveMode.Mobile" Bordered Hoverable>
             <TableHeader>
@@ -136,6 +137,7 @@ else
     private List<CustomerResponse> _customers = [];
     private UserRoles userRoles;
     private Guid? selectedClientId;
+    private bool isClientSelected = false;
 
     private InvoiceCreateRequest newInvoice = new();
 
@@ -167,6 +169,7 @@ else
     {
         if (selectedClientId is not null)
         {
+            isClientSelected = true;
             _invoices = await InvoiceService.GetAllAsync(selectedClientId.Value);
             _customers = await CustomerService.GetListAsync(selectedClientId.Value);
         }
