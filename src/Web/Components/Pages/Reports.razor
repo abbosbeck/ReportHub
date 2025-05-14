@@ -1,0 +1,130 @@
+﻿@page "/reports"
+@using Web.Models
+@using Web.Models.Clients
+@using Web.Models.Reports
+@using Web.Models.Users
+@using Web.Services
+@using Web.Services.Clients
+@using Web.Services.Reports
+@using Web.Services.Users
+@inject IReportService ReportService
+@inject IClientService ClientService
+@inject IUserProviderService UserProvider
+@inject IJSRuntime JS
+@rendermode InteractiveServer
+
+<h3>Reports</h3>
+@if (userRoles.ClientRoles is not null && userRoles.ClientRoles.Contains("Owner"))
+{
+    @if (clients is not null)
+    {
+        <div class="d-flex align-items-center">
+            <select @bind="selectedClientId" class="form-select me-2" style="width: auto;">
+                <option value="">-- Select a Client --</option>
+                @foreach (var client in clients)
+                {
+                    <option value="@client.Id">@client.Name</option>
+                }
+            </select>
+            <button class="btn btn-primary mt-2" @onclick="OnClientSelected">Load</button>
+        </div>
+
+        @if (isClientSelected)
+        {
+            <EditForm Model="@reportRequest" OnValidSubmit="DownloadReport">
+                <div class="d-flex align-items-end gap-3 flex-wrap mb-3">
+                    <div>
+                        <label class="form-label">Start Date</label>
+                        <InputDate class="form-control form-control-sm" @bind-Value="reportRequest.StartDate" style="width: 150px;" />
+                    </div>
+
+                    <div>
+                        <label class="form-label">End Date</label>
+                        <InputDate class="form-control form-control-sm" @bind-Value="reportRequest.EndDate" style="width: 150px;" />
+                    </div>
+
+                    <div>
+                        <label class="form-label">File Type</label>
+                        <InputSelect class="form-select form-select-sm" @bind-Value="reportRequest.FileType" style="width: 140px;">
+                            @foreach (var fileType in Enum.GetValues<ReportFileType>())
+                            {
+                                <option value="@fileType">@fileType</option>
+                            }
+                        </InputSelect>
+                    </div>
+                    @if(reportRequest.FileType == ReportFileType.CSV)
+                    {
+                        <div>
+                            <label class="form-label">Table Type</label>
+                            <InputSelect class="form-select form-select-sm" @bind-Value="reportRequest.TableType" style="width: 140px;">
+                                @foreach (var tableType in Enum.GetValues<ReportTableType>())
+                                {
+                                    <option value="@tableType">@tableType</option>
+                                }
+                            </InputSelect>
+                        </div>
+                    }
+
+                    <div>
+                        <button type="submit" class="btn btn-sm btn-success">Download</button>
+                    </div>
+                </div>
+            </EditForm>
+        }
+    }
+    else
+    {
+        <p>You don`t have any client!</p>
+    }
+
+}
+else
+{
+    <p>You are not allowed to this page!</p>
+}
+
+
+@code {
+    private List<ClientResponse> clients;
+    private UserRoles userRoles;
+    private Guid? selectedClientId;
+    private bool isClientSelected = false;
+    private ReportRequest reportRequest = new();
+
+    private Guid selectedCustomerId;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        userRoles = UserProvider.GetRoles()
+            ?? new UserRoles();
+
+        clients = await ClientService.GetUserClients();
+    }
+
+    private async Task DownloadReport()
+    {
+        byte[] fileBytes = await ReportService.DownloadReport(
+            selectedClientId.Value,
+            reportRequest.StartDate,
+            reportRequest.EndDate,
+            reportRequest.FileType,
+            reportRequest.TableType);
+
+        var base64 = Convert.ToBase64String(fileBytes);
+
+        await JS.InvokeVoidAsync(
+            "downloadFileFromByteArray",
+            $"report.xlsx",
+            base64,
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+    }
+
+    private void OnClientSelected()
+    {
+        if (selectedClientId is not null)
+        {
+            isClientSelected = true;
+        }
+    }
+}
