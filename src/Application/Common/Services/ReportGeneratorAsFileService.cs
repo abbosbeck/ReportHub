@@ -108,7 +108,7 @@ public class ReportGeneratorAsFileService(ICurrencyExchangeService currencyExcha
             cells[row, 1].Value = plan.Title;
             cells[row, 2].Value = string.Format("{0:MM/dd/yyyy}", plan.StartDate);
             cells[row, 3].Value = string.Format("{0:MM/dd/yyyy}", plan.EndDate);
-            cells[row, 4].Value = plan.TotalPrice;
+            cells[row, 4].Value = currencyExchange.GetAmountWithSymbol(plan.TotalPrice, plan.CurrencyCode);
             cells[row, 5].Value = plan.CurrencyCode;
 
             for (int col = 0; col < 6; col++)
@@ -148,7 +148,7 @@ public class ReportGeneratorAsFileService(ICurrencyExchangeService currencyExcha
             cells[row, 2].Value = item.Description;
             cells[row, 3].Value = currencyExchange.GetAmountWithSymbol(item.Price, item.CurrencyCode);
             cells[row, 4].Value = item.CurrencyCode;
-            cells[row, 5].Value = item.Invoice.InvoiceNumber.ToString("D6");
+            cells[row, 5].Value = "#" + item.Invoice.InvoiceNumber.ToString("D6");
 
             for (int col = 0; col < 6; col++)
             {
@@ -185,7 +185,7 @@ public class ReportGeneratorAsFileService(ICurrencyExchangeService currencyExcha
         foreach (var invoice in invoices)
         {
             cells[row, 0].Value = counter++;
-            cells[row, 1].Value = invoice.InvoiceNumber.ToString("D6");
+            cells[row, 1].Value = "#" + invoice.InvoiceNumber.ToString("D6");
             cells[row, 2].Value = string.Format("{0:MM/dd/yyyy}", invoice.IssueDate);
             cells[row, 3].Value = string.Format("{0:MM/dd/yyyy}", invoice.DueDate);
             cells[row, 4].Value = currencyExchange.GetAmountWithSymbol(invoice.Amount, invoice.CurrencyCode);
