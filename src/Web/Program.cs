@@ -8,6 +8,7 @@ using Web.Services.Customers;
 using Web.Services.ExternalServices;
 using Web.Services.Invoices;
 using Web.Services.Items;
+using Web.Services.Reports;
 using Web.Services.Users;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -39,6 +40,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IInvoiceService, InvoiceService>();
 builder.Services.AddScoped<IItemService, ItemService>();
 builder.Services.AddScoped<IMoneyService, MoneyService>();
+builder.Services.AddScoped<IReportService, ReportService>();
 
 
 var app = builder.Build();
