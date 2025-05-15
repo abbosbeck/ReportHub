@@ -54,10 +54,13 @@
                     </div>
 
 
+                    <div>
+                        <label>Import Customers</label>
                         <div class="d-flex align-items-end gap-2 mt-2">
-                            <InputFile OnChange="HandleFileSelected" class="form-control form-control-sm" style="width: auto;" />
+                            <InputFile OnChange="HandleFileSelected" class="form-control form-control-sm" style="width: auto;"/>
                             <button class="btn btn-sm btn-primary" @onclick="UploadFile" disabled="@(selectedFile is null)">Upload</button>
                         </div>
+                    </div>
                 </div>
             </EditForm>
          }
