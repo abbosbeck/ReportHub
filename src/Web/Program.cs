@@ -29,7 +29,7 @@ builder.Services.AddTransient<AuthHeaderHandler>();
 builder.Services
     .AddHttpClient("api", client =>
         {
-            client.BaseAddress = new Uri("https://reporthub.jollyfield-db8a0240.swedencentral.azurecontainerapps.io/");
+            client.BaseAddress = new Uri("http://localhost:5297");
         })
     .AddHttpMessageHandler<AuthHeaderHandler>();
 

@@ -2,6 +2,7 @@
 
 public enum ReportScheduleOptions
 {
+    Disabled,
     Minutely,
     Daily,
     Weekly,
