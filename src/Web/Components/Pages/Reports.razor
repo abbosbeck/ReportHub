@@ -88,7 +88,7 @@ else
     private List<ClientResponse> clients;
     private UserRoles userRoles;
     private Guid? selectedClientId;
-    private bool isClientSelected = false;
+    private bool isClientSelected;
     private ReportRequest reportRequest = new();
 
     private Guid selectedCustomerId;
@@ -104,8 +104,8 @@ else
 
     private async Task DownloadReport()
     {
-        byte[] fileBytes = await ReportService.DownloadReport(
-            selectedClientId.Value,
+        var fileBytes = await ReportService.DownloadReport(
+            selectedClientId!.Value,
             reportRequest.StartDate,
             reportRequest.EndDate,
             reportRequest.FileType,
