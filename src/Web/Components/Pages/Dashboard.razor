@@ -3,7 +3,85 @@
 
 <PageTitle>ReportHub</PageTitle>
 
-<Progress Indeterminate></Progress>
-<h1 class="font-monospace text-center">Hi there!</h1>
-<p class="text-center">Welcome to ReportHub</p>
-<Progress Indeterminate></Progress>
+<div class="container d-flex flex-column align-items-center justify-content-center min-vh-100 py-5">
+    <img src="images/image_2025-05-15_16-49-42.png"
+         alt="ReportHub Logo"
+         class="logo mb-4 animate__animated animate__fadeIn "
+         style="max-width: 220px;" />
+
+    <h1 class="display-4 text-primary fw-bold font-monospace animate__animated animate__fadeInUp animate__delay-1s">
+        Welcome to <span class="text-gradient">ReportHub</span>
+    </h1>
+    <p class="lead text-muted mt-3 animate__animated animate__fadeInUp animate__delay-2s">
+        Your one-stop platform for insightful reports and analytics
+    </p>
+</div>
+
+<style>
+    .min-vh-100 {
+        min-height: 100vh;
+    }
+
+    .logo {
+        max-width: 220px;
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        border-radius: 15px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1) !important;
+    }
+
+        .logo:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2) !important;
+        }
+
+    .text-gradient {
+        background: linear-gradient(45deg, #007bff, #00d4ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-fill-color: transparent;
+    }
+
+    .btn-primary {
+        padding: 12px 30px;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+        background: linear-gradient(45deg, #007bff, #0056b3);
+        border: none;
+    }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 123, 255, 0.4);
+            background: linear-gradient(45deg, #0056b3, #007bff);
+        }
+
+    .lead {
+        font-size: 1.25rem;
+        max-width: 600px;
+        text-align: center;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
