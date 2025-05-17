@@ -3,7 +3,7 @@
 
 <PageTitle>ReportHub</PageTitle>
 
-<div class="container d-flex flex-column align-items-center justify-content-center min-vh-100 py-5">
+<div class="container d-flex flex-column align-items-center justify-content-center h-auto py-5 mt-5">
     <img src="images/image_2025-05-15_16-49-42.png"
          alt="ReportHub Logo"
          class="logo mb-4 animate__animated animate__fadeIn "
@@ -18,10 +18,6 @@
 </div>
 
 <style>
-    .min-vh-100 {
-        min-height: 100vh;
-    }
-
     .logo {
         max-width: 220px;
         transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
@@ -29,10 +25,10 @@
         box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1) !important;
     }
 
-        .logo:hover {
-            transform: scale(1.05);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2) !important;
-        }
+    .logo:hover {
+        transform: scale(1.05);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2) !important;
+    }
 
     .text-gradient {
         background: linear-gradient(45deg, #007bff, #00d4ff);
@@ -41,21 +37,7 @@
         background-clip: text;
         text-fill-color: transparent;
     }
-
-    .btn-primary {
-        padding: 12px 30px;
-        border-radius: 50px;
-        transition: all 0.3s ease;
-        background: linear-gradient(45deg, #007bff, #0056b3);
-        border: none;
-    }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 123, 255, 0.4);
-            background: linear-gradient(45deg, #0056b3, #007bff);
-        }
-
+    
     .lead {
         font-size: 1.25rem;
         max-width: 600px;
