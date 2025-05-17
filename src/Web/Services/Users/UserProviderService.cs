@@ -1,14 +1,34 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿using Microsoft.AspNetCore.Http;
+using System.IdentityModel.Tokens.Jwt;
+using Web.Authentication;
 using Web.Models.Users;
 
 namespace Web.Services.Users;
 
-public class UserProviderService : IUserProviderService
+public class UserProviderService(IHttpContextAccessor httpContextAccessor) : IUserProviderService
 {
-    private string _accessToken;
+    private readonly Dictionary<string, string> _store = new();
+    private readonly object _lock = new();
 
-    public void SetToken(string token) => _accessToken = token;
-    public string GetToken() => _accessToken;
+    private string? GetUserId()
+    {
+        return UserIdCookieHelper.GetOrCreateUserId(httpContextAccessor.HttpContext!);
+    }
+
+    public void SetToken(string token)
+    {
+        lock (_lock)
+        {
+            _store[GetUserId()] = token;
+        }
+    }
+    public string GetToken()
+    {
+        lock (_lock)
+        {
+            return _store.TryGetValue(GetUserId(), out var token) ? token : null;
+        }
+    }
 
     public string GetUserEmail()
     {
@@ -24,7 +44,13 @@ public class UserProviderService : IUserProviderService
         return jwt.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
     }
 
-    public void RemoveToken() => _accessToken = null;
+    public void RemoveToken()
+    {
+        lock (_lock)
+        {
+            _store.Remove(GetUserId());
+        }
+    }
 
     public UserRoles GetRoles()
     {
