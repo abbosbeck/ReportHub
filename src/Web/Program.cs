@@ -33,6 +33,7 @@ builder.Services
         })
     .AddHttpMessageHandler<AuthHeaderHandler>();
 
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<IUserProviderService, UserProviderService>();
 builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
