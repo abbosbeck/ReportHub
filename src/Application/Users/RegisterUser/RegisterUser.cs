@@ -65,7 +65,6 @@ public class RegisterUserCommandHandler(
         await emailService.SendEmailAsync(user.Email, "Email confirmation!", emailBody);
 
         var userDto = mapper.Map<UserDto>(user);
-        userDto.ConfirmEmailToken = token;
 
         return userDto;
     }
