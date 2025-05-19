@@ -86,7 +86,7 @@ app.MapControllers();
 
 app.MapGet("/", context =>
 {
-    context.Response.Redirect("https://frontend.jollyfield-db8a0240.swedencentral.azurecontainerapps.io/");
+    context.Response.Redirect("https://reporthub-a0eahxa6awf4bfd5.swedencentral-01.azurewebsites.net/");
     return Task.CompletedTask;
 });
 
