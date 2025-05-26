@@ -61,11 +61,6 @@ public class AppDbContext(
                     t.ClientId == clientProvider.ClientId &&
                     !t.IsDeleted));
 
-            builder.Entity<Customer>(entity => entity
-                .HasQueryFilter(t =>
-                    t.ClientId == clientProvider.ClientId &&
-                    !t.IsDeleted));
-
             builder.Entity<Invoice>(entity => entity
                 .HasQueryFilter(t =>
                     t.ClientId == clientProvider.ClientId &&
