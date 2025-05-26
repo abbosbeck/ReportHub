@@ -47,61 +47,61 @@ public class AppDbContext(
 
         builder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
 
-        ApplyQueryFilters(builder);
+        ApplyQueryFilters();
 
-        IgnoreUnusedIdentityTables(builder);
-    }
+        IgnoreUnusedIdentityTables();
 
-    private static void IgnoreUnusedIdentityTables(ModelBuilder builder)
-    {
-        builder.Ignore<IdentityUserClaim<Guid>>();
-        builder.Ignore<IdentityRoleClaim<Guid>>();
-        builder.Ignore<IdentityUserToken<Guid>>();
-        builder.Ignore<IdentityUserLogin<Guid>>();
-    }
+        void ApplyQueryFilters()
+        {
+            builder.Entity<Client>(entity => entity
+                .HasQueryFilter(t => !t.IsDeleted));
 
-    private void ApplyQueryFilters(ModelBuilder builder)
-    {
-        builder.Entity<Client>(entity => entity
-            .HasQueryFilter(t => !t.IsDeleted));
+            builder.Entity<Customer>(entity => entity
+                .HasQueryFilter(t =>
+                    t.ClientId == clientProvider.ClientId &&
+                    !t.IsDeleted));
 
-        builder.Entity<Customer>(entity => entity
-            .HasQueryFilter(t =>
-                t.ClientId == clientProvider.ClientId &&
-                !t.IsDeleted));
+            builder.Entity<Customer>(entity => entity
+                .HasQueryFilter(t =>
+                    t.ClientId == clientProvider.ClientId &&
+                    !t.IsDeleted));
 
-        builder.Entity<Customer>(entity => entity
-            .HasQueryFilter(t =>
-                t.ClientId == clientProvider.ClientId &&
-                !t.IsDeleted));
+            builder.Entity<Invoice>(entity => entity
+                .HasQueryFilter(t =>
+                    t.ClientId == clientProvider.ClientId &&
+                    !t.IsDeleted));
 
-        builder.Entity<Invoice>(entity => entity
-            .HasQueryFilter(t =>
-                t.ClientId == clientProvider.ClientId &&
-                !t.IsDeleted));
+            builder.Entity<Item>(entity => entity
+                .HasQueryFilter(t =>
+                    t.ClientId == clientProvider.ClientId &&
+                    !t.IsDeleted));
 
-        builder.Entity<Item>(entity => entity
-            .HasQueryFilter(t =>
-                t.ClientId == clientProvider.ClientId &&
-                !t.IsDeleted));
+            builder.Entity<Plan>(entity => entity
+                .HasQueryFilter(t =>
+                    t.ClientId == clientProvider.ClientId &&
+                    !t.IsDeleted));
 
-        builder.Entity<Plan>(entity => entity
-            .HasQueryFilter(t =>
-                t.ClientId == clientProvider.ClientId &&
-                !t.IsDeleted));
+            builder.Entity<ReportSchedule>(entity => entity
+                .HasQueryFilter(t =>
+                    t.ClientId == clientProvider.ClientId &&
+                    !t.IsDeleted));
 
-        builder.Entity<ReportSchedule>(entity => entity
-            .HasQueryFilter(t =>
-                t.ClientId == clientProvider.ClientId &&
-                !t.IsDeleted));
+            builder.Entity<SystemRole>(entity => entity
+                .HasQueryFilter(t => !t.IsDeleted));
 
-        builder.Entity<SystemRole>(entity => entity
-            .HasQueryFilter(t => !t.IsDeleted));
+            builder.Entity<SystemRoleAssignment>(entity => entity
+                .HasQueryFilter(t => !t.IsDeleted));
 
-        builder.Entity<SystemRoleAssignment>(entity => entity
-            .HasQueryFilter(t => !t.IsDeleted));
+            builder.Entity<User>(entity => entity
+                .HasQueryFilter(t => !t.IsDeleted));
+        }
 
-        builder.Entity<User>(entity => entity
-            .HasQueryFilter(t => !t.IsDeleted));
+        void IgnoreUnusedIdentityTables()
+        {
+            builder.Ignore<IdentityUserClaim<Guid>>();
+            builder.Ignore<IdentityRoleClaim<Guid>>();
+            builder.Ignore<IdentityUserToken<Guid>>();
+            builder.Ignore<IdentityUserLogin<Guid>>();
+        }
     }
 }
